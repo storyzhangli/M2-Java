@@ -31,3 +31,9 @@ build/
 # system ignore
 .DS_Store
 Thumbs.db
+
+# D01 Spring AI：本地真实配置与环境变量文件可能包含真实 API Key，禁止入库
+**/application-local.yml
+**/application-local.properties
+.env
+.env.*

@@ -1,0 +1,39 @@
+# ============================================================================
+# D01 Spring AI 初始化与 DeepSeek 接入 - 主配置（可安全入库，仅含无效占位密钥）
+# 真实密钥一律通过环境变量注入，禁止把真实 API Key 写入本文件。
+# ============================================================================
+server:
+  port: 8080
+
+spring:
+  application:
+    name: D01_SpringAI_init
+
+  # --------------------------------------------------------------------------
+  # Spring AI 1.1.x DeepSeek 配置（属性前缀已经官方 1.1 参考文档核对，非 2.x 命名）
+  # 文档：https://docs.spring.io/spring-ai/reference/1.1/api/chat/deepseek-chat.html
+  # --------------------------------------------------------------------------
+  ai:
+    deepseek:
+      # 优先取环境变量 DEEPSEEK_API_KEY；未提供时回退到“显式无效”的本地占位串。
+      # 占位串 d01-mock-key-not-for-authentication 仅用于让自动配置完成 Bean 装配，
+      # 绝不可能通过 DeepSeek 真实鉴权；真实模式下会在调用前被主动拦截。
+      api-key: ${DEEPSEEK_API_KEY:d01-mock-key-not-for-authentication}
+      # DeepSeek 官方基址，可通过 DEEPSEEK_BASE_URL 覆盖（私有网关/代理场景）。
+      base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+      chat:
+        options:
+          # 模型名外置，默认 deepseek-flash，可通过 DEEPSEEK_MODEL 一行切换。
+          model: ${DEEPSEEK_MODEL:deepseek-flash}
+          # 采样温度，取值域 [0,2]。
+          temperature: 0.7
+
+# --------------------------------------------------------------------------
+# D01 应用自定义开关（与 spring.ai.* 官方前缀分离）
+# --------------------------------------------------------------------------
+app:
+  ai:
+    # 运行模式，由环境变量 AI_MODE 控制：mock（默认，离线确定性返回、零外网请求）| deepseek（真实调用）。
+    mode: ${AI_MODE:mock}
+    # 入参消息可调整长度上限，可用环境变量 AI_CHAT_MAX_LENGTH 覆盖。
+    max-message-length: ${AI_CHAT_MAX_LENGTH:2000}
