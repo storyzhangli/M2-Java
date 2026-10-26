@@ -37,3 +37,4 @@ Thumbs.db
 **/application-local.properties
 .env
 .env.*
+/docs/proj_docs/D13-01 实施任务书：Spring AI 1.1.x 引入与 DeepSeek API 接入-GPT-项目迭代基石.md
