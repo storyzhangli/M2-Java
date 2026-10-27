@@ -119,11 +119,11 @@ graph TD
 
 ### 2.3 自动配置与依赖注入原理
 
-1. **Starter 机制**：引入`spring-ai-starter-model-deepseek` (`spring-ai-starter-model-openai`可接入openai) 依赖后，Spring Boot 自动扫描并加载对应自动配置类。
+1. **Starter 机制**：引入`spring-ai-starter-model-deepseek`依赖后，Spring Boot 自动扫描并加载对应自动配置类。
 2. **BOM 版本管理**：`spring-ai-bom` 统一管理所有 Spring AI 组件版本，避免版本冲突。
 3. **Bean 创建流程**：
-   - 配置属性（如 `spring.ai.openai.api-key`）驱动配置
-   - 自动配置类创建 `OpenAiApi`、`OpenAiChatModel` 等底层 Bean
+   - 配置属性（如 `spring.ai.deepseek.api-key`）驱动配置
+   - 自动配置类创建 `DeepSeekApi`、`DeepSeekChatModel` 等底层 Bean
    - 自动创建 `ChatClient.Builder` 原型 Bean，可直接注入使用
 4. **为什么依赖添加不代表调用一定成功**：
    - 依赖只解决代码编译与 Bean 创建，不解决网络、鉴权、模型权限问题
@@ -351,11 +351,11 @@ int tokenUsage = response.getMetadata().getUsage().getTotalTokens();
 
 ### 5.1 接入方案说明
 
-DeepSeek 提供与 OpenAI 兼容的 API 格式，因此使用 Spring AI 官方的 `spring-ai-starter-model-openai` 接入，通过修改 `base-url` 指向 DeepSeek 服务地址。
+DeepSeek 提供与 OpenAI 兼容的 API 格式，因此使用 Spring AI 官方的 `spring-ai-spring-ai-starter-model-deepseek` 接入，通过修改 `base-url` 指向 DeepSeek 服务地址。
 
 #### 方案依据
 
-- Spring AI 1.1.x 的 OpenAI 实现成熟稳定，兼容性好
+- Spring AI 1.1.x 的 DeepSeek 实现成熟稳定，兼容性好
 - DeepSeek API 完全兼容 OpenAI 接口协议，参数、响应格式对齐
 - 无需额外第三方依赖，官方支持，风险低
 
@@ -384,7 +384,7 @@ DeepSeek 提供与 OpenAI 兼容的 API 格式，因此使用 Spring AI 官方�
     <!-- OpenAI 兼容模型 Starter -->
     <dependency>
         <groupId>org.springframework.ai</groupId>
-        <artifactId>spring-ai-starter-model-openai</artifactId>
+        <artifactId>spring-ai-spring-ai-starter-model-deepseek</artifactId>
     </dependency>
 </dependencies>
 ```
@@ -400,7 +400,7 @@ DeepSeek 提供与 OpenAI 兼容的 API 格式，因此使用 Spring AI 官方�
 ```
 spring:
   ai:
-    openai:
+    deepseek:
       base-url: https://api.deepseek.com # DeepSeek API 地址
       api-key: ${DEEPSEEK_API_KEY}  # 从环境变量注入密钥，禁止硬编码
       chat:
@@ -427,7 +427,7 @@ spring:
 ```
 package com.example.ai.controller;
 
-import org.springframework.ai.chat.client;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
