@@ -1,0 +1,742 @@
+2026-10-27 16:19:04.771 INFO  [background-preinit] [requestId=] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-10-27 16:19:04.816 INFO  [main] [requestId=] c.z.d.s.ApplicationContextLoadTest - Starting ApplicationContextLoadTest using Java 21.0.7 with PID 24368 (started by zl in E:\AI\project\AI-Learning-one\M2-Java\D01\D01_SpringAI_init)
+2026-10-27 16:19:04.817 INFO  [main] [requestId=] c.z.d.s.ApplicationContextLoadTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-27 16:19:07.779 INFO  [main] [requestId=] c.z.d.s.ApplicationContextLoadTest - Started ApplicationContextLoadTest in 3.519 seconds (process running for 4.79)
+2026-10-27 16:19:08.725 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d01.springai.ChatLengthValidationTest]: ChatLengthValidationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-27 16:19:08.736 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d01.springai.D01SpringAiApplication for test class com.zl.d01.springai.ChatLengthValidationTest
+2026-10-27 16:19:08.795 INFO  [main] [requestId=] c.z.d.s.ChatLengthValidationTest - Starting ChatLengthValidationTest using Java 21.0.7 with PID 24368 (started by zl in E:\AI\project\AI-Learning-one\M2-Java\D01\D01_SpringAI_init)
+2026-10-27 16:19:08.796 INFO  [main] [requestId=] c.z.d.s.ChatLengthValidationTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-27 16:19:09.560 INFO  [main] [requestId=] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-27 16:19:09.561 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-10-27 16:19:09.563 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-10-27 16:19:09.639 INFO  [main] [requestId=] c.z.d.s.ChatLengthValidationTest - Started ChatLengthValidationTest in 0.898 seconds (process running for 6.65)
+2026-10-27 16:19:09.907 WARN  [main] [requestId=009fe935ee134404a70154f58abfea89] ACCESS_LOG - {"event":"CONTROLLER_ERROR","requestId":"009fe935ee134404a70154f58abfea89","controllerMethod":"ChatController#chat","elapsedMs":15,"args":{"request":{"value":"{\"message\":\"abcdefghij\"}","truncated":false}},"exception":"java.lang.IllegalArgumentException","errorMessage":"message 长度超过当前上限 5 个字符，请缩短后重试"}
+2026-10-27 16:19:09.909 WARN  [main] [requestId=009fe935ee134404a70154f58abfea89] c.z.d.s.c.GlobalExceptionHandler - 请求参数异常: message 长度超过当前上限 5 个字符，请缩短后重试
+2026-10-27 16:19:09.929 INFO  [main] [requestId=009fe935ee134404a70154f58abfea89] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"009fe935ee134404a70154f58abfea89","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"24"},"requestBody":{"contentType":"application/json","size":24,"body":"{\"message\":\"abcdefghij\"}","truncated":false}}
+2026-10-27 16:19:09.931 INFO  [main] [requestId=009fe935ee134404a70154f58abfea89] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"009fe935ee134404a70154f58abfea89","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":197,"responseBody":{"contentType":"application/json","size":99,"body":"{\"code\":4001,\"msg\":\"message 长度超过当前上限 5 个字符，请缩短后重试\",\"data\":null}","truncated":false}}
+2026-10-27 16:19:10.025 INFO  [main] [requestId=1244a56402a748e48dba3f341c6b4a6b] c.z.d.s.controller.ChatController - 收到 AI 聊天请求，messageLength=3
+2026-10-27 16:19:10.026 INFO  [main] [requestId=1244a56402a748e48dba3f341c6b4a6b] c.z.d.s.controller.ChatController - AI 聊天处理完成，mode=mock，mocked=true
+2026-10-27 16:19:10.031 INFO  [main] [requestId=1244a56402a748e48dba3f341c6b4a6b] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"1244a56402a748e48dba3f341c6b4a6b","controllerMethod":"ChatController#chat","elapsedMs":2,"args":{"request":{"value":"{\"message\":\"abc\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] 当前为离线模拟模式（AI_MODE=mock），未发起任何 DeepSeek 网络请求。已收到问题：「abc」。如需真实回答，请设置环境变量 AI_MODE=deepseek 并注入有效的 DEEPSEEK_API_KEY。\"}}","resultTruncated":false}
+2026-10-27 16:19:10.037 INFO  [main] [requestId=1244a56402a748e48dba3f341c6b4a6b] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"1244a56402a748e48dba3f341c6b4a6b","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"17"},"requestBody":{"contentType":"application/json","size":17,"body":"{\"message\":\"abc\"}","truncated":false}}
+2026-10-27 17:05:06.783 INFO  [SpringApplicationShutdownHook] [requestId=] o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-27 17:05:06.798 INFO  [tomcat-shutdown] [requestId=] o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-10-27 17:07:09.395 INFO  [background-preinit] [requestId=] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-10-27 17:07:09.434 INFO  [main] [requestId=] c.z.d.s.D01SpringAiApplication - Starting D01SpringAiApplication using Java 21.0.7 with PID 11040 (E:\AI\project\AI-Learning-one\M2-Java\D01\D01_SpringAI_init\target\classes started by zl in E:\AI\project\AI-Learning-one\M2-Java)
+2026-10-27 17:07:09.435 INFO  [main] [requestId=] c.z.d.s.D01SpringAiApplication - No active profile set, falling back to 1 default profile: "default"
+2026-10-27 17:07:10.419 INFO  [main] [requestId=] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-10-27 17:07:10.434 INFO  [main] [requestId=] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-10-27 17:07:10.435 INFO  [main] [requestId=] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-10-27 17:07:10.435 INFO  [main] [requestId=] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.55]
+2026-10-27 17:07:10.482 INFO  [main] [requestId=] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-10-27 17:07:10.482 INFO  [main] [requestId=] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1013 ms
+2026-10-27 17:07:11.220 INFO  [main] [requestId=] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-10-27 17:07:11.231 INFO  [main] [requestId=] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-10-27 17:07:11.237 INFO  [main] [requestId=] c.z.d.s.D01SpringAiApplication - Started D01SpringAiApplication in 2.411 seconds (process running for 3.265)
+2026-10-27 17:08:02.023 INFO  [http-nio-8080-exec-1] [requestId=] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-27 17:08:02.023 INFO  [http-nio-8080-exec-1] [requestId=] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-10-27 17:08:02.024 INFO  [http-nio-8080-exec-1] [requestId=] o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-10-27 17:08:02.183 INFO  [http-nio-8080-exec-1] [requestId=a74d1e1e6eb44e6284e3813c4b35fd7f] c.z.d.s.controller.ChatController - 收到 AI 聊天请求，messageLength=16
+2026-10-27 17:08:02.184 INFO  [http-nio-8080-exec-1] [requestId=a74d1e1e6eb44e6284e3813c4b35fd7f] c.z.d.s.s.DeepSeekAiChatService - 接收的prompt消息: Prompt{messages=[UserMessage{content='认可度最高的top100电影清单', metadata={messageType=USER}, messageType=USER}], modelOptions=null}
+2026-10-27 17:08:42.490 INFO  [http-nio-8080-exec-1] [requestId=a74d1e1e6eb44e6284e3813c4b35fd7f] c.z.d.s.s.DeepSeekAiChatService - 响应消息: ChatResponse [metadata={ id: ced2595e-18bf-4161-8711-24dedf3f1aa0, usage: DefaultUsage{promptTokens=37, completionTokens=7566, totalTokens=7603}, rateLimit: org.springframework.ai.chat.metadata.EmptyRateLimit@5d02d664 }, generations=[Generation[assistantMessage=DeepSeekAssistantMessage [messageType=ASSISTANT, toolCalls=[], textContent=“认可度最高”没有唯一权威答案：影评人/学术更认 **Sight & Sound、TSPDT**，影迷更认 **IMDb、Letterboxd、豆瓣 Top250**。下面给一份**综合共识版 Top 100**：参考跨榜单出现频率、影史影响、大众知名度与评分口碑，兼顾经典与全球代表性。**编号仅便于查看，不代表严格名次。**
+
+1. 公民凯恩 *Citizen Kane* (1941)
+2. 迷魂记 *Vertigo* (1958)
+3. 2001太空漫游 *2001: A Space Odyssey* (1968)
+4. 教父 *The Godfather* (1972)
+5. 东京物语 *Tokyo Story* (1953)
+6. 游戏规则 *The Rules of the Game* (1939)
+7. 日出 *Sunrise: A Song of Two Humans* (1927)
+8. 七武士 *Seven Samurai* (1954)
+9. 搜索者 *The Searchers* (1956)
+10. 花样年华 *In the Mood for Love* (2000)
+11. 八部半 *8½* (1963)
+12. 惊魂记 *Psycho* (1960)
+13. 雨中曲 *Singin' in the Rain* (1952)
+14. 现代启示录 *Apocalypse Now* (1979)
+15. 圣女贞德蒙难记 *The Passion of Joan of Arc* (1928)
+16. 教父2 *The Godfather Part II* (1974)
+17. 罗生门 *Rashomon* (1950)
+18. 第七封印 *The Seventh Seal* (1957)
+19. 阿拉伯的劳伦斯 *Lawrence of Arabia* (1962)
+20. 低俗小说 *Pulp Fiction* (1994)
+21. 卡萨布兰卡 *Casablanca* (1942)
+22. 出租车司机 *Taxi Driver* (1976)
+23. 愤怒的公牛 *Raging Bull* (1980)
+24. 好家伙 *Goodfellas* (1990)
+25. 肖申克的救赎 *The Shawshank Redemption* (1994)
+26. 十二怒汉 *12 Angry Men* (1957)
+27. 星球大战 *Star Wars* (1977)
+28. 帝国反击战 *The Empire Strikes Back* (1980)
+29. 银翼杀手 *Blade Runner* (1982)
+30. 异形 *Alien* (1979)
+31. 闪灵 *The Shining* (1980)
+32. 沉默的羔羊 *The Silence of the Lambs* (1991)
+33. 七宗罪 *Se7en* (1995)
+34. 搏击俱乐部 *Fight Club* (1999)
+35. 阿甘正传 *Forrest Gump* (1994)
+36. 指环王3：王者无敌 *The Lord of the Rings: The Return of the King* (2003)
+37. 黑暗骑士 *The Dark Knight* (2008)
+38. 黑客帝国 *The Matrix* (1999)
+39. 盗梦空间 *Inception* (2010)
+40. 星际穿越 *Interstellar* (2014)
+41. 大都会 *Metropolis* (1927)
+42. 战舰波将金号 *Battleship Potemkin* (1925)
+43. M就是凶手 *M* (1931)
+44. 偷自行车的人 *Bicycle Thieves* (1948)
+45. 大地之歌 *Pather Panchali* (1955)
+46. 生之欲 *Ikiru* (1952)
+47. 切腹 *Harakiri* (1962)
+48. 乱 *Ran* (1985)
+49. 潜行者 *Stalker* (1979)
+50. 镜子 *The Mirror* (1975)
+51. 安德烈·卢布廖夫 *Andrei Rublev* (1966)
+52. 假面 *Persona* (1966)
+53. 野草莓 *Wild Strawberries* (1957)
+54. 四百击 *The 400 Blows* (1959)
+55. 精疲力尽 *Breathless* (1960)
+56. 甜蜜的生活 *La Dolce Vita* (1960)
+57. 天堂电影院 *Cinema Paradiso* (1988)
+58. 美丽人生 *Life Is Beautiful* (1997)
+59. 城市之光 *City Lights* (1931)
+60. 摩登时代 *Modern Times* (1936)
+61. 大独裁者 *The Great Dictator* (1940)
+62. 日落大道 *Sunset Boulevard* (1950)
+63. 彗星美人 *All About Eve* (1950)
+64. 双重赔偿 *Double Indemnity* (1944)
+65. 第三人 *The Third Man* (1949)
+66. 马耳他之鹰 *The Maltese Falcon* (1941)
+67. 西北偏北 *North by Northwest* (1959)
+68. 后窗 *Rear Window* (1954)
+69. 美人计 *Notorious* (1946)
+70. 奇爱博士 *Dr. Strangelove* (1964)
+71. 发条橙 *A Clockwork Orange* (1971)
+72. 全金属外壳 *Full Metal Jacket* (1987)
+73. 猎鹿人 *The Deer Hunter* (1978)
+74. 辛德勒的名单 *Schindler's List* (1993)
+75. 拯救大兵瑞恩 *Saving Private Ryan* (1998)
+76. 大白鲨 *Jaws* (1975)
+77. E.T.外星人 *E.T. the Extra-Terrestrial* (1982)
+78. 夺宝奇兵 *Raiders of the Lost Ark* (1981)
+79. 回到未来 *Back to the Future* (1985)
+80. 终结者2 *Terminator 2: Judgment Day* (1991)
+81. 疯狂的麦克斯4：狂暴之路 *Mad Max: Fury Road* (2015)
+82. 无间道 *Infernal Affairs* (2002)
+83. 霸王别姬 *Farewell My Concubine* (1993)
+84. 活着 *To Live* (1994)
+85. 一一 *Yi Yi* (2000)
+86. 牯岭街少年杀人事件 *A Brighter Summer Day* (1991)
+87. 重庆森林 *Chungking Express* (1994)
+88. 卧虎藏龙 *Crouching Tiger, Hidden Dragon* (2000)
+89. 千与千寻 *Spirited Away* (2001)
+90. 龙猫 *My Neighbor Totoro* (1988)
+91. 幽灵公主 *Princess Mononoke* (1997)
+92. 萤火虫之墓 *Grave of the Fireflies* (1988)
+93. 阿基拉 *Akira* (1988)
+94. 寄生虫 *Parasite* (2019)
+95. 老男孩 *Oldboy* (2003)
+96. 杀人回忆 *Memories of Murder* (2003)
+97. 上帝之城 *City of God* (2002)
+98. 潘神的迷宫 *Pan's Labyrinth* (2006)
+99. 美丽心灵的永恒阳光 *Eternal Sunshine of the Spotless Mind* (2004)
+100. 楚门的世界 *The Truman Show* (1998)
+
+如果你想要**更严格的三类版本**，我可以再分别整理：
+- **影评人/学术共识版**：Sight & Sound / TSPDT 风格
+- **大众高分版**：IMDb + 豆瓣 + Letterboxd 综合
+- **华语观众认可版**：豆瓣 Top250 为主, reasoningContent=We need answer Chinese. User asks "认可度最高的top100电影清单" = "Most recognized top 100 movie list". Need likely provide list of top 100 films with highest recognition/consensus. Need interpret. Could be asking for a list of top 100 films with highest recognition. Need decide source. "认可度最高" maybe aggregate rankings from IMDb, Rotten Tomatoes, Letterboxd, Douban? Could present a consensus Top 100 based on major lists (IMDb Top 250, Sight & Sound, AFI, Douban Top 250, Letterboxd Top 250). But asking "清单" likely wants list. Need be helpful and precise. Could say no single list; provide a widely recognized "共识版 Top 100" synthesized from multiple authoritative lists. Need maybe include source methodology and list. Need not be perfect but useful. Need in Chinese.
+
+Need consider if user expects actual top100 movies. Need provide list. Maybe "认可度最高" could mean "highest rated" not recognized. We can provide a consensus list based on IMDb Top 250 + Letterboxd Top 250 + Douban Top 250 + Sight & Sound + AFI. Need list 100 films.
+
+Need maybe ask clarifying? But final should answer directly. Could state "影史没有唯一权威 Top100，以下是综合 IMDb/Letterboxd/豆瓣/Sight & Sound/AFI/奥斯卡等常见榜单的共识版 100 部，按大致影史地位和跨榜单出现频率排序，不严格代表评分排名。" Then list 100.
+
+Need create list of 100 movies. Need ensure high-quality, consensus. We can include classic and modern international films. Need avoid controversial? It's fine.
+
+Need decide list. Need include Chinese titles and original titles/year. Need maybe not too verbose. Desired oververbosity 5. A 100-item list is long but requested. Need present grouped maybe 1-100. Need include note "片单会因口味/文化语境不同有争议."
+
+Need craft a credible consensus Top 100. Let's generate. Need include most recognized films. I can use a synthesized list. Need ensure 100 exactly. Let's construct.
+
+Potential list:
+1 教父 The Godfather (1972)
+2 公民凯恩 Citizen Kane (1941)
+3 迷魂记 Vertigo (1958)
+4 2001太空漫游 2001: A Space Odyssey (1968)
+5 东京物语 Tokyo Story (1953)
+6 游戏规则 The Rules of the Game (1939)
+7 日出 Sunrise: A Song of Two Humans (1927)
+8 搜索者 The Searchers (1956)
+9 愤怒的公牛 Raging Bull (1980)
+10 花样年华 In the Mood for Love (2000)
+11 七武士 Seven Samurai (1954)
+12 阿拉伯的劳伦斯 Lawrence of Arabia (1962)
+13 低俗小说 Pulp Fiction (1994)
+14 出租车司机 Taxi Driver (1976)
+15 现代启示录 Apocalypse Now (1979)
+16 好家伙 Goodfellas (1990)
+17 卡萨布兰卡 Casablanca (1942)
+18 惊魂记 Psycho (1960)
+19 后窗 Rear Window (1954)
+20 城市之光 City Lights (1931)
+21 摩登时代 Modern Times (1936)
+22 大独裁者 The Great Dictator (1940)
+23 雨中曲 Singin' in the Rain (1952)
+24 彗星美人 All About Eve (1950)
+25 日落大道 Sunset Boulevard (1950)
+26 双重赔偿 Double Indemnity (1944)
+27 唐人街 Chinatown (1974)
+28 安妮·霍尔 Annie Hall (1977)
+29 曼哈顿 Manhattan? maybe no
+29 四百击 The 400 Blows (1959)
+30 精疲力尽 Breathless (1960)
+31 八部半 8½ (1963)
+32 甜蜜的生活 La Dolce Vita (1960)
+33 偷自行车的人 Bicycle Thieves (1948)
+34 大地之歌 Pather Panchali (1955)
+35 罗生门 Rashomon (1950)
+36 生之欲 Ikiru (1952)
+37 切腹 Harakiri (1962)
+38 乱 Ran (1985)
+39 影子武士 Kagemusha? maybe not.
+39 潜行者 Stalker (1979)
+40 镜子 The Mirror (1975)
+41 安德烈·卢布廖夫 Andrei Rublev (1966)
+42 假面 Persona (1966)
+43 第七封印 The Seventh Seal (1957)
+44 野草莓 Wild Strawberries (1957)
+45 大路 La Strada (1954)
+46 甜蜜的生活 already. Need no duplicates.
+46 天堂的孩子 Children of Paradise (1945)
+47 亚特兰大号 L'Atalante (1934)
+48 游戏规则 already.
+48 慕德家一夜 My Night at Maud's? maybe not.
+48 精疲力尽 already.
+Need list 100.
+
+Could include canonical:
+- The Godfather Part II
+- The Dark Knight
+- The Lord of the Rings: The Return of the King
+- Schindler's List
+- Saving Private Ryan
+- Forrest Gump
+- The Shawshank Redemption
+- Fight Club
+- The Matrix
+- Inception
+- Interstellar
+- Spirited Away
+- Grave of the Fireflies
+- Akira
+- Toy Story
+- WALL-E
+- The Lion King
+- Parasite
+- Oldboy
+- City of God
+- Amélie
+- Pan's Labyrinth
+- Cinema Paradiso
+- Life is Beautiful
+- The Lives of Others
+- Come and See
+- The Battle of Algiers
+- The Shining
+- Alien
+- Blade Runner
+- Star Wars
+- E.T.
+- Jaws
+- Raiders of the Lost Ark
+- Back to the Future
+- Terminator 2
+- Jurassic Park? maybe.
+- Die Hard? maybe.
+- Mad Max: Fury Road
+- Se7en
+- The Silence of the Lambs
+- Heat
+- The Departed
+- No Country for Old Men
+- There Will Be Blood
+- Mulholland Drive
+- Blue Velvet
+- Eraserhead? less consensus.
+- Donnie Darko? no.
+- Eternal Sunshine of the Spotless Mind
+- The Truman Show
+- Good Will Hunting
+- Dead Poets Society
+- The Green Mile
+- The Prestige
+- Memento
+- Whiplash
+- The Grand Budapest Hotel
+- La La Land
+- Moonlight
+- The Social Network
+- The Wolf of Wall Street? maybe.
+- Once Upon a Time in the West
+- Once Upon a Time in America
+- The Good, the Bad and the Ugly
+- For a Few Dollars More? maybe no.
+- Yojimbo
+- Ran
+- Rashomon
+- Seven Samurai
+- Ikiru
+- Tokyo Story
+- Late Spring
+- In the Mood for Love
+- Chungking Express
+- Happy Together? maybe.
+- Yi Yi
+- A Brighter Summer Day
+- Farewell My Concubine
+- Raise the Red Lantern? maybe.
+- To Live
+- Hero? maybe not.
+- Crouching Tiger, Hidden Dragon
+- Parasite
+- Oldboy
+- Memories of Murder
+- The Handmaiden? maybe.
+- The Host? no.
+- Spirited Away
+- My Neighbor Totoro
+- Princess Mononoke
+- Akira
+- Grave of the Fireflies
+- Your Name? maybe not top100 consensus but high recognition.
+- The Apartment
+- Some Like It Hot
+- The Graduate
+- Bonnie and Clyde
+- The Godfather
+- The Godfather Part II
+- One Flew Over the Cuckoo's Nest
+- 12 Angry Men
+- To Kill a Mockingbird
+- Mr. Smith Goes to Washington
+- It's a Wonderful Life
+- The Best Years of Our Lives
+- The Treasure of the Sierra Madre
+- The Third Man
+- The Maltese Falcon
+- North by Northwest
+- Notorious
+- Vertigo
+- Psycho
+- Rear Window
+- Dial M for Murder? no
+- Strangers on a Train? no
+- The Apartment
+- Sunset Boulevard
+- All About Eve
+- Singin' in the Rain
+- Casablanca
+- The Wizard of Oz
+- Gone with the Wind? maybe recognition but problematic.
+- Snow White? maybe.
+- The Bicycle Thief
+- La Dolce Vita
+- 8½
+- The 400 Blows
+- Breathless
+- The Rules of the Game
+- Grand Illusion
+- The Battle of Algiers
+- The Conformist? maybe.
+- Cinema Paradiso
+- Amélie
+- Pan's Labyrinth
+- The Lives of Others
+- Run Lola Run? no.
+- Wings of Desire
+- M
+- Metropolis
+- Nosferatu? maybe.
+- The Cabinet of Dr. Caligari
+- Battleship Potemkin
+- The Man with a Movie Camera
+- The Passion of Joan of Arc
+- Au Hasard Balthazar? maybe.
+- Pickpocket? no.
+- A Man Escaped? no.
+- The Umbrellas of Cherbourg? maybe.
+- The Wages of Fear? maybe.
+- The Exorcist
+- Rosemary's Baby
+- The Shining
+- Alien
+- Blade Runner
+- The Thing? maybe.
+- The Matrix
+- Star Wars
+- The Empire Strikes Back
+- The Lord of the Rings
+- The Dark Knight
+- Pulp Fiction
+- Goodfellas
+- Taxi Driver
+- Raging Bull
+- Apocalypse Now
+- The Deer Hunter? maybe.
+- Full Metal Jacket? maybe.
+- Schindler's List
+- Saving Private Ryan
+- Jurassic Park
+- Jaws
+- E.T.
+- Raiders of the Lost Ark
+- Back to the Future
+- Terminator 2
+- Die Hard? maybe no.
+- Mad Max Fury Road
+- The Silence of the Lambs
+- Se7en
+- Fight Club
+- The Shawshank Redemption
+- Forrest Gump
+- The Green Mile
+- The Truman Show
+- Eternal Sunshine
+- Inception
+- Interstellar
+- The Prestige
+- Memento
+- The Departed
+- No Country for Old Men
+- There Will Be Blood
+- The Social Network
+- Moonlight
+- Parasite
+- Whiplash
+- La La Land
+- The Grand Budapest Hotel
+- City of God
+- Amores Perros? maybe.
+- Pan's Labyrinth
+- The Devil's Backbone? no.
+- Y Tu Mamá También? maybe.
+- Roma
+- The Shape of Water? no.
+
+Need 100 exactly and not overlong. Could choose a list from an existing "They Shoot Pictures, Don't They?" top 100? That's more critical consensus. But user may want "认可度最高" = highest recognized. TSPDT uses aggregate. Could provide TSPDT 2024 Top 100? Need know exact list? I may recall TSPDT Top 100 (2024) includes:
+1 Citizen Kane
+2 Vertigo
+3 2001: A Space Odyssey
+4 Tokyo Story
+5 The Rules of the Game
+6 The Godfather
+7 8½
+8 The Searchers
+9 Sunrise
+10 Psycho
+11 Seven Samurai
+12 Singin' in the Rain
+13 Apocalypse Now
+14 The Passion of Joan of Arc
+15 The Godfather Part II
+16 Rashomon
+17 The Seventh Seal
+18 The Wizard of Oz? Hmm.
+TSPDT list changes. Could present "综合版" not exact.
+
+Maybe answer should include "公认度最高的常见榜单是 IMDb Top 250、Sight & Sound Greatest Films、AFI 100、豆瓣 Top250、Letterboxd Top250；没有唯一 Top100。若你要单一榜单，我推荐 TSPDT 或 Sight & Sound." Then offer a top 100? The user asked list. Need maybe provide a "可保存版".
+
+Need decide final format. Perhaps include a list of 100 "跨榜单高频电影" in rough tiers. Need not mention exact source ranking to avoid inaccuracies. Need maybe say "排序仅按共识度和知名度，不代表我主观排名." Good.
+
+Need ensure list includes exactly 100 items. Need count carefully. Could group 1-100. Need pick 100. Let's create a clean list of 100 consensus/recognition films, with Chinese + original + year. Need include both "影史经典" and "大众高分". Need maybe mark "综合共识版".
+
+Let's build a 100 list. Need balance canonical critical and popular. Use groups maybe 1-100. Need count.
+
+I will draft 100:
+
+1 公民凯恩 Citizen Kane (1941)
+2 迷魂记 Vertigo (1958)
+3 2001太空漫游 2001: A Space Odyssey (1968)
+4 教父 The Godfather (1972)
+5 东京物语 Tokyo Story (1953)
+6 游戏规则 The Rules of the Game (1939)
+7 日出 Sunrise: A Song of Two Humans (1927)
+8 七武士 Seven Samurai (1954)
+9 搜索者 The Searchers (1956)
+10 花样年华 In the Mood for Love (2000)
+11 八部半 8½ (1963)
+12 惊魂记 Psycho (1960)
+13 雨中曲 Singin' in the Rain (1952)
+14 现代启示录 Apocalypse Now (1979)
+15 圣女贞德蒙难记 The Passion of Joan of Arc (1928)
+16 教父2 The Godfather Part II (1974)
+17 罗生门 Rashomon (1950)
+18 第七封印 The Seventh Seal (1957)
+19 阿拉伯的劳伦斯 Lawrence of Arabia (1962)
+20 低俗小说 Pulp Fiction (1994)
+21 卡萨布兰卡 Casablanca (1942)
+22 出租车司机 Taxi Driver (1976)
+23 愤怒的公牛 Raging Bull (1980)
+24 好家伙 Goodfellas (1990)
+25 肖申克的救赎 The Shawshank Redemption (1994)
+26 十二怒汉 12 Angry Men (1957)
+27 星球大战 Star Wars (1977)
+28 帝国反击战 The Empire Strikes Back (1980)
+29 银翼杀手 Blade Runner (1982)
+30 异形 Alien (1979)
+31 闪灵 The Shining (1980)
+32 沉默的羔羊 The Silence of the Lambs (1991)
+33 七宗罪 Se7en (1995)
+34 搏击俱乐部 Fight Club (1999)
+35 阿甘正传 Forrest Gump (1994)
+36 指环王3 The Lord of the Rings: The Return of the King (2003)
+37 黑暗骑士 The Dark Knight (2008)
+38 黑客帝国 The Matrix (1999)
+39 盗梦空间 Inception (2010)
+40 星际穿越 Interstellar (2014)
+41 大都会 Metropolis (1927)
+42 战舰波将金号 Battleship Potemkin (1925)
+43 M就是凶手 M (1931)
+44 偷自行车的人 Bicycle Thieves (1948)
+45 大地之歌 Pather Panchali (1955)
+46 生之欲 Ikiru (1952)
+47 切腹 Harakiri (1962)
+48 乱 Ran (1985)
+49 潜行者 Stalker (1979)
+50 镜子 The Mirror (1975)
+51 安德烈·卢布廖夫 Andrei Rublev (1966)
+52 假面 Persona (1966)
+53 野草莓 Wild Strawberries (1957)
+54 四百击 The 400 Blows (1959)
+55 精疲力尽 Breathless (1960)
+56 甜蜜的生活 La Dolce Vita (1960)
+57 天堂电影院 Cinema Paradiso (1988)
+58 美丽人生 Life Is Beautiful (1997)
+59 偷自行车的人 duplicate no. Already 44. Need no duplicate.
+59 城市之光 City Lights (1931)
+60 摩登时代 Modern Times (1936)
+61 大独裁者 The Great Dictator (1940)
+62 日落大道 Sunset Boulevard (1950)
+63 彗星美人 All About Eve (1950)
+64 双重赔偿 Double Indemnity (1944)
+65 第三人 The Third Man (1949)
+66 马耳他之鹰 The Maltese Falcon (1941)
+67 西北偏北 North by Northwest (1959)
+68 后窗 Rear Window (1954)
+69 迷魂记 already at 2. Need not duplicate. Use "美人计 Notorious (1946)"? Maybe.
+69 美人计 Notorious (1946)
+70 奇爱博士 Dr. Strangelove (1964)
+71 发条橙 A Clockwork Orange (1971)
+72 全金属外壳 Full Metal Jacket (1987)
+73 猎鹿人 The Deer Hunter (1978)
+74 现代启示录 duplicate no. Already 14. Use "野战排 Platoon"? maybe no.
+74 辛德勒的名单 Schindler's List (1993)
+75 拯救大兵瑞恩 Saving Private Ryan (1999? 1998)
+76 大白鲨 Jaws (1975)
+77 E.T.外星人 E.T. the Extra-Terrestrial (1982)
+78 夺宝奇兵 Raiders of the Lost Ark (1981)
+79 回到未来 Back to the Future (1985)
+80 终结者2 Terminator 2: Judgment Day (1991)
+81 疯狂的麦克斯4 Mad Max: Fury Road (2015)
+82 银翼杀手2049? maybe not top100 consensus. Could use "妙想天开 Brazil"? no.
+82 蝙蝠侠：黑暗骑士 duplicate no.
+82 无间道 Infernal Affairs (2002)
+83 霸王别姬 Farewell My Concubine (1993)
+84 活着 To Live (1994)
+85 一一 Yi Yi (2000)
+86 牯岭街少年杀人事件 A Brighter Summer Day (1991)
+87 重庆森林 Chungking Express (1994)
+88 卧虎藏龙 Crouching Tiger, Hidden Dragon (2000)
+89 千与千寻 Spirited Away (2001)
+90 龙猫 My Neighbor Totoro (1988)
+91 幽灵公主 Princess Mononoke (1997)
+92 萤火虫之墓 Grave of the Fireflies (1988)
+93 阿基拉 Akira (1988)
+94 寄生虫 Parasite (2019)
+95 老男孩 Oldboy (2003)
+96 杀人回忆 Memories of Murder (2003)
+97 上帝之城 City of God (2002)
+98 潘神的迷宫 Pan's Labyrinth (2006)
+99 美丽心灵的永恒阳光 Eternal Sunshine of the Spotless Mind (2004)
+100 楚门的世界 The Truman Show (1998)
+
+This list has duplicates? Need check: 59 "城市之光" after 44 no duplicate; I replaced duplicate with city lights. Need ensure all unique. Count:
+1 Citizen
+2 Vertigo
+3 2001
+4 Godfather
+5 Tokyo
+6 Rules
+7 Sunrise
+8 Seven Samurai
+9 Searchers
+10 In Mood
+11 8½
+12 Psycho
+13 Singin
+14 Apocalypse
+15 Passion Joan
+16 Godfather II
+17 Rashomon
+18 Seventh Seal
+19 Lawrence
+20 Pulp
+21 Casablanca
+22 Taxi
+23 Raging Bull
+24 Goodfellas
+25 Shawshank
+26 12 Angry
+27 Star Wars
+28 Empire
+29 Blade Runner
+30 Alien
+31 Shining
+32 Silence
+33 Se7en
+34 Fight Club
+35 Forrest
+36 LOTR3
+37 Dark Knight
+38 Matrix
+39 Inception
+40 Interstellar
+41 Metropolis
+42 Potemkin
+43 M
+44 Bicycle
+45 Pather
+46 Ikiru
+47 Harakiri
+48 Ran
+49 Stalker
+50 Mirror
+51 Rublev
+52 Persona
+53 Wild Strawberries
+54 400 Blows
+55 Breathless
+56 La Dolce Vita
+57 Cinema Paradiso
+58 Life is Beautiful
+59 City Lights
+60 Modern Times
+61 Great Dictator
+62 Sunset
+63 All About Eve
+64 Double Indemnity
+65 Third Man
+66 Maltese
+67 North by Northwest
+68 Rear Window
+69 Notorious
+70 Dr Strangelove
+71 Clockwork
+72 Full Metal
+73 Deer Hunter
+74 Schindler
+75 Saving Private Ryan
+76 Jaws
+77 E.T.
+78 Raiders
+79 Back to Future
+80 T2
+81 Mad Max Fury
+82 Infernal Affairs
+83 Farewell
+84 To Live
+85 Yi Yi
+86 Brighter Summer Day
+87 Chungking
+88 Crouching
+89 Spirited Away
+90 Totoro
+91 Mononoke
+92 Grave Fireflies
+93 Akira
+94 Parasite
+95 Oldboy
+96 Memories
+97 City of God
+98 Pan's
+99 Eternal Sunshine
+100 Truman
+
+This is a good consensus/recognition list. But maybe missing "The Lord of the Rings" and "Star Wars" yes. Missing "The Social Network", "No Country", "There Will Be Blood", "Moonlight", "Whiplash", "La La Land", "The Prestige", "Memento", "Amélie", "The Lives of Others", "Come and See", "The Battle of Algiers", "Once Upon a Time in the West", "The Good, the Bad and the Ugly", "Amadeus", "One Flew Over the Cuckoo's Nest", "Apartment", "Some Like It Hot", "Graduate", "Annie Hall", "Chinatown", "Blue Velvet", "Mulholland Drive", "The Social Network". But 100 limit. Need "认可度最高" maybe more canonical than modern popular. Could adjust to include more critical consensus instead of too many modern. But current list includes lots. Need maybe mention "偏综合共识，兼顾大众认可". Good.
+
+Could also present "如果你要严格单一榜单，首推 TSPDT 2024 / Sight & Sound 2022 / IMDb Top250; 以下是综合片单." Need maybe include warning "排名不分先后" to avoid exact ranking debate. But if numbered 1-100, implies ranking. We can say "编号只为方便，不是严格名次." Good.
+
+Need perhaps provide an "获取动态版" with links? Cannot browse, but can mention names. Need maybe ask if want "按豆瓣 Top250 / IMDb Top250 / TSPDT" choose. But final can include alternatives.
+
+Need answer in Chinese. Need avoid excessive. 100 list long. Could use table? Table with 100 rows too long. Use numbered list compact. Need maybe group by decade? But numbering needed. Maybe use columns 1-50, 51-100? In text, 100 lines okay. Desired oververbosity 5; list is necessary. Maybe include note and list.
+
+Need maybe include "认可度最高" not "评分最高". Need define "认可度": "跨权威榜单出现频率 + 大众知名度 + 影史影响". Then list. Good.
+
+Need maybe mention "不同榜单差异大：Sight & Sound偏影评人/学术，IMDb/Letterboxd偏影迷，豆瓣偏中文观众；所以不存在唯一权威 Top100." Good.
+
+Need final with list. Need ensure Chinese titles correctly. Some translations:
+- The Rules of the Game = 游戏规则
+- Sunrise = 日出
+- The Searchers = 搜索者
+- 8½ = 八部半
+- The Passion of Joan of Arc = 圣女贞德蒙难记
+- Pather Panchali = 大地之歌
+- Harakiri = 切腹
+- The Mirror = 镜子
+- Andrei Rublev = 安德烈·卢布廖夫
+- Persona = 假面
+- Wild Strawberries = 野草莓
+- Breathless = 精疲力尽
+- La Dolce Vita = 甜蜜的生活
+- Double Indemnity = 双重赔偿
+- Notorious = 美人计
+- Dr. Strangelove = 奇爱博士
+- Full Metal Jacket = 全金属外壳
+- The Deer Hunter = 猎鹿人
+- Mad Max: Fury Road = 疯狂的麦克斯4：狂暴之路
+- Infernal Affairs = 无间道
+- Farewell My Concubine = 霸王别姬
+- To Live = 活着
+- Yi Yi = 一一
+- A Brighter Summer Day = 牯岭街少年杀人事件
+- Chungking Express = 重庆森林
+- Crouching Tiger = 卧虎藏龙
+- Grave of the Fireflies = 萤火虫之墓
+- Memories of Murder = 杀人回忆
+- Pan's Labyrinth = 潘神的迷宫
+- Eternal Sunshine = 美丽心灵的永恒阳光
+- The Truman Show = 楚门的世界
+
+Need maybe include original language titles with accents? fine.
+
+Potential issue: "The Shawshank Redemption" highest IMDb but not critical top. Good.
+
+Need maybe mention "Top100 认可度清单" but exact "认可度最高" not measurable. Good.
+
+Need maybe include "备选高频片" not included? Maybe no.
+
+Need maybe include "排序说明：编号仅方便查看，前20更偏影史共识，后80兼顾大众高分与跨文化知名度." Good.
+
+Need final only. Use Chinese. Need not mention unable to browse. Good.
+
+Let's compose final. Need perhaps use "综合共识版 Top 100（编号非严格名次）". Then list.
+
+Need ensure no line too long? Fine.
+
+Need maybe use "英文原名（年份）" after Chinese. Good.
+
+Need maybe state "如果你只想要一个最权威的单一榜单，我建议：TSPDT 100 / Sight & Sound 2022 影史最伟大电影 / IMDb Top250 / 豆瓣Top250." Good.
+
+Let's finalize with list. Need be careful count exactly. I can number 1-100.
+
+Need final answer in Chinese.
+Potential add "认可度" definition and caveat. Then list.
+
+Let's write. Need list in 2 columns? In Markdown, one per line is long. Could use table with 4 columns: 序号 | 片名. 100 rows big. Maybe compact with 1-100 lines. Fine.
+
+Need maybe reduce oververbosity by not explaining each. Good.
+
+Let's produce final. , prefix=null, metadata={finishReason=STOP, index=0, role=ASSISTANT, id=ced2595e-18bf-4161-8711-24dedf3f1aa0, messageType=ASSISTANT}], chatGenerationMetadata=DefaultChatGenerationMetadata[finishReason='STOP', filters=0, metadata=0]]]]
+2026-10-27 17:08:42.493 INFO  [http-nio-8080-exec-1] [requestId=a74d1e1e6eb44e6284e3813c4b35fd7f] c.z.d.s.controller.ChatController - AI 聊天处理完成，mode=deepseek，mocked=false
+2026-10-27 17:08:42.498 INFO  [http-nio-8080-exec-1] [requestId=a74d1e1e6eb44e6284e3813c4b35fd7f] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"a74d1e1e6eb44e6284e3813c4b35fd7f","controllerMethod":"ChatController#chat","elapsedMs":40327,"args":{"request":{"value":"{\"message\":\"认可度最高的top100电影清单\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"deepseek\",\"model\":\"deepseek-flash\",\"mocked\":false,\"content\":\"“认可度最高”没有唯一权威答案：影评人/学术更认 **Sight & Sound、TSPDT**，影迷更认 **IMDb、Letterboxd、豆瓣 Top250**。下面给一份**综合共识版 Top 100**：参考跨榜单出现频率、影史影响、大众知名度与评分口碑，兼顾经典与全球代表性。**编号仅便于查看，不代表严格名次。**\\n\\n1. 公民凯恩 *Citizen Kane* (1941)  \\n2. 迷魂记 *Vertigo* (1958)  \\n3. 2001太空漫游 *2001: A Space Odyssey* (1968)  \\n4. 教父 *The Godfather* (1972)  \\n5. 东京物语 *Tokyo Story* (1953)  \\n6. 游戏规则 *The Rules of the Game* (1939)  \\n7. 日出 *Sunrise: A Song of Two Humans* (1927)  \\n8. 七武士 *Seven Samurai* (1954)  \\n9. 搜索者 *The Searchers* (1956)  \\n10. 花样年华 *In the Mood for Love* (2000)  \\n11. 八部半 *8½* (1963)  \\n12. 惊魂记 *Psycho* (1960)  \\n13. 雨中曲 *Singin' in the Rain* (1952)  \\n14. 现代启示录 *Apocalypse Now* (1979)  \\n15. 圣女贞德蒙难记 *The Passion of Joan of Arc* (1928)  \\n16. 教父2 *The Godfather Part II* (1974)  \\n17. 罗生门 *Rashomon* (1950)  \\n18. 第七封印 *The Seventh Seal* (1957)  \\n19. 阿拉伯的劳伦斯 *Lawrence of Arabia* (1962)  \\n20. 低俗小说 *Pulp Fiction* (1994)  \\n21. 卡萨布兰卡 *Casablanca* (1942)  \\n22. 出租车司机 *Taxi Driver* (1976)  \\n23. 愤怒的公牛 *Raging Bull* (1980)  \\n24. 好家伙 *Goodfellas* (1990)  \\n25. 肖申克的救赎 *The Shawshank Redemption* (1994)  \\n26. 十二怒汉 *12 Angry Men* (1957)  \\n27. 星球大战 *Star Wars* (1977)  \\n28. 帝国反击战 *The Empire Strikes Back* (1980)  \\n29. 银翼杀手 *Blade Runner* (1982)  \\n30. 异形 *Alien* (1979)  \\n31. 闪灵 *The Shining* (1980)  \\n32. 沉默的羔羊 *The Silence of the Lambs* (1991)  \\n33. 七宗罪 *Se7en* (1995)  \\n34. 搏击俱乐部 *Fight Club* (1999)  \\n35. 阿甘正传 *Forrest Gump* (1994)  \\n36. 指环王3：王者无敌 *The Lord of the Rings: The Return of the King* (2003)  \\n37. 黑暗骑士 *The Dark Knight* (2008)  \\n38. 黑客帝国 *The Matrix* (1999)  \\n39. 盗梦空间 *Inception* (2010)  \\n40. 星际穿越 *Interstellar* (2014)  \\n41. 大都会 *Metropolis* (1927)  \\n42. 战舰波将金号 *Battleship Potemkin* (1925)  \\n43. M就是凶手 *M* (1931)  \\n44. 偷自行车的人 *Bicycle Thieves* (1948)  \\n45. 大地之歌 *Pather Panchali* (1955)  \\n46. 生之欲 *Ikiru* (1952)  \\n47. 切腹 *Harakiri* (1962)  \\n48. 乱 *Ran* (1985)  \\n49. 潜行者 *Stalker* (1979)  \\n50. 镜子 *The Mirror* (1975)  \\n51. 安德烈·...<truncated,originLength=4078>","resultTruncated":true}
+2026-10-27 17:08:42.511 INFO  [http-nio-8080-exec-1] [requestId=a74d1e1e6eb44e6284e3813c4b35fd7f] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"a74d1e1e6eb44e6284e3813c4b35fd7f","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"0:0:0:0:0:0:0:1","headers":{"cache-control":"no-cache","postman-token":"f215d5f5-8f81-46f1-ac9b-399e9494ae56","content-type":"application/json","content-length":"57","host":"localhost:8080","user-agent":"PostmanRuntime/2.12.2","accept":"*/*","accept-encoding":"gzip, deflate, br","connection":"keep-alive"},"requestBody":{"contentType":"application/json","size":57,"body":"{\"message\":\"认可度最高的top100电影清单\"}","truncated":false}}
+2026-10-27 17:08:42.513 INFO  [http-nio-8080-exec-1] [requestId=a74d1e1e6eb44e6284e3813c4b35fd7f] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"a74d1e1e6eb44e6284e3813c4b35fd7f","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":40477,"responseBody":{"contentType":"application/json","size":5192,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"deepseek\",\"model\":\"deepseek-flash\",\"mocked\":false,\"content\":\"“认可度最高”没有唯一权威答案：影评人/学术更认 **Sight & Sound、TSPDT**，影迷更认 **IMDb、Letterboxd、豆瓣 Top250**。下面给一份**综合共识版 Top 100**：参考跨榜单出现频率、影史影响、大众知名度与评分口碑，兼顾经典与全球代表性。**编号仅便于查看，不代表严格名次。**\\n\\n1. 公民凯恩 *Citizen Kane* (1941)  \\n2. 迷魂记 *Vertigo* (1958)  \\n3. 2001太空漫游 *2001: A Space Odyssey* (1968)  \\n4. 教父 *The Godfather* (1972)  \\n5. 东京物语 *Tokyo Story* (1953)  \\n6. 游戏规则 *The Rules of the Game* (1939)  \\n7. 日出 *Sunrise: A Song of Two Humans* (1927)  \\n8. 七武士 *Seven Samurai* (1954)  \\n9. 搜索者 *The Searchers* (1956)  \\n10. 花样年华 *In the Mood for Love* (2000)  \\n11. 八部半 *8½* (1963)  \\n12. 惊魂记 *Psycho* (1960)  \\n13. 雨中曲 *Singin' in the Rain* (1952)  \\n14. 现代启示录 *Apocalypse Now* (1979)  \\n15. 圣女贞德蒙难记 *The Passion of Joan of Arc* (1928)  \\n16. 教父2 *The Godfather Part II* (1974)  \\n17. 罗生门 *Rashomon* (1950)  \\n18. 第七封印 *The Seventh Seal* (1957)  \\n19. 阿拉伯的劳伦斯 *Lawrence of Arabia* (1962)  \\n20. 低俗小说 *Pulp Fiction* (1994)  \\n21. 卡萨布兰卡 *Casablanca* (1942)  \\n22. 出租车司机 *Taxi Driver* (1976)  \\n23. 愤怒的公牛 *Raging Bull* (1980)  \\n24. 好家伙 *Goodfellas* (1990)  \\n25. 肖申克的救赎 *The Shawshank Redemption* (1994)  \\n26. 十二怒汉 *12 Angry Men* (1957)  \\n27. 星球大战 *Star Wars* (1977)  \\n28. 帝国反击战 *The Empire Strikes Back* (1980)  \\n29. 银翼杀手 *Blade Runner* (1982)  \\n30. 异形 *Alien* (1979)  \\n31. 闪灵 *The Shining* (1980)  \\n32. 沉默的羔羊 *The Silence of the Lambs* (1991)  \\n33. 七宗罪 *Se7en* (1995)  \\n34. 搏击俱乐部 *Fight Club* (1999)  \\n35. 阿甘正传 *Forrest Gump* (1994)  \\n36. 指环王3：王者无敌 *The Lord of the Rings: The Return of the King* (2003)  \\n37. 黑暗骑士 *The Dark Knight* (2008)  \\n38. 黑客帝国 *The Matrix* (1999)  \\n39. 盗梦空间 *Inception* (2010)  \\n40. 星际穿越 *Interstellar* (2014)  \\n41. 大都会 *Metropolis* (1927)  \\n42. 战舰波将金号 *Battleship Potemkin* (1925)  \\n43. M就是凶手 *M* (1931)  \\n44. 偷自行车的人 *Bicycle Thieves* (1948)  \\n45. 大地之歌 *Pather Panchali* (1955)  \\n46. 生之欲 *Ikiru* (1952)  \\n47. 切腹 *Harakiri* (1962)  \\n48. 乱 *Ran* (1985)  \\n49. 潜行者 *Stalker* (1979)  \\n50. 镜子 *The Mirror* (1975)  \\n51. 安德烈·...<truncated,originLength=4078>","truncated":true}}
+2026-10-27 17:14:41.114 INFO  [SpringApplicationShutdownHook] [requestId=] o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-27 17:14:41.130 INFO  [tomcat-shutdown] [requestId=] o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
