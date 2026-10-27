@@ -25,6 +25,15 @@
         </dependency>
 
         <!--
+            AOP：D13 新增，提供 spring-aop + AspectJ Weaver，支撑 @Aspect 切面记录
+            Controller 方法入参/返回/耗时/异常。版本由 spring-boot-starter-parent 统一管理，不写 <version>。
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!--
             Spring AI DeepSeek 专用 Starter（D01 核心）：
             - 版本由父 POM import 的 spring-ai-bom:1.1.8 统一管理，此处不写 <version>；
             - 自动装配 DeepSeekChatModel（实现 ChatModel），读取 spring.ai.deepseek.* 属性；

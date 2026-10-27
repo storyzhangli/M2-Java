@@ -37,3 +37,15 @@ app:
     mode: ${AI_MODE:mock}
     # 入参消息可调整长度上限，可用环境变量 AI_CHAT_MAX_LENGTH 覆盖。
     max-message-length: ${AI_CHAT_MAX_LENGTH:2000}
+  # D13 新增：AOP 请求/响应访问日志。敏感字段/头脱敏关键字默认值在 AccessLogProperties 中维护。
+  access-log:
+    # 总开关，可用环境变量 ACCESS_LOG_ENABLED=false 一键关闭（关闭后过滤器与切面均不装配）。
+    enabled: ${ACCESS_LOG_ENABLED:true}
+    # 承载 requestId 的请求/响应头名称。
+    request-id-header: X-Request-Id
+    # 单段正文最大字符数，超限截断并在日志中标注 truncated=true。
+    max-payload-length: 2048
+    # 不打印访问日志的路径（Ant 风格），requestId 仍正常透传。
+    exclude-paths:
+      - /error
+      - /favicon.ico
