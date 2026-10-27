@@ -3,6 +3,7 @@ package com.zl.d01.springai.service;
 import com.zl.d01.springai.common.AiConfigurationException;
 import com.zl.d01.springai.config.AiConstants;
 import com.zl.d01.springai.dto.ChatReplyResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -22,6 +23,7 @@ import org.springframework.util.StringUtils;
  * <p>安全约束：每次调用前先校验密钥，缺失/空白/占位密钥一律抛出
  * {@link AiConfigurationException}，<b>在发起外部请求之前快速失败</b>；本类不打印、不回显密钥。</p>
  */
+@Slf4j
 @Service
 @ConditionalOnProperty(
         prefix = "app.ai",
@@ -51,7 +53,9 @@ public class DeepSeekAiChatService implements AiChatService {
         validateCredential();
 
         Prompt prompt = new Prompt(new UserMessage(message));
+        log.info("接收的prompt消息: {}", prompt);
         ChatResponse response = this.chatModel.call(prompt);
+        log.info("响应消息: {}",response.toString());
         String content = response.getResult().getOutput().getText();
 
         return new ChatReplyResponse(
