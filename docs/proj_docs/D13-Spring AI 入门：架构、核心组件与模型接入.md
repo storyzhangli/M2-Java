@@ -119,7 +119,7 @@ graph TD
 
 ### 2.3 自动配置与依赖注入原理
 
-1. **Starter 机制**：引入 `spring-ai-starter-model-openai` 依赖后，Spring Boot 自动扫描并加载对应自动配置类。
+1. **Starter 机制**：引入`spring-ai-starter-model-deepseek` (`spring-ai-starter-model-openai`可接入openai) 依赖后，Spring Boot 自动扫描并加载对应自动配置类。
 2. **BOM 版本管理**：`spring-ai-bom` 统一管理所有 Spring AI 组件版本，避免版本冲突。
 3. **Bean 创建流程**：
    - 配置属性（如 `spring.ai.openai.api-key`）驱动配置
@@ -184,7 +184,7 @@ public class ChatController {
 
 #### 边界说明
 
-- `ChatClient` 是有状态的，每次 `build()` 生成新实例，建议复用 Builder
+- ChatClient 本身是不可变的请求执行器，默认无状态、线程安全，可单例复用； 每次 `builder.build()` 会生成独立的新实例，批量创建多实例时建议复用 Builder 减少重复配置； 仅当集成 ChatMemory 记忆组件后，对话链路才会表现出状态性，状态由记忆组件承载。
 - 默认单例 `ChatClient.Builder` 是原型 Bean，每次调用 build 生成独立实例
 - 流式调用需要响应式栈支持，Servlet 栈只能完整返回后输出
 
@@ -401,7 +401,7 @@ DeepSeek 提供与 OpenAI 兼容的 API 格式，因此使用 Spring AI 官方�
 spring:
   ai:
     openai:
-      base-url: [https://api.deepseek.com](https://api.deepseek.com)  # DeepSeek API 地址
+      base-url: https://api.deepseek.com # DeepSeek API 地址
       api-key: ${DEEPSEEK_API_KEY}  # 从环境变量注入密钥，禁止硬编码
       chat:
         options:
@@ -427,7 +427,7 @@ spring:
 ```
 package com.example.ai.controller;
 
-import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.client;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
