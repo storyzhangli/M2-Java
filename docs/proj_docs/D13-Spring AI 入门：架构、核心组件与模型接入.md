@@ -27,12 +27,12 @@ Spring AI 是 Spring 生态官方提供的 AI 应用开发框架，对主流大�
 
 ### 1.3 生态角色与能力边界
 
-| 层级             | 职责                           | 代表组件                           |
-| ---------------- | ------------------------------ | ---------------------------------- |
-| 业务应用层       | 业务逻辑、接口、编排           | Controller、Service、业务流程      |
-| Spring AI 抽象层 | 统一模型调用接口、通用扩展机制 | ChatClient、ChatModel、Advisor     |
-| 模型适配层       | 具体厂商协议转换、参数映射     | OpenAiChatModel、DeepSeek 兼容适配 |
-| 模型服务层       | 大语言模型推理能力             | DeepSeek、OpenAI 等第三方服务      |
+| 层级             | 职责                           | 代表组件                                    |
+| ---------------- | ------------------------------ | ------------------------------------------- |
+| 业务应用层       | 业务逻辑、接口、编排           | Controller、Service、业务流程               |
+| Spring AI 抽象层 | 统一模型调用接口、通用扩展机制 | ChatClient、ChatModel、Advisor              |
+| 模型适配层       | 具体厂商协议转换、参数映射     | OpenAiChatModel、DeepSeekChatModel 兼容适配 |
+| 模型服务层       | 大语言模型推理能力             | DeepSeek、OpenAI 等第三方服务               |
 
 >
 > **关键边界**：Spring AI 是调用框架，不是模型训练框架；它不生产模型，不保证回答准确性，不具备自主推理能力，所有输出依赖底层模型服务。
@@ -67,7 +67,7 @@ flowchart TD
     A[业务层<br/>Controller/Service] --> B[Spring AI 调用入口<br/>ChatClient]
     B --> C[扩展处理链<br/>Advisor 链]
     C --> D[模型抽象层<br/>ChatModel 接口]
-    D --> E[厂商适配层<br/>OpenAiChatModel]
+    D --> E[厂商适配层<br/>DeepSeekChatModel]
     E --> F[Spring Boot 自动配置<br/>Starter + 配置属性]
     E --> G[HTTP 客户端<br/>WebClient/Reactor]
     G --> H[外部模型服务<br/>DeepSeek API]
@@ -351,16 +351,20 @@ int tokenUsage = response.getMetadata().getUsage().getTotalTokens();
 
 ### 5.1 接入方案说明
 
-DeepSeek 提供与 OpenAI 兼容的 API 格式，因此使用 Spring AI 官方的 `spring-ai-spring-ai-starter-model-deepseek` 接入，通过修改 `base-url` 指向 DeepSeek 服务地址。
+DeepSeek作为接入主方案，因此使用 Spring AI 官方的 `spring-ai-starter-model-deepseek` 接入，通过修改 `base-url` 指向 DeepSeek 服务地址。
 
 #### 方案依据
 
 - Spring AI 1.1.x 的 DeepSeek 实现成熟稳定，兼容性好
-- DeepSeek API 完全兼容 OpenAI 接口协议，参数、响应格式对齐
-- 无需额外第三方依赖，官方支持，风险低
+
+《DeepSeek API 官方文档》：[https://api-docs.deepseek.com/zh-cn/](https://api-docs.deepseek.com/zh-cn/)
+
+
+
+OpenAI作为可选方案
 
 《OpenAI Chat | OpenAI 模型接入官方文档》：[https://docs.spring.io/spring-ai/reference/1.1/api/chat/openai-chat.html](https://docs.spring.io/spring-ai/reference/1.1/api/chat/openai-chat.html)
-《DeepSeek API 官方文档》：[https://api-docs.deepseek.com/zh-cn/](https://api-docs.deepseek.com/zh-cn/)
+
 
 ### 5.2 Maven 依赖配置
 
@@ -381,10 +385,10 @@ DeepSeek 提供与 OpenAI 兼容的 API 格式，因此使用 Spring AI 官方�
 </dependencyManagement>
 
 <dependencies>
-    <!-- OpenAI 兼容模型 Starter -->
+    <!-- DeepSeek 兼容模型 Starter -->
     <dependency>
         <groupId>org.springframework.ai</groupId>
-        <artifactId>spring-ai-spring-ai-starter-model-deepseek</artifactId>
+        <artifactId>spring-ai-starter-model-deepseek</artifactId>
     </dependency>
 </dependencies>
 ```
