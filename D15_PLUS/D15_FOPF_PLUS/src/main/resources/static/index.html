@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D15 角色对话与 Prompt 模板演示</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<main class="chat-shell">
+    <header class="chat-header">
+        <div>
+            <h1>D15 双角色流式对话（SSE）</h1>
+            <p class="sub">客服 / 编程角色由服务端 Prompt 模板驱动 · 会话按角色隔离 · 纯文本安全渲染</p>
+        </div>
+        <div class="header-actions">
+            <a class="nav-link" href="/templates.html">模板管理</a>
+            <span id="modeBadge" class="badge">模式检测中…</span>
+            <button id="newChatBtn" type="button" class="btn btn-ghost" title="清空当前页面并重置会话">新对话</button>
+        </div>
+    </header>
+
+    <div class="role-bar">
+        <label for="roleSelect">对话角色：</label>
+        <select id="roleSelect" title="角色由服务端模板校验，切换角色将重置会话">
+            <option value="">通用模式（不带角色，旧链路）</option>
+        </select>
+        <span id="sessionTip" class="tip-line">尚未建立会话</span>
+    </div>
+
+    <section id="messageList" class="message-list" aria-live="polite">
+        <div class="empty-tip" id="emptyTip">还没有对话，在下方选择角色并输入问题后点击“发送”。</div>
+    </section>
+
+    <footer class="chat-input-bar">
+        <div id="statusLine" class="status-line" role="status" aria-live="polite">就绪</div>
+        <div class="input-row">
+            <textarea id="messageInput" rows="2" maxlength="2000"
+                      placeholder="输入问题，Enter 发送，Shift+Enter 换行"></textarea>
+            <div class="btn-column">
+                <button id="sendBtn" type="button" class="btn btn-primary">发送</button>
+                <button id="stopBtn" type="button" class="btn btn-danger" disabled>停止</button>
+            </div>
+        </div>
+    </footer>
+</main>
+<!-- SSE 分帧解析器（无依赖，兼容 LF/CR/CRLF），须先于业务脚本加载 -->
+<script src="/js/sse-parser.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
