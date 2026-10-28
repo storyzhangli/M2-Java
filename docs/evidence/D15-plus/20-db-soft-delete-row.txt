@@ -1,0 +1,2 @@
+template_id	name	version	status	deleted
+ut_verify_tpl	真机验证模板-改	2	ENABLED	1

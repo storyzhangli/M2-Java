@@ -7,7 +7,6 @@ import com.zl.d15.prompt.model.TemplateStatus;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Repository;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -18,14 +17,17 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 基于 {@link ConcurrentHashMap} 的内存模板仓储。
+ * 基于 {@link ConcurrentHashMap} 的内存模板仓储（D15 初代实现，D15_PLUS 已停用）。
  *
- * <p>启动时从 classpath 的 {@code prompt-templates/seed-templates.json} 加载内置种子模板，
- * 不依赖数据库或任何外部存储。运行期的增删改停留在内存，应用重启后恢复为种子数据，
- * 这是当前无持久化模块下的明确取舍（见 D15 技术文档“持久化方案”章节）。</p>
+ * <p><b>历史实现说明：</b>D15 无数据库依赖时，本类在启动时从 classpath 的
+ * {@code prompt-templates/seed-templates.json} 加载种子并以内存作为权威存储，
+ * 重启会丢失全部运行期修改。D15_PLUS 起权威存储迁移至 MySQL
+ * （见 {@link MybatisPromptTemplateRepository}），种子初始化改由
+ * {@code PromptSeedInitializer} 幂等执行，因此本类不再注册为 Spring Bean，
+ * 仅保留代码作为内存版方案的可审查参考，禁止在新代码中注入使用。</p>
  */
 @Slf4j
-@Repository
+@Deprecated
 public class InMemoryPromptTemplateRepository implements PromptTemplateRepository {
 
     /** 种子模板资源路径，随应用一起打包。 */

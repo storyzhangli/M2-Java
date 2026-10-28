@@ -1,0 +1,3 @@
+2026-10-28 22:55:00.914 [34mINFO [0;39m [main] [requestId=] [36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m - Tomcat started on port 8080 (http) with context path '/'
+2026-10-28 22:55:00.932 [34mINFO [0;39m [main] [requestId=] [36mcom.zl.d15.D15SpringAiApplication[0;39m - Started D15SpringAiApplication in 6.426 seconds (process running for 7.194)
+2026-10-28 22:55:01.513 [34mINFO [0;39m [main] [requestId=] [36mc.z.d15.prompt.PromptSeedInitializer[0;39m - Prompt 种子初始化完成，新增 6 条，跳过（数据库已存在）0 条，失败 0 条，资源=prompt-templates/seed-templates.json

@@ -2,6 +2,7 @@ package com.zl.d15.springai.stream;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zl.d15.springai.support.AbstractPersistenceCleanupTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * 验证 start 帧携带会话/模板溯源、delta/complete 顺序、第二轮历史可见以及模板管理静态页可访问。
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RoleChatStreamIntegrationTest {
+class RoleChatStreamIntegrationTest extends AbstractPersistenceCleanupTest {
 
     private static final String STREAM_URL = "/api/v1/ai/chat/stream";
 

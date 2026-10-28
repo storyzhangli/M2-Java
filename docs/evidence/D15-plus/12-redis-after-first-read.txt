@@ -1,0 +1,3 @@
+KEY=1
+TTL=1799
+TYPE=string

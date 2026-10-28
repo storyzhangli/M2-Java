@@ -5,6 +5,7 @@ import com.zl.d15.conversation.RoleConversationService;
 import com.zl.d15.dto.ChatRequest;
 import com.zl.d15.prompt.PromptTemplateService;
 import com.zl.d15.service.ChatInvocation;
+import com.zl.d15.springai.support.AbstractPersistenceCleanupTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,10 +17,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * 双角色多轮会话编排测试：系统提示词与用户消息分离、历史累积、跨角色隔离、失败回滚与变量注入边界。
- * 全程使用内存仓库与 Mock 模型，不触达外网。
+ * 全程使用 Mock 模型，不触达外网；会话真实写入 Redis，跨用例清理由
+ * {@link AbstractPersistenceCleanupTest} 统一负责。
  */
 @SpringBootTest
-class RoleConversationServiceTest {
+class RoleConversationServiceTest extends AbstractPersistenceCleanupTest {
 
     @Autowired
     private RoleConversationService roleConversationService;

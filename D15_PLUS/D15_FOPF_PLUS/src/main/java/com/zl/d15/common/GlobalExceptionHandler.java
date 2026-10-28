@@ -3,6 +3,7 @@ package com.zl.d15.common;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.retry.NonTransientAiException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ai.retry.TransientAiException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -53,6 +54,16 @@ public class GlobalExceptionHandler {
         }
         log.warn("请求参数异常: {}", detail);
         return Result.fail(ResultCode.PARAM_INVALID.getCode(), detail);
+    }
+
+    /**
+     * 数据库完整性冲突（如 template_id 唯一约束在并发创建时兜底）。
+     * 对外只给稳定业务提示，SQL 状态与约束名仅写服务端日志，不回显数据库细节。
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public Result<Void> handleDataIntegrity(DataIntegrityViolationException ex) {
+        log.warn("数据库完整性约束冲突，异常类型: {}", ex.getClass().getSimpleName());
+        return Result.fail(ResultCode.PARAM_INVALID.getCode(), "数据冲突或唯一约束校验失败，请检查业务标识是否重复");
     }
 
     /**

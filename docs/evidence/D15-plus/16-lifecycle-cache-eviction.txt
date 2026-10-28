@@ -1,0 +1,85 @@
+--- create response ---
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "templateId": "ut_verify_tpl",
+    "name": "真机验证模板",
+    "scene": "summarization",
+    "description": "d15p verify",
+    "content": "总结：{source_text}",
+    "variables": [
+      {
+        "name": "source_text",
+        "required": true,
+        "description": "原文",
+        "defaultValue": null
+      }
+    ],
+    "version": 1,
+    "status": "ENABLED",
+    "createdAt": "2026-10-28T22:56:48.3584893",
+    "updatedAt": "2026-10-28T22:56:48.3584893"
+  }
+}
+after create+read: EXISTS=1
+--- update response ---
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "templateId": "ut_verify_tpl",
+    "name": "真机验证模板-改",
+    "scene": "summarization",
+    "description": "d15p verify",
+    "content": "更新总结：{source_text}",
+    "variables": [
+      {
+        "name": "source_text",
+        "required": true,
+        "description": "原文",
+        "defaultValue": null
+      }
+    ],
+    "version": 2,
+    "status": "ENABLED",
+    "createdAt": "2026-10-28T22:56:48",
+    "updatedAt": "2026-10-28T22:56:48.4914307"
+  }
+}
+after update: EXISTS=0 (expect 0 evicted)
+--- re-read response (recovered from MySQL) ---
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "templateId": "ut_verify_tpl",
+    "name": "真机验证模板-改",
+    "scene": "summarization",
+    "description": "d15p verify",
+    "content": "更新总结：{source_text}",
+    "variables": [
+      {
+        "name": "source_text",
+        "required": true,
+        "description": "原文",
+        "defaultValue": null
+      }
+    ],
+    "version": 2,
+    "status": "ENABLED",
+    "createdAt": "2026-10-28T22:56:48",
+    "updatedAt": "2026-10-28T22:56:48"
+  }
+}
+after re-read: EXISTS=1 TTL=1800 (expect rebuilt from MySQL)
+--- delete response ---
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "deleted": "true",
+    "templateId": "ut_verify_tpl"
+  }
+}
+after delete: EXISTS=0 (expect 0)

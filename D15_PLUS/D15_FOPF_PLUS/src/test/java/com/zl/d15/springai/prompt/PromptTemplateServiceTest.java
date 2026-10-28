@@ -7,6 +7,7 @@ import com.zl.d15.prompt.dto.PromptTemplateView;
 import com.zl.d15.prompt.model.PromptTemplateEntity;
 import com.zl.d15.prompt.model.TemplateStatus;
 import com.zl.d15.prompt.model.TemplateVariable;
+import com.zl.d15.springai.support.AbstractPersistenceCleanupTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,11 +21,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * Prompt 模板领域服务测试：覆盖种子加载、生命周期、变量/占位符校验、ST4 字面大括号转义与渲染规则。
  *
- * <p>使用完整 Spring 上下文（真实内存仓库 + 种子 JSON），写操作尽量作用于测试自建模板，
+ * <p>使用完整 Spring 上下文（真实 MySQL 仓库 + Redis 缓存 + 幂等种子初始化），写操作作用于
+ * ut_ 前缀的测试自建模板，跨用例数据清理由 {@link AbstractPersistenceCleanupTest} 统一负责；
  * 必须改动种子状态的用例在 finally 中恢复，避免污染共享上下文里的其他测试。</p>
  */
 @SpringBootTest
-class PromptTemplateServiceTest {
+class PromptTemplateServiceTest extends AbstractPersistenceCleanupTest {
 
     @Autowired
     private PromptTemplateService service;

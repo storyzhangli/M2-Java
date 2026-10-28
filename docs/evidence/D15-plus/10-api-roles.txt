@@ -1,0 +1,26 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": [
+    {
+      "templateId": "customer_service",
+      "name": "客服对话助手",
+      "scene": "customer_service",
+      "description": "礼貌、聚焦问题的客户服务角色，基于用户提供的信息作答，不虚构订单与政策结果。",
+      "version": 1,
+      "status": "ENABLED",
+      "variableCount": 1,
+      "updatedAt": "2026-10-28T22:55:01"
+    },
+    {
+      "templateId": "programming",
+      "name": "编程技术助手",
+      "scene": "programming",
+      "description": "面向 Java 后端与 Spring AI 开发的编程顾问，强调依据真实代码与版本给建议，不虚构 API。",
+      "version": 1,
+      "status": "ENABLED",
+      "variableCount": 1,
+      "updatedAt": "2026-10-28T22:55:01"
+    }
+  ]
+}

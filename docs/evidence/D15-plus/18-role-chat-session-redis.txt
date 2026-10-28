@@ -1,0 +1,36 @@
+--- first turn ---
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "sessionId": "c9f7507ece1547da814497b0dcee0e26",
+    "scene": "customer_service",
+    "templateId": "customer_service",
+    "templateVersion": 1,
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=487，历史消息条数=0，系统提示词首行=你是一名专业的在线客服代表，请严格遵守以下服务规则：；已收到问题：「我的退款什么时候到账」。"
+  }
+}
+--- second turn (same session) ---
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "sessionId": "c9f7507ece1547da814497b0dcee0e26",
+    "scene": "customer_service",
+    "templateId": "customer_service",
+    "templateVersion": 1,
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=488，历史消息条数=2，系统提示词首行=你是一名专业的在线客服代表，请严格遵守以下服务规则：；已收到问题：「再问一下运费谁承担」。"
+  }
+}
+--- redis session ---
+conv key EXISTS=1
+TTL=1800
+TYPE=string
+--- raw payload (first 1200 chars) ---
+{"sessionId":"c9f7507ece1547da814497b0dcee0e26","scene":"customer_service","templateId":"customer_service","templateVersion":1,"messages":[{"role":"user","content":"我的退款什么时候到账","createdAt":"2026-10-28T22:57:12.0018307"},{"role":"assistant","content":"[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=487，历史消息条数=0，系统提示词首行=你是一名专业的在线客服代表，请严格遵守以下服务规则：；已收到问题：「我的退款什么时候到账」。","createdAt":"2026-10-28T22:57:12.0109699"},{"role":"user","content":"再问一下运费谁承担","createdAt":"2026-10-28T22:57:12.0495464"},{"role":"assistant","content":"[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=488，历史消息条数=2，系统提示词首行=你是一名专业的在线客服代表，请严格遵守以下服务规则：；已收到问题：「再问一下运费谁承担」。","createdAt":"2026-10-28T22:57:12.0525675"}],"createdAt":"2026-10-28T22:57:11.9966739","updatedAt":"2026-10-28T22:57:12.0535759"}

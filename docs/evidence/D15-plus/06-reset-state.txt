@@ -1,0 +1,5 @@
+table rows after reset:
+cnt
+0
+redis d15f keys after reset: 0
+True

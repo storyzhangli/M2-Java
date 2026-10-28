@@ -1,0 +1,15 @@
+conv key EXISTS=1 after app restart
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "sessionId": "c9f7507ece1547da814497b0dcee0e26",
+    "scene": "customer_service",
+    "templateId": "customer_service",
+    "templateVersion": 1,
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=488，历史消息条数=4，系统提示词首行=你是一名专业的在线客服代表，请严格遵守以下服务规则：；已收到问题：「重启后继续追问」。"
+  }
+}

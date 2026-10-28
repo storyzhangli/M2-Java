@@ -2,6 +2,7 @@ package com.zl.d15;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 /**
  * D01 Spring AI 初始化模块启动类。
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * {@code DEEPSEEK_API_KEY}，无需修改或重新提交源代码。</p>
  */
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class D15SpringAiApplication {
 
     public static void main(String[] args) {

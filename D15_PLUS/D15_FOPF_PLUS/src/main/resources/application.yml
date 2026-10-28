@@ -8,20 +8,21 @@ server:
 spring:
   application:
     name: D01_SpringAI_init
-  # MySQL 配置保持现有内容
+  # MySQL：D15_PLUS 起作为 Prompt 模板的权威持久化存储。
+  # 凭据支持环境变量注入（MYSQL_USER/MYSQL_PASSWORD），冒号后仅为本机开发默认值，生产环境必须通过环境变量覆盖。
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/ai_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/ai_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123456}
 
-  # Spring Boot 3.x Redis 连接配置
+  # Spring Boot 3.x Redis 连接配置：模板读缓存 + 多轮会话短期存储。
   data:
     redis:
-      host: 127.0.0.1
-      port: 6379
-      password: ""
-      database: 0
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
       timeout: 3s
 
   # --------------------------------------------------------------------------
@@ -44,6 +45,18 @@ spring:
           temperature: 0.7
 
 # --------------------------------------------------------------------------
+# MyBatis-Plus 3.5.x 配置（D15_PLUS 新增）
+# --------------------------------------------------------------------------
+mybatis-plus:
+  configuration:
+    # 下划线列名自动映射驼峰字段
+    map-underscore-to-camel-case: true
+    # 开发期打印 SQL 便于排查，生产环境可通过环境覆盖为 warn
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    banner: false
+
+# --------------------------------------------------------------------------
 # D01 应用自定义开关（与 spring.ai.* 官方前缀分离）
 # --------------------------------------------------------------------------
 app:
@@ -54,6 +67,21 @@ app:
     max-message-length: ${AI_CHAT_MAX_LENGTH:2000}
     # D14 新增：SSE 流式连接服务端超时（毫秒），超时取消上游订阅并关闭连接，可用 AI_STREAM_TIMEOUT_MS 覆盖。
     stream-timeout-ms: ${AI_STREAM_TIMEOUT_MS:60000}
+    # D15_PLUS 新增：Prompt 模板 Redis 缓存（cache-aside，MySQL 始终为权威存储）。
+    prompt:
+      cache:
+        # 关闭后读请求全部直接回源 MySQL，写请求不再执行缓存失效
+        enabled: ${PROMPT_CACHE_ENABLED:true}
+        key-prefix: ${PROMPT_CACHE_KEY_PREFIX:d15f:prompt:tpl:}
+        null-key-suffix: ":null"
+        # 正常副本 TTL 30 分钟，命中滑动续期；空值标记 60 秒，抑制缓存穿透
+        ttl-seconds: ${PROMPT_CACHE_TTL_SECONDS:1800}
+        null-ttl-seconds: ${PROMPT_CACHE_NULL_TTL_SECONDS:60}
+    # D15_PLUS 新增：多轮会话 Redis 短期存储，滑动 TTL，到期自动回收。
+    conversation:
+      redis:
+        key-prefix: ${CONV_KEY_PREFIX:d15f:conv:}
+        ttl-seconds: ${CONV_TTL_SECONDS:1800}
   # D13 新增：AOP 请求/响应访问日志。敏感字段/头脱敏关键字默认值在 AccessLogProperties 中维护。
   access-log:
     # 总开关，可用环境变量 ACCESS_LOG_ENABLED=false 一键关闭（关闭后过滤器与切面均不装配）。

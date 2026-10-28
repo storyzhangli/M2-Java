@@ -1,0 +1,2 @@
+2026-10-28 22:57:58.146 [34mINFO [0;39m [main] [requestId=] [36mcom.zl.d15.D15SpringAiApplication[0;39m - Started D15SpringAiApplication in 6.431 seconds (process running for 7.108)
+2026-10-28 22:57:58.731 [34mINFO [0;39m [main] [requestId=] [36mc.z.d15.prompt.PromptSeedInitializer[0;39m - Prompt 种子初始化完成，新增 0 条，跳过（数据库已存在）6 条，失败 0 条，资源=prompt-templates/seed-templates.json

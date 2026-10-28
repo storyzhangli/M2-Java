@@ -1,0 +1,7 @@
+template_id	name	scene	version	status	deleted	created_at
+customer_service	客服对话助手	customer_service	1	ENABLED	0	2026-10-28 22:55:01
+programming	编程技术助手	programming	1	ENABLED	0	2026-10-28 22:55:01
+technical_explanation	技术知识解释	technical_explanation	1	ENABLED	0	2026-10-28 22:55:01
+code_review	代码审查	code_review	1	ENABLED	0	2026-10-28 22:55:01
+summarization	文本总结	summarization	1	ENABLED	0	2026-10-28 22:55:01
+information_extraction	结构化信息提取	information_extraction	1	ENABLED	0	2026-10-28 22:55:01
