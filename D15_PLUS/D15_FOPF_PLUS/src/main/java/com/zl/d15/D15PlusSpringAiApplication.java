@@ -13,10 +13,10 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
  */
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class D15SpringAiApplication {
+public class D15PlusSpringAiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(D15SpringAiApplication.class, args);
+        SpringApplication.run(D15PlusSpringAiApplication.class, args);
         System.out.println("====== hello Spring AI (日常线) ======");
     }
 }

@@ -37,7 +37,7 @@
 [INFO] -------------------------------------------------------
 [INFO] Running com.zl.d15.springai.ApplicationContextLoadTest
 22:50:25.200 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.zl.d15.springai.ApplicationContextLoadTest]: ApplicationContextLoadTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-22:50:25.378 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.ApplicationContextLoadTest
+22:50:25.378 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.ApplicationContextLoadTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -70,7 +70,7 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 [INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.959 s -- in com.zl.d15.springai.ApplicationContextLoadTest
 [INFO] Running com.zl.d15.springai.ChatLengthValidationTest
 2026-10-28 22:50:32.989 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.ChatLengthValidationTest]: ChatLengthValidationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:33.000 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.ChatLengthValidationTest
+2026-10-28 22:50:33.000 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.ChatLengthValidationTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -108,11 +108,11 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.573 s -- in com.zl.d15.springai.ChatLengthValidationTest
 [INFO] Running com.zl.d15.springai.conversation.RedisConversationMemoryTest
 2026-10-28 22:50:34.564 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.conversation.RedisConversationMemoryTest]: RedisConversationMemoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:34.615 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.conversation.RedisConversationMemoryTest
+2026-10-28 22:50:34.615 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.conversation.RedisConversationMemoryTest
 [INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.615 s -- in com.zl.d15.springai.conversation.RedisConversationMemoryTest
 [INFO] Running com.zl.d15.springai.conversation.RoleConversationServiceTest
 2026-10-28 22:50:35.181 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.conversation.RoleConversationServiceTest]: RoleConversationServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:35.182 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.conversation.RoleConversationServiceTest
+2026-10-28 22:50:35.182 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.conversation.RoleConversationServiceTest
 2026-10-28 22:50:35.245 INFO  [main] [requestId=] c.z.d.c.RoleConversationService - ��ɫ�Ի��Ѿ�����sessionId=c0117719a1f3451ba4e99576eda457d8��scene=programming��templateId=programming��version=1����ʷ����=0
 2026-10-28 22:50:35.347 INFO  [main] [requestId=] c.z.d15.prompt.PromptTemplateService - Prompt ģ��״̬�����templateId=programming��status=DISABLED
 2026-10-28 22:50:35.368 INFO  [main] [requestId=] c.z.d15.prompt.PromptTemplateService - Prompt ģ��״̬�����templateId=programming��status=ENABLED
@@ -124,7 +124,7 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 [INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.275 s -- in com.zl.d15.springai.conversation.RoleConversationServiceTest
 [INFO] Running com.zl.d15.springai.DeepSeekKeyProtectionTest
 2026-10-28 22:50:35.460 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.DeepSeekKeyProtectionTest]: DeepSeekKeyProtectionTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:35.467 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.DeepSeekKeyProtectionTest
+2026-10-28 22:50:35.467 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.DeepSeekKeyProtectionTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -160,7 +160,7 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 [WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 s -- in com.zl.d15.springai.DeepSeekLiveSmokeTest
 [INFO] Running com.zl.d15.springai.logging.AccessLogIntegrationTest
 2026-10-28 22:50:37.977 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.logging.AccessLogIntegrationTest]: AccessLogIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:38.071 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.logging.AccessLogIntegrationTest
+2026-10-28 22:50:38.071 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.logging.AccessLogIntegrationTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -209,7 +209,7 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 [INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s -- in com.zl.d15.springai.logging.AccessLogMaskingTest
 [INFO] Running com.zl.d15.springai.logging.AccessLogRealContainerTest
 2026-10-28 22:50:39.884 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.logging.AccessLogRealContainerTest]: AccessLogRealContainerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:39.887 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.logging.AccessLogRealContainerTest
+2026-10-28 22:50:39.887 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.logging.AccessLogRealContainerTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -305,7 +305,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.305 s -- in com.zl.d15.springai.logging.AccessLogRealContainerTest
 [INFO] Running com.zl.d15.springai.MockChatControllerTest
 2026-10-28 22:50:42.190 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.MockChatControllerTest]: MockChatControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:42.193 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.MockChatControllerTest
+2026-10-28 22:50:42.193 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.MockChatControllerTest
 2026-10-28 22:50:42.207 WARN  [main] [requestId=f83a121d82bc4ed5aff9d0cd2bd4a019] c.z.d.common.GlobalExceptionHandler - ����У��ʧ��: message ����Ϊ�ջ򴿿հ�
 2026-10-28 22:50:42.208 INFO  [main] [requestId=f83a121d82bc4ed5aff9d0cd2bd4a019] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"f83a121d82bc4ed5aff9d0cd2bd4a019","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"14"},"requestBody":{"contentType":"application/json","size":14,"body":"{\"message\":\"\"}","truncated":false}}
 2026-10-28 22:50:42.209 INFO  [main] [requestId=f83a121d82bc4ed5aff9d0cd2bd4a019] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"f83a121d82bc4ed5aff9d0cd2bd4a019","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":8,"responseBody":{"contentType":"application/json","size":66,"body":"{\"code\":4001,\"msg\":\"message ����Ϊ�ջ򴿿հ�\",\"data\":null}","truncated":false}}
@@ -336,7 +336,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.071 s -- in com.zl.d15.springai.MockChatControllerTest
 [INFO] Running com.zl.d15.springai.MockNoExternalApiTest
 2026-10-28 22:50:42.262 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.MockNoExternalApiTest]: MockNoExternalApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:42.264 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.MockNoExternalApiTest
+2026-10-28 22:50:42.264 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.MockNoExternalApiTest
 2026-10-28 22:50:42.274 INFO  [main] [requestId=09d143e112e84d98895c53099b13007b] c.zl.d15.controller.ChatController - �յ� AI ��������messageLength=4��scene=null
 2026-10-28 22:50:42.275 INFO  [main] [requestId=09d143e112e84d98895c53099b13007b] c.zl.d15.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
 2026-10-28 22:50:42.275 INFO  [main] [requestId=09d143e112e84d98895c53099b13007b] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"09d143e112e84d98895c53099b13007b","controllerMethod":"ChatController#chat","elapsedMs":0,"args":{"request":{"value":"{\"message\":\"ping\",\"scene\":null,\"sessionId\":null,\"variables\":null}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺��ping����������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
@@ -345,7 +345,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.024 s -- in com.zl.d15.springai.MockNoExternalApiTest
 [INFO] Running com.zl.d15.springai.prompt.PersistenceCacheIntegrationTest
 2026-10-28 22:50:42.287 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.prompt.PersistenceCacheIntegrationTest]: PersistenceCacheIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:42.327 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.prompt.PersistenceCacheIntegrationTest
+2026-10-28 22:50:42.327 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.prompt.PersistenceCacheIntegrationTest
 2026-10-28 22:50:42.389 INFO  [main] [requestId=] c.z.d15.prompt.PromptTemplateService - Prompt ģ���Ѵ�����templateId=ut_cache_tpl��scene=summarization��������=1
 2026-10-28 22:50:42.409 INFO  [main] [requestId=] c.z.d15.prompt.PromptTemplateService - Prompt ģ���Ѹ��£�templateId=ut_cache_tpl���°汾 version=2
 2026-10-28 22:50:42.437 INFO  [main] [requestId=] c.z.d15.prompt.PromptSeedInitializer - Prompt ���ӳ�ʼ����ɣ����� 0 �������������ݿ��Ѵ��ڣ�6 ����ʧ�� 0 ������Դ=prompt-templates/seed-templates.json
@@ -354,7 +354,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.190 s -- in com.zl.d15.springai.prompt.PersistenceCacheIntegrationTest
 [INFO] Running com.zl.d15.springai.prompt.PromptTemplateServiceTest
 2026-10-28 22:50:42.478 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.prompt.PromptTemplateServiceTest]: PromptTemplateServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:42.479 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.prompt.PromptTemplateServiceTest
+2026-10-28 22:50:42.479 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.prompt.PromptTemplateServiceTest
 2026-10-28 22:50:42.516 INFO  [main] [requestId=] c.z.d15.prompt.PromptTemplateService - Prompt ģ���Ѵ�����templateId=ut_lifecycle_tpl��scene=summarization��������=1
 2026-10-28 22:50:42.535 INFO  [main] [requestId=] c.z.d15.prompt.PromptTemplateService - Prompt ģ���Ѹ��£�templateId=ut_lifecycle_tpl���°汾 version=2
 2026-10-28 22:50:42.556 INFO  [main] [requestId=] c.z.d15.prompt.PromptTemplateService - Prompt ģ�����߼�ɾ����templateId=ut_lifecycle_tpl
@@ -366,7 +366,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.417 s -- in com.zl.d15.springai.service.MockAiChatServiceStreamTest
 [INFO] Running com.zl.d15.springai.stream.ChatStreamErrorEventTest
 2026-10-28 22:50:43.174 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.stream.ChatStreamErrorEventTest]: ChatStreamErrorEventTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:43.210 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.stream.ChatStreamErrorEventTest
+2026-10-28 22:50:43.210 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.stream.ChatStreamErrorEventTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -406,7 +406,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.017 s -- in com.zl.d15.springai.stream.ChatStreamErrorEventTest
 [INFO] Running com.zl.d15.springai.stream.ChatStreamIntegrationTest
 2026-10-28 22:50:44.192 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.stream.ChatStreamIntegrationTest]: ChatStreamIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:44.194 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.stream.ChatStreamIntegrationTest
+2026-10-28 22:50:44.194 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.stream.ChatStreamIntegrationTest
 2026-10-28 22:50:44.212 INFO  [http-nio-auto-1-exec-3] [requestId=955812d3318d46d48a186b101ea08135] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"955812d3318d46d48a186b101ea08135","method":"GET","uri":"/","query":null,"clientIp":"127.0.0.1","headers":{"connection":"Upgrade, HTTP2-Settings","host":"localhost:49347","http2-settings":"AAEAAEAAAAIAAAAAAAMAAAAAAAQBAAAAAAUAAEAAAAYABgAA","upgrade":"h2c","user-agent":"Java-http-client/21.0.7","accept":"application/octet-stream, application/json, application/yaml, application/*+json, */*"},"requestBody":{"contentType":null,"size":0,"body":null,"skipReason":"empty body or input stream never read by framework"}}
 2026-10-28 22:50:44.213 INFO  [http-nio-auto-1-exec-3] [requestId=955812d3318d46d48a186b101ea08135] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"955812d3318d46d48a186b101ea08135","method":"GET","uri":"/","httpStatus":200,"elapsedMs":12,"responseBody":{"contentType":"text/html","size":2273,"body":"<unparseable body, length=1911>","truncated":false}}
 2026-10-28 22:50:44.224 INFO  [http-nio-auto-1-exec-4] [requestId=533fc475953d4206996aa91e2ed1d2be] c.z.d.c.ChatStreamController - SSE ��ʽ�Ի��ѽ�����requestId=533fc475953d4206996aa91e2ed1d2be��mode=mock��messageLength=9
@@ -415,7 +415,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.671 s -- in com.zl.d15.springai.stream.ChatStreamIntegrationTest
 [INFO] Running com.zl.d15.springai.stream.ChatStreamTimeoutTest
 2026-10-28 22:50:44.864 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.stream.ChatStreamTimeoutTest]: ChatStreamTimeoutTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:44.867 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.stream.ChatStreamTimeoutTest
+2026-10-28 22:50:44.867 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.stream.ChatStreamTimeoutTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -455,7 +455,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.935 s -- in com.zl.d15.springai.stream.ChatStreamTimeoutTest
 [INFO] Running com.zl.d15.springai.stream.RoleChatStreamIntegrationTest
 2026-10-28 22:50:45.800 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.stream.RoleChatStreamIntegrationTest]: RoleChatStreamIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:45.802 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.stream.RoleChatStreamIntegrationTest
+2026-10-28 22:50:45.802 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.stream.RoleChatStreamIntegrationTest
 2026-10-28 22:50:45.811 WARN  [http-nio-auto-1-exec-7] [requestId=5ac8e656453a49719e049a523acfa463] ACCESS_LOG - {"event":"CONTROLLER_ERROR","requestId":"5ac8e656453a49719e049a523acfa463","controllerMethod":"ChatStreamController#streamChat","elapsedMs":0,"args":{"request":{"value":"{\"message\":\"�Ƿ���ɫ\",\"scene\":\"ghost_role\",\"sessionId\":null,\"variables\":null}","truncated":false},"response":"<container:LifecycleHttpServletResponse>"},"exception":"java.lang.IllegalArgumentException","errorMessage":"scene ���ǵ�ǰ���ŵĶԻ���ɫ: ghost_role������ֵ: [programming, customer_service]"}
 2026-10-28 22:50:45.811 WARN  [http-nio-auto-1-exec-7] [requestId=5ac8e656453a49719e049a523acfa463] c.z.d.common.GlobalExceptionHandler - ��������쳣: scene ���ǵ�ǰ���ŵĶԻ���ɫ: ghost_role������ֵ: [programming, customer_service]
 2026-10-28 22:50:45.884 INFO  [http-nio-auto-1-exec-8] [requestId=6d4ed3b9474a42fd846631b82d15af4c] c.z.d.c.RoleConversationService - ��ɫ�Ի��Ѿ�����sessionId=af43bc25b9c84adfae9dc9f4a9a622df��scene=customer_service��templateId=customer_service��version=1����ʷ����=0
@@ -472,7 +472,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.885 s -- in com.zl.d15.springai.stream.RoleChatStreamIntegrationTest
 [INFO] Running com.zl.d15.springai.web.PromptTemplateControllerWebTest
 2026-10-28 22:50:47.687 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.web.PromptTemplateControllerWebTest]: PromptTemplateControllerWebTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:47.723 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.web.PromptTemplateControllerWebTest
+2026-10-28 22:50:47.723 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.web.PromptTemplateControllerWebTest
 2026-10-28 22:50:47.771 INFO  [main] [requestId=d67a2d799f424d84af27811bbdf1da51] c.z.d.p.PromptTemplateController - �յ�ģ�崴������templateId=ut_web_lifecycle
 2026-10-28 22:50:47.842 INFO  [main] [requestId=d67a2d799f424d84af27811bbdf1da51] c.z.d15.prompt.PromptTemplateService - Prompt ģ���Ѵ�����templateId=ut_web_lifecycle��scene=technical_explanation��������=1
 2026-10-28 22:50:47.845 INFO  [main] [requestId=d67a2d799f424d84af27811bbdf1da51] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"d67a2d799f424d84af27811bbdf1da51","method":"POST","uri":"/api/v1/ai/prompts","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"234"},"requestBody":{"contentType":"application/json","size":234,"body":"{\"content\":\"���� {audience} ����\",\"templateId\":\"ut_web_lifecycle\",\"variables\":[{\"required\":false,\"defaultValue\":\"��ѧ��\",\"name\":\"audience\",\"description\":\"����\"}],\"scene\":\"technical_explanation\",\"name\":\"Web��������ģ��\"}","truncated":false}}
@@ -504,7 +504,7 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 [INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.310 s -- in com.zl.d15.springai.web.PromptTemplateControllerWebTest
 [INFO] Running com.zl.d15.springai.web.RoleChatControllerTest
 2026-10-28 22:50:47.997 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d15.springai.web.RoleChatControllerTest]: RoleChatControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-28 22:50:48.001 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15SpringAiApplication for test class com.zl.d15.springai.web.RoleChatControllerTest
+2026-10-28 22:50:48.001 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d15.D15PlusSpringAiApplication for test class com.zl.d15.springai.web.RoleChatControllerTest
 2026-10-28 22:50:48.009 INFO  [main] [requestId=25e75890b9c948d49ea1fdba335c8201] c.zl.d15.controller.ChatController - �յ� AI ��������messageLength=8��scene=customer_service
 2026-10-28 22:50:48.020 INFO  [main] [requestId=25e75890b9c948d49ea1fdba335c8201] c.z.d.c.RoleConversationService - ��ɫ�Ի��Ѿ�����sessionId=ab6e2eeed73f42e38bcef81b256dbb1f��scene=customer_service��templateId=customer_service��version=1����ʷ����=0
 2026-10-28 22:50:48.023 INFO  [main] [requestId=25e75890b9c948d49ea1fdba335c8201] c.zl.d15.controller.ChatController - ��ɫ�Ի���ɣ�sessionId=ab6e2eeed73f42e38bcef81b256dbb1f��templateId=customer_service��version=1
