@@ -1,0 +1,43 @@
+===== 第一轮（服务端生成 sessionId）=====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "sessionId": "fdcead54911545f5804e46326ac1725b",
+    "scene": "customer_service",
+    "templateId": "customer_service",
+    "templateVersion": 1,
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=497，历史消息条数=0，系统提示词首行=你是一名专业的在线客服代表，请严格遵守以下服务规则：；已收到问题：「我买的设备三天还没发货，怎么处理？」。"
+  }
+}
+
+===== 第二轮（同 sessionId，Mock 回显历史条数应为 2）=====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "sessionId": "fdcead54911545f5804e46326ac1725b",
+    "scene": "customer_service",
+    "templateId": "customer_service",
+    "templateVersion": 1,
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=488，历史消息条数=2，系统提示词首行=你是一名专业的在线客服代表，请严格遵守以下服务规则：；已收到问题：「那我可以申请退款吗？」。"
+  }
+}
+
+===== 旧链路（不带 scene，结构无 sessionId）=====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟模式（AI_MODE=mock），未发起任何 DeepSeek 网络请求。已收到问题：「旧链路无角色回归验证」。如需真实回答，请设置环境变量 AI_MODE=deepseek 并注入有效的 DEEPSEEK_API_KEY。"
+  }
+}

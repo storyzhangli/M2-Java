@@ -1,14 +1,17 @@
-/*
- * D14 SSE 流式对话前端（原生 JavaScript，无第三方依赖）。
- * 选型：接口为 POST JSON，浏览器原生 EventSource 仅支持 GET 且无法自由设置请求体，
- *      因此使用 fetch + ReadableStream 读取字节流，分帧交给 sse-parser.js（兼容 LF/CR/CRLF）。
- * 安全：模型输出与用户输入一律通过 textContent 渲染为纯文本，禁止 innerHTML 注入，避免 XSS。
+/**
+ * D15 双角色流式对话页面脚本（原生 JS，无第三方依赖）。
+ *
+ * 关键约束：
+ * 1. 角色清单来自服务端 GET /roles，前端只展示，最终是否允许对话由服务端模板状态决定；
+ * 2. 切换角色必然重置会话：服务端禁止同一 sessionId 跨角色，前端先清空本地上下文；
+ * 3. 所有服务端文本都通过 textContent/createTextNode 渲染，不拼 innerHTML，避免脚本注入；
+ * 4. SSE 分帧交给独立的 createSseParser，兼容 LF/CR/CRLF 与跨块边界。
  */
 (function () {
     'use strict';
 
-    var STREAM_URL = '/api/v1/ai/chat/stream';
-    var HEALTH_URL = '/api/v1/ai/health';
+    var API_BASE = '/api/v1/ai';
+    var STREAM_PATH = API_BASE + '/chat/stream';
 
     var messageList = document.getElementById('messageList');
     var emptyTip = document.getElementById('emptyTip');
@@ -18,243 +21,278 @@
     var newChatBtn = document.getElementById('newChatBtn');
     var statusLine = document.getElementById('statusLine');
     var modeBadge = document.getElementById('modeBadge');
+    var roleSelect = document.getElementById('roleSelect');
+    var sessionTip = document.getElementById('sessionTip');
 
-    var abortController = null;
-    var isStreaming = false;
+    /** 服务端在首个 start 事件回传；为 null 表示尚未建立会话或使用无角色链路。 */
+    var sessionId = null;
+    var currentController = null;
+    var sending = false;
 
-    // 页面加载后探测当前后端模式（mock/deepseek），失败不阻塞对话功能
-    fetch(HEALTH_URL)
-        .then(function (resp) { return resp.json(); })
-        .then(function (body) {
-            if (body && body.data && body.data.mode) {
-                modeBadge.textContent = '当前模式：' + body.data.mode;
-            }
-        })
-        .catch(function () {
-            modeBadge.textContent = '模式检测失败';
-        });
+    // ---- 初始化 ----
+    loadRoles();
+    loadHealth();
 
-    sendBtn.addEventListener('click', startStream);
-    stopBtn.addEventListener('click', stopStream);
-    newChatBtn.addEventListener('click', resetConversation);
+    roleSelect.addEventListener('change', function () {
+        // 角色切换 = 新会话，避免不同角色的历史互相污染
+        resetConversation();
+        setStatus('已切换为：' + (roleSelect.options[roleSelect.selectedIndex].textContent), '');
+    });
+
+    sendBtn.addEventListener('click', sendMessage);
+    stopBtn.addEventListener('click', stopStreaming);
+    newChatBtn.addEventListener('click', function () {
+        resetConversation();
+        setStatus('已开启新会话', 'success');
+    });
+
     messageInput.addEventListener('keydown', function (event) {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-            startStream();
+            sendMessage();
         }
     });
+
+    /**
+     * 拉取服务端启用中的角色清单填充下拉框。拉取失败不阻塞通用模式，只给出提示。
+     */
+    function loadRoles() {
+        fetch(API_BASE + '/roles')
+            .then(function (resp) { return resp.json(); })
+            .then(function (body) {
+                if (body.code !== 200 || !Array.isArray(body.data)) {
+                    throw new Error(body.msg || '角色清单格式异常');
+                }
+                body.data.forEach(function (item) {
+                    var option = document.createElement('option');
+                    option.value = item.scene;
+                    option.textContent = item.name + '（' + item.scene + '）';
+                    roleSelect.appendChild(option);
+                });
+                // 默认选中第一个真实角色（索引 0 是“通用模式”）
+                if (roleSelect.options.length > 1) {
+                    roleSelect.selectedIndex = 1;
+                }
+            })
+            .catch(function (err) {
+                setStatus('角色清单加载失败，可使用通用模式：' + err.message, 'error');
+            });
+    }
+
+    function loadHealth() {
+        fetch(API_BASE + '/health')
+            .then(function (resp) { return resp.json(); })
+            .then(function (body) {
+                if (body.code === 200 && body.data) {
+                    modeBadge.textContent = '运行模式：' + body.data.mode
+                        + ' ｜ 单条上限：' + body.data.maxMessageLength;
+                } else {
+                    modeBadge.textContent = '健康检查失败';
+                }
+            })
+            .catch(function () {
+                modeBadge.textContent = '健康检查不可用';
+            });
+    }
+
+    function resetConversation() {
+        if (sending && currentController) {
+            currentController.abort();
+        }
+        sessionId = null;
+        currentController = null;
+        sending = false;
+        messageList.innerHTML = '';
+        messageList.appendChild(emptyTip);
+        sessionTip.textContent = '尚未建立会话';
+        sendBtn.disabled = false;
+        stopBtn.disabled = true;
+        setStatus('就绪', '');
+    }
 
     function setStatus(text, level) {
         statusLine.textContent = text;
         statusLine.className = 'status-line' + (level ? ' ' + level : '');
     }
 
-    function setStreamingState(streaming) {
-        isStreaming = streaming;
-        sendBtn.disabled = streaming;
-        stopBtn.disabled = !streaming;
-        messageInput.disabled = streaming;
-    }
-
-    function appendMessage(role) {
-        if (emptyTip) {
-            emptyTip.style.display = 'none';
+    function appendMessage(role, text, errorState) {
+        if (emptyTip.parentNode === messageList) {
+            messageList.removeChild(emptyTip);
         }
         var wrap = document.createElement('div');
-        wrap.className = 'message ' + role;
+        wrap.className = 'message ' + role + (errorState ? ' error' : '');
 
-        var roleLabel = document.createElement('div');
-        roleLabel.className = 'role';
-        roleLabel.textContent = role === 'user' ? '我' : 'AI 助手';
+        var roleEl = document.createElement('div');
+        roleEl.className = 'role';
+        roleEl.textContent = role === 'user' ? '我' : 'AI 助手';
 
         var bubble = document.createElement('div');
         bubble.className = 'bubble';
+        bubble.appendChild(document.createTextNode(text));
 
-        var cursor = null;
-        if (role === 'assistant') {
-            cursor = document.createElement('span');
-            cursor.className = 'cursor';
-            bubble.appendChild(cursor);
-        }
-
-        wrap.appendChild(roleLabel);
+        wrap.appendChild(roleEl);
         wrap.appendChild(bubble);
         messageList.appendChild(wrap);
-        scrollToBottom();
-        return { wrap: wrap, bubble: bubble, cursor: cursor };
-    }
-
-    function scrollToBottom() {
         messageList.scrollTop = messageList.scrollHeight;
+        return bubble;
     }
 
-    function removeCursor(ref) {
-        if (ref && ref.cursor && ref.cursor.parentNode) {
-            ref.cursor.parentNode.removeChild(ref.cursor);
+    function setSendingState(isSending) {
+        sending = isSending;
+        sendBtn.disabled = isSending;
+        stopBtn.disabled = !isSending;
+        messageInput.disabled = isSending;
+    }
+
+    function stopStreaming() {
+        if (currentController) {
+            currentController.abort();
         }
     }
 
-    function resetConversation() {
-        if (isStreaming && abortController) {
-            abortController.abort();
+    function sendMessage() {
+        if (sending) {
+            return;
         }
-        messageList.querySelectorAll('.message').forEach(function (node) {
-            node.parentNode.removeChild(node);
-        });
-        emptyTip.style.display = '';
-        setStreamingState(false);
-        abortController = null;
-        setStatus('已开始新对话', 'success');
-    }
-
-    function stopStream() {
-        if (abortController) {
-            abortController.abort();
-        }
-        setStreamingState(false);
-        setStatus('已手动中断请求', 'error');
-    }
-
-    function startStream() {
         var message = messageInput.value.trim();
-
-        // 前端基础校验，最终以后端 @Valid 结果为准
         if (!message) {
-            setStatus('请输入非空内容后再发送', 'error');
+            setStatus('消息不能为空或纯空白', 'error');
             messageInput.focus();
             return;
         }
-        if (message.length > 2000) {
-            setStatus('内容超过 2000 字符上限', 'error');
-            return;
+
+        appendMessage('user', message);
+        messageInput.value = '';
+        setSendingState(true);
+        setStatus('请求处理中，等待流式响应…', '');
+
+        var assistantBubble = appendMessage('assistant', '');
+        var cursor = document.createElement('span');
+        cursor.className = 'cursor';
+        assistantBubble.appendChild(cursor);
+
+        var receivedText = '';
+        var controller = new AbortController();
+        currentController = controller;
+
+        var requestBody = { message: message };
+        var scene = roleSelect.value;
+        if (scene) {
+            requestBody.scene = scene;
         }
-        if (isStreaming) {
-            return;
+        // 首条消息不带 sessionId，由服务端生成并在 start 事件回传；后续轮次沿用同一标识
+        if (sessionId) {
+            requestBody.sessionId = sessionId;
         }
 
-        appendMessage('user').bubble.textContent = message;
-        var assistantRef = appendMessage('assistant');
-
-        setStreamingState(true);
-        setStatus('正在建立 SSE 连接…');
-        abortController = new AbortController();
-
-        fetch(STREAM_URL, {
+        fetch(STREAM_PATH, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'text/event-stream'
-            },
-            body: JSON.stringify({ message: message }),
-            signal: abortController.signal
+            headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+            body: JSON.stringify(requestBody),
+            signal: controller.signal
         }).then(function (response) {
-            var contentType = response.headers.get('Content-Type') || '';
-            // 流未建立时后端可能返回统一 JSON 错误（如参数校验失败），而非 event-stream
-            if (!response.ok || contentType.indexOf('text/event-stream') === -1) {
-                return response.text().then(function (text) {
-                    throw new Error(extractJsonMessage(text) || ('请求失败，HTTP ' + response.status));
+            if (!response.ok || !response.body) {
+                throw new Error('HTTP 状态异常: ' + response.status);
+            }
+            var reader = response.body.getReader();
+            var parser = createSseParser();
+            var decoder = new TextDecoder('utf-8');
+            var streamBroken = false;
+
+            function pump() {
+                return reader.read().then(function (result) {
+                    if (result.done) {
+                        if (!streamBroken) {
+                            finishStream(assistantBubble, cursor, receivedText, false);
+                        }
+                        return;
+                    }
+                    var decoded = decoder.decode(result.value, { stream: true });
+                    var events = parser.feed(decoded);
+                    events.forEach(function (evt) {
+                        streamBroken = handleEvent(evt, assistantBubble, cursor, function (text) {
+                            receivedText = text;
+                        }, receivedText);
+                    });
+                    if (streamBroken) {
+                        reader.cancel().catch(function () {});
+                        return;
+                    }
+                    return pump();
                 });
             }
-            setStatus('连接已建立，等待模型增量…');
-            return consumeStream(response.body, assistantRef);
-        }).then(function (result) {
-            removeCursor(assistantRef);
-            setStreamingState(false);
-            if (result === 'complete') {
-                setStatus('本次回答已完成', 'success');
-            } else if (result === 'error-event') {
-                setStatus('服务端返回错误事件，本次回答未正常完成', 'error');
-            } else {
-                markError(assistantRef, '连接被中断，未收到完成事件');
-                setStatus('连接异常中断', 'error');
-            }
-        }).catch(function (error) {
-            removeCursor(assistantRef);
-            setStreamingState(false);
-            if (error.name === 'AbortError') {
-                setStatus('请求已中断', 'error');
+
+            return pump();
+        }).catch(function (err) {
+            if (err && err.name === 'AbortError') {
+                finishStream(assistantBubble, cursor, receivedText || '（已手动停止）', false);
+                setStatus('已手动停止接收，当前会话仍保留在服务端', '');
                 return;
             }
-            markError(assistantRef, error.message || '网络或服务异常');
-            setStatus(error.message || '网络或服务异常', 'error');
+            finishStream(assistantBubble, cursor,
+                (receivedText || '') + '\n[连接失败] ' + err.message, true);
+            setStatus('流式连接失败：' + err.message, 'error');
         }).finally(function () {
-            messageInput.value = '';
-            scrollToBottom();
+            setSendingState(false);
+            currentController = null;
         });
     }
 
     /**
-     * 读取 ReadableStream，交给独立的 SseParser 按 SSE 帧协议解析。
-     * 解析器兼容 LF/CR/CRLF 三种行结束符与任意切块边界（见 sse-parser.js 及其 Node 测试）。
-     * 返回 'complete' | 'error-event' | 'interrupted'。
+     * 处理单个 SSE 事件。返回 true 表示流已因 error 事件终止。
      */
-    function consumeStream(body, assistantRef) {
-        var reader = body.getReader();
-        var decoder = new TextDecoder('utf-8');
-        var gotComplete = false;
-        var gotError = false;
-
-        // 分帧逻辑收敛到无 DOM 依赖的 SseParser，本处只负责 JSON 解析与页面分发
-        var parser = SseParser.createSseParser(function (evt) {
-            var payload;
+    function handleEvent(evt, bubble, cursor, updateText, currentText) {
+        var payload = {};
+        if (evt.data) {
             try {
                 payload = JSON.parse(evt.data);
             } catch (e) {
-                // 无法解析的事件直接忽略，不把原始字符串当作 HTML/文本注入
-                return;
+                payload = { code: 5000, msg: '响应数据解析失败' };
             }
-            dispatchEvent(evt.name, payload, assistantRef,
-                function () { gotError = true; },
-                function () { gotComplete = true; });
-        });
-
-        function pump() {
-            return reader.read().then(function (chunk) {
-                if (chunk.done) {
-                    parser.flush();
-                    if (gotComplete) { return 'complete'; }
-                    if (gotError) { return 'error-event'; }
-                    return 'interrupted';
-                }
-                // stream:true 保证跨 chunk 的 UTF-8 多字节中文不会被截断成乱码
-                parser.feed(decoder.decode(chunk.value, { stream: true }));
-                scrollToBottom();
-                return pump();
-            });
         }
 
-        return pump();
-    }
-
-    function dispatchEvent(eventName, payload, assistantRef, markErrorEvent, markComplete) {
-        if (eventName === 'start') {
-            setStatus('流式输出中… requestId=' + (payload.requestId || ''));
-        } else if (eventName === 'delta') {
-            if (typeof payload.content === 'string') {
-                assistantRef.bubble.appendChild(document.createTextNode(payload.content));
+        if (evt.event === 'start') {
+            if (payload.sessionId) {
+                sessionId = payload.sessionId;
+                sessionTip.textContent = '当前会话：' + sessionId
+                    + (payload.templateId ? ' ｜ 模板：' + payload.templateId + ' v' + payload.templateVersion : '');
             }
-        } else if (eventName === 'complete') {
-            markComplete();
-            removeCursor(assistantRef);
-        } else if (eventName === 'error') {
-            markErrorEvent();
-            removeCursor(assistantRef);
-            markError(assistantRef, '[' + (payload.code || 'unknown') + '] ' + (payload.message || '服务端错误'));
+            setStatus('连接已建立，开始接收增量内容…', '');
+            return false;
         }
+
+        if (evt.event === 'delta') {
+            var nextText = currentText + (payload.content || '');
+            bubble.textContent = nextText;
+            bubble.appendChild(cursor);
+            updateText(nextText);
+            return false;
+        }
+
+        if (evt.event === 'complete') {
+            finishStream(bubble, cursor, currentText, false);
+            setStatus('接收完成，共 ' + payload.totalChars + ' 字符，模式 ' + payload.mode, 'success');
+            return true;
+        }
+
+        if (evt.event === 'error') {
+            finishStream(bubble, cursor,
+                (currentText ? currentText + '\n' : '') + '[服务端错误 ' + payload.code + '] ' + payload.msg,
+                true);
+            setStatus('服务端返回错误：' + payload.code + ' ' + payload.msg, 'error');
+            return true;
+        }
+        return false;
     }
 
-    function markError(ref, message) {
-        ref.wrap.classList.add('error');
-        // 清空可能已追加的半截内容并以纯文本写入错误信息，保证失败不会被伪装成成功回答
-        ref.bubble.textContent = '⚠ ' + message;
-    }
-
-    function extractJsonMessage(text) {
-        try {
-            var parsed = JSON.parse(text);
-            return parsed.msg || (parsed.code ? '错误码 ' + parsed.code : null);
-        } catch (e) {
-            return null;
+    function finishStream(bubble, cursor, text, errorState) {
+        bubble.textContent = text || (errorState ? '（未收到有效响应）' : '（响应为空）');
+        if (cursor && cursor.parentNode === bubble) {
+            bubble.removeChild(cursor);
         }
+        if (errorState) {
+            bubble.parentNode.classList.add('error');
+        }
+        messageList.scrollTop = messageList.scrollHeight;
     }
 })();

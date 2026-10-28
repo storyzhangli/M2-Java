@@ -1,0 +1,13 @@
+===== 非法角色 scene（期望 code=4001）=====
+{
+  "code": 4001,
+  "msg": "scene 不是当前开放的对话角色: ghost_role，允许值: [customer_service, programming]",
+  "data": null
+}
+
+===== 未声明变量键（期望 code=4001）=====
+{
+  "code": 4001,
+  "msg": "传入了模板未声明的变量: hack_key",
+  "data": null
+}

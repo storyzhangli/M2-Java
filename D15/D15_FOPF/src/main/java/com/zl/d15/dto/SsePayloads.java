@@ -1,5 +1,7 @@
 package com.zl.d15.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * SSE（Server-Sent Events，服务器发送事件）各命名事件的数据载荷。
  *
@@ -18,8 +20,20 @@ public final class SsePayloads {
     private SsePayloads() {
     }
 
-    /** 流开始事件载荷。 */
-    public record Start(String requestId, String mode, String model) {
+    /**
+     * 流开始事件载荷。
+     *
+     * <p>D15 新增会话/模板溯源字段，仅角色对话链路非空；类级 {@link JsonInclude} 保证 null 字段不出现在
+     * JSON 中，旧的无角色链路帧结构保持不变，前端与既有测试不受影响。</p>
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public record Start(String requestId, String mode, String model,
+                        String sessionId, String scene, String templateId, Integer templateVersion) {
+
+        /** 旧链路构造：溯源字段全部为 null，序列化后与 D14 帧完全一致。 */
+        public Start(String requestId, String mode, String model) {
+            this(requestId, mode, model, null, null, null, null);
+        }
     }
 
     /** 文本增量事件载荷。 */

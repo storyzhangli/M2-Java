@@ -1,0 +1,98 @@
+===== 创建合法模板（含 ST4 转义大括号）=====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "templateId": "evd_demo_tpl",
+    "name": "证据页演示模板",
+    "scene": "technical_explanation",
+    "description": "真机验证创建用，验证后逻辑删除",
+    "content": "你是技术讲师，请面向 {audience} 讲解，输出示例 JSON：\\{\"topic\":\"demo\"}",
+    "variables": [
+      {
+        "name": "audience",
+        "required": false,
+        "description": "受众",
+        "defaultValue": "零基础学员"
+      }
+    ],
+    "version": 1,
+    "status": "ENABLED",
+    "createdAt": "2026-10-28T18:04:50.1961247",
+    "updatedAt": "2026-10-28T18:04:50.1961247"
+  }
+}
+
+===== 创建非法模板（未声明占位符，期望 4001）=====
+{
+  "code": 4001,
+  "msg": "模板正文使用了未声明的变量 {ghost_var}，请先在 variables 中登记或改正文",
+  "data": null
+}
+
+===== 停用 =====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "templateId": "evd_demo_tpl",
+    "name": "证据页演示模板",
+    "scene": "technical_explanation",
+    "description": "真机验证创建用，验证后逻辑删除",
+    "content": "你是技术讲师，请面向 {audience} 讲解，输出示例 JSON：\\{\"topic\":\"demo\"}",
+    "variables": [
+      {
+        "name": "audience",
+        "required": false,
+        "description": "受众",
+        "defaultValue": "零基础学员"
+      }
+    ],
+    "version": 1,
+    "status": "DISABLED",
+    "createdAt": "2026-10-28T18:04:50.1961247",
+    "updatedAt": "2026-10-28T18:04:50.2172083"
+  }
+}
+
+===== 重新启用 =====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "templateId": "evd_demo_tpl",
+    "name": "证据页演示模板",
+    "scene": "technical_explanation",
+    "description": "真机验证创建用，验证后逻辑删除",
+    "content": "你是技术讲师，请面向 {audience} 讲解，输出示例 JSON：\\{\"topic\":\"demo\"}",
+    "variables": [
+      {
+        "name": "audience",
+        "required": false,
+        "description": "受众",
+        "defaultValue": "零基础学员"
+      }
+    ],
+    "version": 1,
+    "status": "ENABLED",
+    "createdAt": "2026-10-28T18:04:50.1961247",
+    "updatedAt": "2026-10-28T18:04:50.2252336"
+  }
+}
+
+===== 逻辑删除 =====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "templateId": "evd_demo_tpl",
+    "deleted": "true"
+  }
+}
+
+===== 删除后再查（期望 4001）=====
+{
+  "code": 4001,
+  "msg": "模板不存在或已删除: evd_demo_tpl",
+  "data": null
+}

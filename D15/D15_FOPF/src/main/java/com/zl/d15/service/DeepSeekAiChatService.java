@@ -4,10 +4,16 @@ import com.zl.d15.common.AiConfigurationException;
 import com.zl.d15.config.AiConstants;
 import com.zl.d15.dto.ChatReplyResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -87,6 +93,63 @@ public class DeepSeekAiChatService implements AiChatService {
                 .filter(StringUtils::hasText)
                 .doOnComplete(() -> log.info("流式调用正常结束，model={}", this.model))
                 .doOnError(ex -> log.error("流式调用异常，异常类型: {}", ex.getClass().getSimpleName()));
+    }
+
+    /**
+     * 角色链路同步调用：系统角色提示词 → 历史消息 → 当前用户消息，按消息角色独立组装，
+     * 用户输入只进入 UserMessage，无法覆盖 SystemMessage 中的角色规则。
+     */
+    @Override
+    public ChatReplyResponse chat(ChatInvocation invocation) {
+        validateCredential();
+
+        Prompt prompt = new Prompt(buildMessages(invocation));
+        log.info("角色对话同步调用，model={}，历史消息数={}", this.model, invocation.history().size());
+        ChatResponse response = this.chatModel.call(prompt);
+        String content = response.getResult().getOutput().getText();
+
+        return new ChatReplyResponse(AiConstants.MODE_DEEPSEEK, this.model, Boolean.FALSE, content);
+    }
+
+    /**
+     * 角色链路流式调用，消息组装顺序与同步链路保持一致。
+     */
+    @Override
+    public Flux<String> streamChat(ChatInvocation invocation) {
+        validateCredential();
+
+        Prompt prompt = new Prompt(buildMessages(invocation));
+        log.info("角色对话流式调用，model={}，历史消息数={}", this.model, invocation.history().size());
+
+        return this.chatModel.stream(prompt)
+                .map(chunk -> {
+                    if (chunk == null || chunk.getResult() == null || chunk.getResult().getOutput() == null) {
+                        return null;
+                    }
+                    return chunk.getResult().getOutput().getText();
+                })
+                .filter(StringUtils::hasText)
+                .doOnComplete(() -> log.info("角色对话流式调用正常结束，model={}", this.model))
+                .doOnError(ex -> log.error("角色对话流式调用异常，异常类型: {}", ex.getClass().getSimpleName()));
+    }
+
+    /**
+     * 按“系统提示词 + 多轮历史 + 当前用户消息”的顺序组装模型消息列表。
+     */
+    private List<Message> buildMessages(ChatInvocation invocation) {
+        List<Message> messages = new ArrayList<>();
+        if (StringUtils.hasText(invocation.systemPrompt())) {
+            messages.add(new SystemMessage(invocation.systemPrompt()));
+        }
+        for (ChatInvocation.Turn turn : invocation.history()) {
+            if ("assistant".equals(turn.role())) {
+                messages.add(new AssistantMessage(turn.content()));
+            } else {
+                messages.add(new UserMessage(turn.content()));
+            }
+        }
+        messages.add(new UserMessage(invocation.userMessage()));
+        return messages;
     }
 
     private void validateCredential() {

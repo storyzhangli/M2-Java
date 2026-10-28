@@ -4,6 +4,7 @@ import com.zl.d15.common.AiConfigurationException;
 import com.zl.d15.common.ResultCode;
 import com.zl.d15.config.AiConstants;
 import com.zl.d15.config.AiProperties;
+import com.zl.d15.conversation.RoleConversationService;
 import com.zl.d15.dto.ChatRequest;
 import com.zl.d15.dto.SsePayloads;
 import com.zl.d15.logging.TraceIdFilter;
@@ -16,6 +17,7 @@ import org.springframework.ai.retry.NonTransientAiException;
 import org.springframework.ai.retry.TransientAiException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,13 +67,17 @@ public class ChatStreamController {
 
     private final AiChatService aiChatService;
     private final AiProperties aiProperties;
+    private final RoleConversationService roleConversationService;
 
     @Value("${spring.ai.deepseek.chat.options.model:deepseek-flash}")
     private String deepseekModel;
 
-    public ChatStreamController(AiChatService aiChatService, AiProperties aiProperties) {
+    public ChatStreamController(AiChatService aiChatService,
+                                AiProperties aiProperties,
+                                RoleConversationService roleConversationService) {
         this.aiChatService = aiChatService;
         this.aiProperties = aiProperties;
+        this.roleConversationService = roleConversationService;
     }
 
     @PostMapping(value = "/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE + ";charset=UTF-8")
@@ -88,6 +94,16 @@ public class ChatStreamController {
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("X-Accel-Buffering", "no");
 
+        // D15 角色链路：scene 非空时先完成模板校验、系统提示词渲染与会话绑定（用户消息此时入会话）。
+        // 该步骤发生在返回 emitter 之前，任何非法角色/停用模板/变量错误都走全局异常处理器返回 JSON。
+        RoleConversationService.PreparedConversation roleContext = null;
+        if (StringUtils.hasText(request.getScene())) {
+            roleContext = roleConversationService.prepare(request);
+        }
+        final RoleConversationService.PreparedConversation finalRoleContext = roleContext;
+        // 角色链路累积完整助手文本，complete 时写入会话记忆；失败路径用它判断是否需要回滚
+        final StringBuilder assistantBuffer = new StringBuilder();
+
         long streamTimeoutMs = aiProperties.getStreamTimeoutMs();
         // 应用层超时是主路径：交由 Reactor timeout 在连接仍健康时走 onError 下发 error 事件；
         // 容器超时只作兜底，因此在配置值之上保留一段余量，避免两者同时触发竞争。
@@ -102,20 +118,31 @@ public class ChatStreamController {
         AtomicInteger totalChars = new AtomicInteger();
         AtomicReference<Disposable> subscriptionRef = new AtomicReference<>();
 
-        Disposable subscription = aiChatService.streamChat(message)
+        reactor.core.publisher.Flux<String> sourceFlux = finalRoleContext == null
+                ? aiChatService.streamChat(message)
+                : aiChatService.streamChat(finalRoleContext.invocation());
+
+        Disposable subscription = sourceFlux
                 // 规定时间内没有任何结束信号即判定超时：timeout 会取消上游 Flux 并下发 TimeoutException，
                 // 从而在正常响应通道内发送 error 事件，不依赖容器超时后是否还允许写连接
                 .timeout(Duration.ofMillis(streamTimeoutMs))
                 .doOnSubscribe(s -> {
                     // 订阅时刻仍在请求线程，先发送 start；若此刻连接已失效则直接终止，不继续消费模型流
-                    boolean sent = safeSend(emitter, finished, "start",
-                            new SsePayloads.Start(requestId, mode, model));
+                    SsePayloads.Start start = finalRoleContext == null
+                            ? new SsePayloads.Start(requestId, mode, model)
+                            : new SsePayloads.Start(requestId, mode, model,
+                                    finalRoleContext.session().getSessionId(),
+                                    finalRoleContext.session().getScene(),
+                                    finalRoleContext.session().getTemplateId(),
+                                    finalRoleContext.session().getTemplateVersion());
+                    boolean sent = safeSend(emitter, finished, "start", start);
                     if (!sent) {
                         s.cancel();
                     }
                 })
                 .subscribe(
-                        chunk -> onDelta(emitter, finished, subscriptionRef, seq, totalChars, chunk),
+                        chunk -> onDelta(emitter, finished, subscriptionRef, seq, totalChars,
+                                assistantBuffer, chunk),
                         error -> {
                             // 终态信号后显式 dispose 幂等无害，确保上游连接/计费立即停止；
                             // 此处订阅对象尚在赋值表达式内，只能通过前置的 subscriptionRef 获取
@@ -123,9 +150,16 @@ public class ChatStreamController {
                             if (current != null) {
                                 current.dispose();
                             }
+                            rollbackRoleTurn(finalRoleContext);
                             onStreamError(emitter, finished, requestId, error);
                         },
-                        () -> onComplete(emitter, finished, mode, model, seq, totalChars)
+                        () -> {
+                            if (finalRoleContext != null) {
+                                roleConversationService.completeAssistant(
+                                        finalRoleContext.session().getSessionId(), assistantBuffer.toString());
+                            }
+                            onComplete(emitter, finished, mode, model, seq, totalChars);
+                        }
                 );
         subscriptionRef.set(subscription);
 
@@ -140,6 +174,7 @@ public class ChatStreamController {
         emitter.onTimeout(() -> {
             log.warn("SSE 容器兜底超时关闭，requestId={}", requestId);
             subscription.dispose();
+            rollbackRoleTurn(finalRoleContext);
             handleTimeout(emitter, finished);
         });
         // 客户端断网/关闭页面等连接级错误：仅清理订阅，不向已失效连接写数据
@@ -147,6 +182,7 @@ public class ChatStreamController {
             log.warn("SSE 连接异常/客户端断开，requestId={}，类型={}", requestId, ex.getClass().getSimpleName());
             finished.set(true);
             subscription.dispose();
+            rollbackRoleTurn(finalRoleContext);
         });
 
         log.info("SSE 流式对话已建立，requestId={}，mode={}，messageLength={}",
@@ -159,6 +195,7 @@ public class ChatStreamController {
                          AtomicReference<Disposable> subscriptionRef,
                          AtomicInteger seq,
                          AtomicInteger totalChars,
+                         StringBuilder assistantBuffer,
                          String chunk) {
         int currentSeq = seq.getAndIncrement();
         boolean sent = safeSend(emitter, finished, "delta", new SsePayloads.Delta(currentSeq, chunk));
@@ -171,6 +208,18 @@ public class ChatStreamController {
             return;
         }
         totalChars.addAndGet(chunk.length());
+        // 仅缓存文本用于角色会话落库，SSE 帧的即时推送不依赖该缓冲
+        assistantBuffer.append(chunk);
+    }
+
+    /**
+     * 角色流式调用失败/超时/断连时回滚本轮已登记的用户消息；无角色链路为空操作。
+     * 重复调用幂等（内存存储的回滚只移除最后一条）。
+     */
+    private void rollbackRoleTurn(RoleConversationService.PreparedConversation roleContext) {
+        if (roleContext != null) {
+            roleConversationService.failAndRollback(roleContext.session().getSessionId());
+        }
     }
 
     private void onStreamError(SseEmitter emitter,

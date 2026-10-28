@@ -100,7 +100,8 @@ class ChatStreamIntegrationTest {
         ResponseEntity<byte[]> response = restTemplate.getForEntity("/", byte[].class);
         assertThat(response.getStatusCode().value()).isEqualTo(200);
         String html = new String(response.getBody(), StandardCharsets.UTF_8);
-        assertThat(html).contains("D14 SSE 流式对话").contains("/js/app.js").contains("/css/app.css");
+        // D15 迭代后页面标题更新为双角色对话，静态资源引用保持不变
+        assertThat(html).contains("D15 双角色流式对话").contains("/js/app.js").contains("/css/app.css");
     }
 
     /** 极简 SSE 帧解析：按空行分块，提取 event 名称与 JSON data。 */

@@ -47,6 +47,39 @@ public class MockAiChatService implements AiChatService {
     }
 
     /**
+     * 角色链路的模拟同步调用：确定性回显所使用的系统提示词长度与历史轮次，
+     * 便于在无外网环境下断言“确实选用了对应角色模板、历史确实按会话传递”。
+     */
+    @Override
+    public ChatReplyResponse chat(ChatInvocation invocation) {
+        return new ChatReplyResponse(
+                AiConstants.MODE_MOCK,
+                "offline-mock",
+                Boolean.TRUE,
+                buildRoleMockContent(invocation)
+        );
+    }
+
+    /**
+     * 角色链路的模拟流式调用：与同步共用同一份确定性文案。
+     */
+    @Override
+    public Flux<String> streamChat(ChatInvocation invocation) {
+        List<String> chunks = splitToChunks(buildRoleMockContent(invocation), 6);
+        return Flux.fromIterable(chunks).delayElements(Duration.ofMillis(15));
+    }
+
+    private String buildRoleMockContent(ChatInvocation invocation) {
+        String systemPrompt = invocation.systemPrompt() == null ? "" : invocation.systemPrompt();
+        String firstLine = systemPrompt.lines().findFirst().orElse("");
+        return AiConstants.MOCK_REPLY_MARKER + " 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。"
+                + "系统提示词字符数=" + systemPrompt.length()
+                + "，历史消息条数=" + invocation.history().size()
+                + "，系统提示词首行=" + firstLine
+                + "；已收到问题：「" + invocation.userMessage() + "」。";
+    }
+
+    /**
      * 同步与流式共用同一份文案，保证两种接口的最终文本一致，避免两套口径漂移。
      */
     private String buildMockContent(String message) {
