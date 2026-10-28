@@ -1,0 +1,88 @@
+X-Request-ID: 8a23c95d681e4f7892b6c2b1dde34d61
+Cache-Control: no-cache
+X-Accel-Buffering: no
+Transfer-Encoding: chunked
+Date: Wed, 28 Oct 2026 07:36:34 GMT
+Content-Type: text/event-stream
+
+event:start
+data:{"requestId":"8a23c95d681e4f7892b6c2b1dde34d61","mode":"mock","model":"offline-mock"}
+
+event:delta
+data:{"seq":0,"content":"[MOCK:"}
+
+event:delta
+data:{"seq":1,"content":"D01] 当"}
+
+event:delta
+data:{"seq":2,"content":"前为离线模拟"}
+
+event:delta
+data:{"seq":3,"content":"模式（AI_"}
+
+event:delta
+data:{"seq":4,"content":"MODE=m"}
+
+event:delta
+data:{"seq":5,"content":"ock），未"}
+
+event:delta
+data:{"seq":6,"content":"发起任何 D"}
+
+event:delta
+data:{"seq":7,"content":"eepSee"}
+
+event:delta
+data:{"seq":8,"content":"k 网络请求"}
+
+event:delta
+data:{"seq":9,"content":"。已收到问题"}
+
+event:delta
+data:{"seq":10,"content":"：「reme"}
+
+event:delta
+data:{"seq":11,"content":"diatio"}
+
+event:delta
+data:{"seq":12,"content":"n norm"}
+
+event:delta
+data:{"seq":13,"content":"al fra"}
+
+event:delta
+data:{"seq":14,"content":"me che"}
+
+event:delta
+data:{"seq":15,"content":"ck」。如需"}
+
+event:delta
+data:{"seq":16,"content":"真实回答，请"}
+
+event:delta
+data:{"seq":17,"content":"设置环境变量"}
+
+event:delta
+data:{"seq":18,"content":" AI_MO"}
+
+event:delta
+data:{"seq":19,"content":"DE=dee"}
+
+event:delta
+data:{"seq":20,"content":"pseek "}
+
+event:delta
+data:{"seq":21,"content":"并注入有效的"}
+
+event:delta
+data:{"seq":22,"content":" DEEPS"}
+
+event:delta
+data:{"seq":23,"content":"EEK_AP"}
+
+event:delta
+data:{"seq":24,"content":"I_KEY。"}
+
+event:complete
+data:{"seq":25,"mode":"mock","model":"offline-mock","mocked":true,"totalChars":150}
+

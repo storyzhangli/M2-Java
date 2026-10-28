@@ -6,6 +6,13 @@
 > 文档定位：原理+工程+实战，覆盖调用链路、同步/流式机制、参数调优、故障排查与可运行代码
 > 前置知识：具备Spring Boot、依赖注入、Maven、HTTP、REST API基础；不要求机器学习专业背景
 
+>
+> **修订记录（2026-10-28，验收整改）**：
+> 1. 纠正 `ChatClient.call()` 执行时机——`call()` 仅返回 `CallResponseSpec`，终端操作 `call().content()` / `call().chatResponse()` 才真正发起模型调用；
+> 2. 明确 `stream()` 返回 `StreamResponseSpec`、`stream().content()` 产出的 `Flux<String>` 需被订阅才执行；
+> 3. 区分 HTTP/1.1 分块传输编码、HTTP/2 DATA 帧与 SSE 事件协议三层概念，SSE 不等同于 `Transfer-Encoding: chunked`；
+> 4. 流式控制器示例按 WebFlux 与 Spring MVC 分栈说明，MVC 栈（本项目）以 `SseEmitter` 桥接 `Flux`，不能直接返回 `Flux<String>`。
+
 ---
 
 ## 一、模型聊天 API 的基本结构与完整请求链路
@@ -49,7 +56,7 @@ sequenceDiagram
     模型服务->>模型服务: 模型推理生成内容
     模型服务-->>Spring AI: 返回完整 JSON 响应
     Spring AI->>Spring AI: 解析响应，封装为 ChatResponse 对象
-    Spring AI-->>业务代码: call() 返回，业务线程解除阻塞
+    Spring AI-->>业务代码: content()/chatResponse() 终端操作返回，业务线程解除阻塞
     业务代码->>业务代码: 提取文本 / 元数据，处理异常
 ```
 
@@ -108,15 +115,19 @@ String result = chatClient.prompt()
 
 #### 逐段职责
 
-| 方法        | 职责                                   | 是否触发网络请求 |
-| ----------- | -------------------------------------- | ---------------- |
-| `prompt()`  | 进入请求构建器，初始化Prompt构建       | ❌                |
-| `user(...)` | 添加用户角色消息                       | ❌                |
-| `call()`    | 触发同步HTTP请求，阻塞线程等待完整响应 | ✅                |
-| `content()` | 从ChatResponse中提取生成的纯文本内容   | ❌                |
+| 方法                  | 职责                                                          | 是否触发网络请求 |
+| --------------------- | ------------------------------------------------------------- | ---------------- |
+| `prompt()`            | 进入请求构建器，初始化 Prompt 构建                            | ❌               |
+| `user(...)`           | 添加用户角色消息                                              | ❌               |
+| `call()`              | 选择同步路径，返回 `CallResponseSpec` 响应规格对象            | ❌               |
+| `call().content()`    | 终端操作：真正执行模型调用，阻塞返回纯文本 `String`           | ✅               |
+| `call().chatResponse()` | 终端操作：执行模型调用，返回含用量/元数据的完整 `ChatResponse` | ✅               |
+| `stream().content()`  | 返回 `Flux<String>`，被订阅时才发起流式调用并逐块发出文本     | 订阅时触发       |
 
 >
-> 关键认知：构建阶段只在内存组装对象，`call()` 才真正触发网络IO与模型调用；调用期间业务线程全程阻塞。
+> 关键认知（2026-10-28 修订）：构建阶段只在内存组装对象；`call()` 本身只是 fluent API 的“路径选择器”，
+> 返回响应规格对象而不发请求，**终端操作** `call().content()` / `call().chatResponse()` 才真正触发网络 IO 与模型调用；
+> 流式侧 `stream().content()` 得到的是 `Flux<String>`，订阅发生后才开始消费模型流。调用终端操作期间业务线程全程阻塞。
 
 #### 适用场景与局限
 
@@ -139,10 +150,10 @@ String result = chatClient.prompt()
 
 ### 2.3 同步调用的生命周期
 
-1. **构建阶段**：调用prompt()到call()之前，内存操作，无IO
-2. **阻塞等待**：call()发送请求，线程阻塞，等待完整响应
-3. **响应返回**：完整响应接收解析，线程解除阻塞
-4. **异常抛出**：网络错误、认证失败、模型错误均抛出运行时异常
+1. **构建阶段**：调用 `prompt()` 到 `call()` 之前均为内存操作，无 IO；`call()` 只返回 `CallResponseSpec`，仍不发请求
+2. **终端操作触发**：执行 `call().content()` 或 `call().chatResponse()` 时才真正发起 HTTP 请求，线程阻塞等待完整响应
+3. **响应返回**：完整响应接收并解析为 `String` 或 `ChatResponse`，终端操作返回，线程解除阻塞
+4. **异常抛出**：网络错误、认证失败、模型错误均在终端操作处抛出运行时异常
 
 #### 异常可能出现的环节
 
@@ -177,7 +188,7 @@ String result = chatClient.prompt()
 
 | 层级                | 实现                              | 作用                          |
 | ------------------- | --------------------------------- | ----------------------------- |
-| 模型提供商流式API   | HTTP分块传输 / SSE协议            | 模型服务逐chunk返回生成内容   |
+| 模型提供商流式API   | SSE 事件协议（HTTP/1.1 常承载于分块传输，HTTP/2 承载于 DATA 帧） | 模型服务逐 chunk 返回生成内容 |
 | Spring AI内部响应流 | Flux<ChatResponse>                | 解析chunk，封装为响应式流对象 |
 | Java业务层          | Flux<String> / Flux<ChatResponse> | 业务层消费、转换、处理流      |
 | 前端展示层          | EventSource / fetch流式读取       | 浏览器逐字渲染展示            |
@@ -198,11 +209,11 @@ Flux<String> output = chatClient.prompt()
 
 #### 核心说明
 
-1. **`stream()`**：触发流式调用模式，返回`Flux`响应式对象，调用时不阻塞、不发请求
-2. **`Flux<String>`**：字符串增量流，每个元素是一段生成的文本
-3. **`Flux<ChatResponse>`**：完整响应流，每个chunk包含文本+元数据
-4. **执行时机**：调用`subscribe()`、`collectList()`、`block()`等终端操作时，才真正发起请求
-5. **分块边界**：不保证一个chunk对应一个字、一个词或一句话，取决于模型分块策略
+1. **`stream()`**：选择流式调用模式，返回 `StreamResponseSpec` 响应规格对象，本身不阻塞、不发请求
+2. **`stream().content()`**：终端操作前的流组装步骤，产出 `Flux<String>` 字符串增量流，每个元素是一段生成文本
+3. **`stream().chatResponse()`**：产出 `Flux<ChatResponse>` 完整响应流，每个 chunk 包含文本与元数据
+4. **执行时机**：`Flux` 是懒执行的，只有 `subscribe()`、`collectList()`、`block()` 等终端订阅发生后，才真正发起流式 HTTP 请求
+5. **分块边界**：不保证一个chunk对应一个字、一个词或一句话，取决于模型分块策略；SSE 事件边界由协议空行分隔，与 TCP/HTTP 数据块不是一一对应关系
 
 #### 常用流操作
 
@@ -234,11 +245,11 @@ Server-Sent Events（服务器推送事件）是HTTP标准协议，服务器单�
 
 #### 与 Spring AI Flux 的关系
 
-- Spring AI的`Flux`是**内部响应式抽象**，和HTTP协议无关
-- 要向前端提供SSE接口，需要在Controller层做协议转换
-  - Spring WebFlux：原生支持`ServerSentEvent`返回，适配最好
-  - Spring MVC：也可实现SSE，但需要手动处理分块
-- 不能直接把`Flux<String>`当作SSE返回给浏览器，格式不匹配
+- Spring AI 的 `Flux` 是**内部响应式抽象**，和 HTTP 协议无关
+- 要向前端提供 SSE 接口，需要在 Controller 层做协议转换，且转换方式取决于服务端技术栈：
+  - Spring WebFlux（反应式栈）：控制器可直接返回 `Flux<String>` 或 `Flux<ServerSentEvent<?>>`，框架自动完成 SSE 编码
+  - Spring MVC（Servlet/Tomcat 栈，本项目 D14 即此栈）：**不能**直接返回 `Flux`，需返回 `SseEmitter`，在 `subscribe` 回调中把 `Flux` 的增量手工桥接为命名 SSE 事件（start/delta/complete/error），并在终态时 `complete()`
+- 因此“返回 `Flux<String>` 就天然构成完整 SSE 接口”只在 WebFlux 栈成立；MVC 栈的正确做法是 `SseEmitter` 桥接，具体实现见 D14 模块 `ChatStreamController`
 
 #### 前端两种消费方式
 
@@ -476,7 +487,9 @@ public String controlledChat(String question, double temperature, int maxTokens)
 }
 ```
 
-### 7.3 流式调用与 SSE 接口
+### 7.3 流式调用与 SSE 接口（按技术栈区分，不可混用）
+
+#### 写法一：Spring WebFlux 栈可直接返回 Flux（框架自动编码为 SSE）
 
 ```
 @RestController
@@ -490,20 +503,39 @@ public class ChatController {
     }
 
     /**
-     * 流式文本输出，返回SSE事件
+     * 仅在 WebFlux 反应式栈成立：返回值 Flux 由框架适配为 SSE 事件流
      */
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamChat(@RequestParam String question) {
         return chatClient.prompt()
                 .user(question)
                 .stream()
-                .content()
-                .doOnNext(chunk -> {
-                    // 可添加日志、脱敏等处理
-                });
+                .content();
     }
 }
 ```
+
+#### 写法二：Spring MVC 栈必须用 SseEmitter 桥接（本项目 D14 的真实做法，示意）
+
+```
+@PostMapping(value = "/chat/stream", produces = "text/event-stream;charset=UTF-8")
+public SseEmitter streamChat(@RequestBody ChatRequest request) {
+    SseEmitter emitter = new SseEmitter(timeoutMs);          // MVC 异步响应载体
+    aiChatService.streamChat(request.getMessage())           // 内部 Flux<String>
+            .timeout(Duration.ofMillis(timeoutMs))           // 应用层超时，触发 error 事件
+            .subscribe(
+                chunk -> emitter.send(SseEmitter.event().name("delta").data(chunk, APPLICATION_JSON)),
+                error -> { emitter.send(SseEmitter.event().name("error").data(toError(error), APPLICATION_JSON));
+                           emitter.complete(); },
+                ()    -> { emitter.send(SseEmitter.event().name("complete").data(summary, APPLICATION_JSON));
+                           emitter.complete(); }
+            );
+    return emitter;                                          // 先返回 emitter，后续异步写事件
+}
+```
+
+> 注意：上例为原理示意，省略了并发锁、终态幂等与请求标识处理；可运行的完整实现以 D14 模块
+> `com.zl.d14.controller.ChatStreamController` 源码为准。MVC 栈直接 `return Flux<String>` 不会自动得到 SSE 接口。
 
 ### 7.4 对照实验设计（待执行验证）
 
@@ -650,3 +682,5 @@ public class ChatController {
 [4] Chat Completions API | 聊天补全 API：[https://api-docs.deepseek.com/zh-cn/api/create-chat-completion/](https://api-docs.deepseek.com/zh-cn/api/create-chat-completion/)
 [5] Models & Pricing | 模型与价格：[https://api-docs.deepseek.com/zh-cn/quick_start/pricing](https://api-docs.deepseek.com/zh-cn/quick_start/pricing)
 [6] Spring AI 1.1.8 Release Notes | Spring AI 1.1.8 发布记录：[https://github.com/spring-projects/spring-ai/releases/tag/v1.1.8](https://github.com/spring-projects/spring-ai/releases/tag/v1.1.8)
+[7] Parsing an event stream | 事件流解析标准（WHATWG HTML，SSE 行结束与分帧规则）：[https://html.spec.whatwg.org/multipage/server-sent-events.html](https://html.spec.whatwg.org/multipage/server-sent-events.html)
+[8] RFC 9113 - HTTP/2 | HTTP/2 规范（DATA 帧机制）：[https://www.rfc-editor.org/rfc/rfc9113](https://www.rfc-editor.org/rfc/rfc9113)

@@ -1,0 +1,13 @@
+X-Request-ID: 0e0e6ae9f7fc4d7a80cd33dd625350fb
+Cache-Control: no-cache
+X-Accel-Buffering: no
+Transfer-Encoding: chunked
+Date: Wed, 28 Oct 2026 07:37:50 GMT
+Content-Type: text/event-stream
+
+event:start
+data:{"requestId":"0e0e6ae9f7fc4d7a80cd33dd625350fb","mode":"mock","model":"offline-mock"}
+
+event:error
+data:{"code":5000,"message":"流式响应超时，连接已关闭"}
+

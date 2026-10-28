@@ -1,0 +1,372 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< org.ai.m2:D14_SSE_RMT >------------------------
+[INFO] Building D14_SSE_RMT 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ D14_SSE_RMT ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ D14_SSE_RMT ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ D14_SSE_RMT ---
+[INFO] skip non existing resourceDirectory E:\AI\project\AI-Learning-one\M2-Java\D14\D14_SSE_RMT\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ D14_SSE_RMT ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 13 source files with javac [debug parameters release 21] to target\test-classes
+[INFO] ��������·���з�����һ�����������������������
+  ��ע������δ�����а�� javac ���ܻ������ע������
+  �������ٰ�����ָ����һ���������� (-processor)��
+  ��ָ��������·�� (--processor-path, --processor-module-path)��
+  ����ʽ��������ע���� (-proc:only, -proc:full)��
+  ��ʹ�� -Xlint:-options ���ش���Ϣ��
+  ��ʹ�� -proc:none ������ע������
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ D14_SSE_RMT ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.zl.d14.ApplicationContextLoadTest
+15:32:55.952 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.zl.d14.ApplicationContextLoadTest]: ApplicationContextLoadTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:32:56.160 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.ApplicationContextLoadTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28 15:32:57.083 INFO  [background-preinit] [requestId=] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-10-28 15:32:57.146 INFO  [main] [requestId=] c.zl.d14.ApplicationContextLoadTest - Starting ApplicationContextLoadTest using Java 21.0.7 with PID 18264 (started by zl in E:\AI\project\AI-Learning-one\M2-Java\D14\D14_SSE_RMT)
+2026-10-28 15:32:57.147 INFO  [main] [requestId=] c.zl.d14.ApplicationContextLoadTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28 15:32:59.114 INFO  [main] [requestId=] o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-10-28 15:33:00.383 INFO  [main] [requestId=] c.zl.d14.ApplicationContextLoadTest - Started ApplicationContextLoadTest in 3.964 seconds (process running for 5.61)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (D:\SoftwareInstall\Apache\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.063 s -- in com.zl.d14.ApplicationContextLoadTest
+[INFO] Running com.zl.d14.ChatLengthValidationTest
+2026-10-28 15:33:01.751 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d14.ChatLengthValidationTest]: ChatLengthValidationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28 15:33:01.766 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.ChatLengthValidationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28 15:33:01.851 INFO  [main] [requestId=] com.zl.d14.ChatLengthValidationTest - Starting ChatLengthValidationTest using Java 21.0.7 with PID 18264 (started by zl in E:\AI\project\AI-Learning-one\M2-Java\D14\D14_SSE_RMT)
+2026-10-28 15:33:01.851 INFO  [main] [requestId=] com.zl.d14.ChatLengthValidationTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28 15:33:02.496 INFO  [main] [requestId=] o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-10-28 15:33:02.774 INFO  [main] [requestId=] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-28 15:33:02.774 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-10-28 15:33:02.778 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-10-28 15:33:02.860 INFO  [main] [requestId=] com.zl.d14.ChatLengthValidationTest - Started ChatLengthValidationTest in 1.086 seconds (process running for 8.087)
+2026-10-28 15:33:03.156 WARN  [main] [requestId=1dd7eb9b10a74ce3895bb2d0ea8e7dfe] ACCESS_LOG - {"event":"CONTROLLER_ERROR","requestId":"1dd7eb9b10a74ce3895bb2d0ea8e7dfe","controllerMethod":"ChatController#chat","elapsedMs":13,"args":{"request":{"value":"{\"message\":\"abcdefghij\"}","truncated":false}},"exception":"java.lang.IllegalArgumentException","errorMessage":"message ���ȳ�����ǰ���� 5 ���ַ��������̺�����"}
+2026-10-28 15:33:03.161 WARN  [main] [requestId=1dd7eb9b10a74ce3895bb2d0ea8e7dfe] c.z.d.common.GlobalExceptionHandler - ��������쳣: message ���ȳ�����ǰ���� 5 ���ַ��������̺�����
+2026-10-28 15:33:03.190 INFO  [main] [requestId=1dd7eb9b10a74ce3895bb2d0ea8e7dfe] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"1dd7eb9b10a74ce3895bb2d0ea8e7dfe","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"24"},"requestBody":{"contentType":"application/json","size":24,"body":"{\"message\":\"abcdefghij\"}","truncated":false}}
+2026-10-28 15:33:03.192 INFO  [main] [requestId=1dd7eb9b10a74ce3895bb2d0ea8e7dfe] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"1dd7eb9b10a74ce3895bb2d0ea8e7dfe","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":226,"responseBody":{"contentType":"application/json","size":99,"body":"{\"code\":4001,\"msg\":\"message ���ȳ�����ǰ���� 5 ���ַ��������̺�����\",\"data\":null}","truncated":false}}
+2026-10-28 15:33:03.271 INFO  [main] [requestId=08069f55693849119dd4141175ea126b] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=3
+2026-10-28 15:33:03.272 INFO  [main] [requestId=08069f55693849119dd4141175ea126b] c.zl.d14.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
+2026-10-28 15:33:03.275 INFO  [main] [requestId=08069f55693849119dd4141175ea126b] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"08069f55693849119dd4141175ea126b","controllerMethod":"ChatController#chat","elapsedMs":2,"args":{"request":{"value":"{\"message\":\"abc\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺��abc����������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
+2026-10-28 15:33:03.281 INFO  [main] [requestId=08069f55693849119dd4141175ea126b] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"08069f55693849119dd4141175ea126b","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"17"},"requestBody":{"contentType":"application/json","size":17,"body":"{\"message\":\"abc\"}","truncated":false}}
+2026-10-28 15:33:03.281 INFO  [main] [requestId=08069f55693849119dd4141175ea126b] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"08069f55693849119dd4141175ea126b","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":10,"responseBody":{"contentType":"application/json","size":328,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺��abc����������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","truncated":false}}
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.537 s -- in com.zl.d14.ChatLengthValidationTest
+[INFO] Running com.zl.d14.DeepSeekKeyProtectionTest
+2026-10-28 15:33:03.298 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d14.DeepSeekKeyProtectionTest]: DeepSeekKeyProtectionTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28 15:33:03.309 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.DeepSeekKeyProtectionTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28 15:33:03.349 INFO  [main] [requestId=] c.zl.d14.DeepSeekKeyProtectionTest - Starting DeepSeekKeyProtectionTest using Java 21.0.7 with PID 18264 (started by zl in E:\AI\project\AI-Learning-one\M2-Java\D14\D14_SSE_RMT)
+2026-10-28 15:33:03.349 INFO  [main] [requestId=] c.zl.d14.DeepSeekKeyProtectionTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28 15:33:04.707 INFO  [main] [requestId=] o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-10-28 15:33:04.969 INFO  [main] [requestId=] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-28 15:33:04.972 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-10-28 15:33:04.975 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 3 ms
+2026-10-28 15:33:05.007 INFO  [main] [requestId=] c.zl.d14.DeepSeekKeyProtectionTest - Started DeepSeekKeyProtectionTest in 1.692 seconds (process running for 10.234)
+2026-10-28 15:33:05.083 INFO  [main] [requestId=9d046daa25f24a4496635fb906d6964d] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=12
+2026-10-28 15:33:05.084 WARN  [main] [requestId=9d046daa25f24a4496635fb906d6964d] ACCESS_LOG - {"event":"CONTROLLER_ERROR","requestId":"9d046daa25f24a4496635fb906d6964d","controllerMethod":"ChatController#chat","elapsedMs":2,"args":{"request":{"value":"{\"message\":\"��ʵģʽռλ��Կ��������\"}","truncated":false}},"exception":"com.zl.d14.common.AiConfigurationException","errorMessage":"deepseek ��ʵģʽδ������Ч��Կ��DEEPSEEK_API_KEY ȱʧ��Ϊ�հ׻���Ϊռλ��Կ������ֹ�����ⲿ����"}
+2026-10-28 15:33:05.087 ERROR [main] [requestId=9d046daa25f24a4496635fb906d6964d] c.z.d.common.GlobalExceptionHandler - AI ����У��ʧ��: deepseek ��ʵģʽδ������Ч��Կ��DEEPSEEK_API_KEY ȱʧ��Ϊ�հ׻���Ϊռλ��Կ������ֹ�����ⲿ����
+2026-10-28 15:33:05.093 INFO  [main] [requestId=9d046daa25f24a4496635fb906d6964d] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"9d046daa25f24a4496635fb906d6964d","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"50"},"requestBody":{"contentType":"application/json","size":50,"body":"{\"message\":\"��ʵģʽռλ��Կ��������\"}","truncated":false}}
+2026-10-28 15:33:05.094 INFO  [main] [requestId=9d046daa25f24a4496635fb906d6964d] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"9d046daa25f24a4496635fb906d6964d","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":24,"responseBody":{"contentType":"application/json","size":97,"body":"{\"code\":5001,\"msg\":\"AI �������û��Ȩ�쳣��������Կ���������\",\"data\":null}","truncated":false}}
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.853 s -- in com.zl.d14.DeepSeekKeyProtectionTest
+[INFO] Running com.zl.d14.DeepSeekLiveSmokeTest
+[WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0 s -- in com.zl.d14.DeepSeekLiveSmokeTest
+[INFO] Running com.zl.d14.logging.AccessLogIntegrationTest
+2026-10-28 15:33:05.181 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d14.logging.AccessLogIntegrationTest]: AccessLogIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28 15:33:05.246 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.logging.AccessLogIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28 15:33:05.312 INFO  [main] [requestId=] c.z.d.l.AccessLogIntegrationTest - Starting AccessLogIntegrationTest using Java 21.0.7 with PID 18264 (started by zl in E:\AI\project\AI-Learning-one\M2-Java\D14\D14_SSE_RMT)
+2026-10-28 15:33:05.315 INFO  [main] [requestId=] c.z.d.l.AccessLogIntegrationTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28 15:33:06.097 INFO  [main] [requestId=] o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-10-28 15:33:06.451 INFO  [main] [requestId=] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-28 15:33:06.452 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-10-28 15:33:06.455 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 3 ms
+2026-10-28 15:33:06.483 INFO  [main] [requestId=] c.z.d.l.AccessLogIntegrationTest - Started AccessLogIntegrationTest in 1.23 seconds (process running for 11.71)
+2026-10-28 15:33:06.531 INFO  [main] [requestId=361535956bfc4860a51c25ceba28ec58] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=8
+2026-10-28 15:33:06.532 INFO  [main] [requestId=361535956bfc4860a51c25ceba28ec58] c.zl.d14.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
+2026-10-28 15:33:06.536 INFO  [main] [requestId=361535956bfc4860a51c25ceba28ec58] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"361535956bfc4860a51c25ceba28ec58","controllerMethod":"ChatController#chat","elapsedMs":3,"args":{"request":{"value":"{\"message\":\"������־��������\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺��������־�������ԡ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
+2026-10-28 15:33:06.552 INFO  [main] [requestId=361535956bfc4860a51c25ceba28ec58] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"361535956bfc4860a51c25ceba28ec58","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Authorization":"*****","Content-Length":"38"},"requestBody":{"contentType":"application/json","size":38,"body":"{\"message\":\"������־��������\"}","truncated":false}}
+2026-10-28 15:33:06.554 INFO  [main] [requestId=361535956bfc4860a51c25ceba28ec58] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"361535956bfc4860a51c25ceba28ec58","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":33,"responseBody":{"contentType":"application/json","size":349,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺��������־�������ԡ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","truncated":false}}
+2026-10-28 15:33:06.638 WARN  [main] [requestId=5440a3fab554430c8dbfd057eb707c57] c.z.d.common.GlobalExceptionHandler - ��������쳣: ������ȱʧ���ʽ�Ƿ�����Ҫ JSON �����Ұ��� message �ֶ�
+2026-10-28 15:33:06.642 INFO  [main] [requestId=5440a3fab554430c8dbfd057eb707c57] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"5440a3fab554430c8dbfd057eb707c57","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"13"},"requestBody":{"contentType":"application/json","size":13,"body":"<unparseable body, length=13>","truncated":false}}
+2026-10-28 15:33:06.643 INFO  [main] [requestId=5440a3fab554430c8dbfd057eb707c57] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"5440a3fab554430c8dbfd057eb707c57","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":8,"responseBody":{"contentType":"application/json","size":109,"body":"{\"code\":4001,\"msg\":\"������ȱʧ���ʽ�Ƿ�����Ҫ JSON �����Ұ��� message �ֶ�\",\"data\":null}","truncated":false}}
+2026-10-28 15:33:06.666 INFO  [main] [requestId=2dee4675c7fe4bd88d929739dd8d7309] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=3
+2026-10-28 15:33:06.667 INFO  [main] [requestId=2dee4675c7fe4bd88d929739dd8d7309] c.zl.d14.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
+2026-10-28 15:33:06.669 INFO  [main] [requestId=2dee4675c7fe4bd88d929739dd8d7309] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"2dee4675c7fe4bd88d929739dd8d7309","controllerMethod":"ChatController#chat","elapsedMs":1,"args":{"request":{"value":"{\"message\":\"��һ��\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺����һ�Ρ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
+2026-10-28 15:33:06.672 INFO  [main] [requestId=2dee4675c7fe4bd88d929739dd8d7309] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"2dee4675c7fe4bd88d929739dd8d7309","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"23"},"requestBody":{"contentType":"application/json","size":23,"body":"{\"message\":\"��һ��\"}","truncated":false}}
+2026-10-28 15:33:06.673 INFO  [main] [requestId=2dee4675c7fe4bd88d929739dd8d7309] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"2dee4675c7fe4bd88d929739dd8d7309","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":6,"responseBody":{"contentType":"application/json","size":334,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺����һ�Ρ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","truncated":false}}
+2026-10-28 15:33:06.677 INFO  [main] [requestId=1464f0f79ca842f4b07f7e619bf8de0d] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=3
+2026-10-28 15:33:06.679 INFO  [main] [requestId=1464f0f79ca842f4b07f7e619bf8de0d] c.zl.d14.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
+2026-10-28 15:33:06.680 INFO  [main] [requestId=1464f0f79ca842f4b07f7e619bf8de0d] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"1464f0f79ca842f4b07f7e619bf8de0d","controllerMethod":"ChatController#chat","elapsedMs":1,"args":{"request":{"value":"{\"message\":\"��һ��\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺����һ�Ρ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
+2026-10-28 15:33:06.682 INFO  [main] [requestId=1464f0f79ca842f4b07f7e619bf8de0d] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"1464f0f79ca842f4b07f7e619bf8de0d","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"23"},"requestBody":{"contentType":"application/json","size":23,"body":"{\"message\":\"��һ��\"}","truncated":false}}
+2026-10-28 15:33:06.683 INFO  [main] [requestId=1464f0f79ca842f4b07f7e619bf8de0d] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"1464f0f79ca842f4b07f7e619bf8de0d","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":4,"responseBody":{"contentType":"application/json","size":334,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺����һ�Ρ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","truncated":false}}
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.513 s -- in com.zl.d14.logging.AccessLogIntegrationTest
+[INFO] Running com.zl.d14.logging.AccessLogMaskingTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.059 s -- in com.zl.d14.logging.AccessLogMaskingTest
+[INFO] Running com.zl.d14.logging.AccessLogRealContainerTest
+2026-10-28 15:33:06.763 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d14.logging.AccessLogRealContainerTest]: AccessLogRealContainerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28 15:33:06.767 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.logging.AccessLogRealContainerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28 15:33:06.851 INFO  [main] [requestId=] c.z.d.l.AccessLogRealContainerTest - Starting AccessLogRealContainerTest using Java 21.0.7 with PID 18264 (started by zl in E:\AI\project\AI-Learning-one\M2-Java\D14\D14_SSE_RMT)
+2026-10-28 15:33:06.852 INFO  [main] [requestId=] c.z.d.l.AccessLogRealContainerTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28 15:33:07.902 INFO  [main] [requestId=] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 0 (http)
+2026-10-28 15:33:07.931 INFO  [main] [requestId=] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-auto-1"]
+2026-10-28 15:33:07.936 INFO  [main] [requestId=] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-10-28 15:33:07.937 INFO  [main] [requestId=] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.55]
+2026-10-28 15:33:08.088 INFO  [main] [requestId=] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-10-28 15:33:08.088 INFO  [main] [requestId=] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1230 ms
+2026-10-28 15:33:08.250 INFO  [main] [requestId=] o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-10-28 15:33:08.437 INFO  [main] [requestId=] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-auto-1"]
+2026-10-28 15:33:08.461 INFO  [main] [requestId=] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 49412 (http) with context path '/'
+2026-10-28 15:33:08.464 INFO  [main] [requestId=] c.z.d.l.AccessLogRealContainerTest - Started AccessLogRealContainerTest in 1.686 seconds (process running for 13.691)
+2026-10-28 15:33:08.665 INFO  [http-nio-auto-1-exec-1] [requestId=] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-28 15:33:08.665 INFO  [http-nio-auto-1-exec-1] [requestId=] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-10-28 15:33:08.666 INFO  [http-nio-auto-1-exec-1] [requestId=] o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-10-28 15:33:08.693 ERROR [http-nio-auto-1-exec-1] [requestId=329d63193d074b4e9ebc5d1b904a57cd] c.z.d.common.GlobalExceptionHandler - δԤ�ڵ�ϵͳ�쳣
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource no-such-endpoint-real.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at com.zl.d14.logging.CachedBodyAccessLogFilter.doFilterInternal(CachedBodyAccessLogFilter.java:69)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at com.zl.d14.logging.TraceIdFilter.doFilterInternal(TraceIdFilter.java:57)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:1272)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-10-28 15:33:08.705 INFO  [http-nio-auto-1-exec-1] [requestId=329d63193d074b4e9ebc5d1b904a57cd] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"329d63193d074b4e9ebc5d1b904a57cd","method":"GET","uri":"/no-such-endpoint-real","query":null,"clientIp":"127.0.0.1","headers":{"connection":"Upgrade, HTTP2-Settings","host":"localhost:49412","http2-settings":"AAEAAEAAAAIAAAAAAAMAAAAAAAQBAAAAAAUAAEAAAAYABgAA","upgrade":"h2c","user-agent":"Java-http-client/21.0.7","accept":"text/plain, application/json, application/yaml, application/*+json, */*"},"requestBody":{"contentType":null,"size":0,"body":null,"skipReason":"empty body or input stream never read by framework"}}
+2026-10-28 15:33:08.706 INFO  [http-nio-auto-1-exec-1] [requestId=329d63193d074b4e9ebc5d1b904a57cd] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"329d63193d074b4e9ebc5d1b904a57cd","method":"GET","uri":"/no-such-endpoint-real","httpStatus":200,"elapsedMs":32,"responseBody":{"contentType":"application/json","size":64,"body":"{\"code\":5000,\"msg\":\"ϵͳ��æ�����Ժ�����\",\"data\":null}","truncated":false}}
+2026-10-28 15:33:08.767 INFO  [http-nio-auto-1-exec-2] [requestId=a2504ed379894cdd87da9254fb492398] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=10
+2026-10-28 15:33:08.768 INFO  [http-nio-auto-1-exec-2] [requestId=a2504ed379894cdd87da9254fb492398] c.zl.d14.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
+2026-10-28 15:33:08.770 INFO  [http-nio-auto-1-exec-2] [requestId=a2504ed379894cdd87da9254fb492398] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"a2504ed379894cdd87da9254fb492398","controllerMethod":"ChatController#chat","elapsedMs":2,"args":{"request":{"value":"{\"message\":\"��ʵ������Ӧд�ز���\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺����ʵ������Ӧд�ز��ԡ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
+2026-10-28 15:33:08.773 INFO  [http-nio-auto-1-exec-2] [requestId=a2504ed379894cdd87da9254fb492398] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"a2504ed379894cdd87da9254fb492398","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"connection":"Upgrade, HTTP2-Settings","content-length":"44","host":"localhost:49412","http2-settings":"AAEAAEAAAAIAAAAAAAMAAAAAAAQBAAAAAAUAAEAAAAYABgAA","upgrade":"h2c","user-agent":"Java-http-client/21.0.7","accept":"text/plain, application/json, application/yaml, application/*+json, */*","authorization":"*****","content-type":"application/json"},"requestBody":{"contentType":"application/json","size":44,"body":"{\"message\":\"��ʵ������Ӧд�ز���\"}","truncated":false}}
+2026-10-28 15:33:08.774 INFO  [http-nio-auto-1-exec-2] [requestId=a2504ed379894cdd87da9254fb492398] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"a2504ed379894cdd87da9254fb492398","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":15,"responseBody":{"contentType":"application/json","size":355,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺����ʵ������Ӧд�ز��ԡ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","truncated":false}}
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.021 s -- in com.zl.d14.logging.AccessLogRealContainerTest
+[INFO] Running com.zl.d14.MockChatControllerTest
+2026-10-28 15:33:08.786 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d14.MockChatControllerTest]: MockChatControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28 15:33:08.791 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.MockChatControllerTest
+2026-10-28 15:33:08.808 WARN  [main] [requestId=75c57d1009834b659f9077b88262d501] c.z.d.common.GlobalExceptionHandler - ����У��ʧ��: message ����Ϊ�ջ򴿿հ�
+2026-10-28 15:33:08.812 INFO  [main] [requestId=75c57d1009834b659f9077b88262d501] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"75c57d1009834b659f9077b88262d501","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"14"},"requestBody":{"contentType":"application/json","size":14,"body":"{\"message\":\"\"}","truncated":false}}
+2026-10-28 15:33:08.812 INFO  [main] [requestId=75c57d1009834b659f9077b88262d501] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"75c57d1009834b659f9077b88262d501","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":11,"responseBody":{"contentType":"application/json","size":66,"body":"{\"code\":4001,\"msg\":\"message ����Ϊ�ջ򴿿հ�\",\"data\":null}","truncated":false}}
+2026-10-28 15:33:08.820 INFO  [main] [requestId=34d44961f31d429f96c0edc69fa52d10] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=9
+2026-10-28 15:33:08.821 INFO  [main] [requestId=34d44961f31d429f96c0edc69fa52d10] c.zl.d14.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
+2026-10-28 15:33:08.822 INFO  [main] [requestId=34d44961f31d429f96c0edc69fa52d10] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"34d44961f31d429f96c0edc69fa52d10","controllerMethod":"ChatController#chat","elapsedMs":0,"args":{"request":{"value":"{\"message\":\"�ظ�����һ���Բ���\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺���ظ�����һ���Բ��ԡ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
+2026-10-28 15:33:08.823 INFO  [main] [requestId=34d44961f31d429f96c0edc69fa52d10] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"34d44961f31d429f96c0edc69fa52d10","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"41"},"requestBody":{"contentType":"application/json","size":41,"body":"{\"message\":\"�ظ�����һ���Բ���\"}","truncated":false}}
+2026-10-28 15:33:08.824 INFO  [main] [requestId=34d44961f31d429f96c0edc69fa52d10] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"34d44961f31d429f96c0edc69fa52d10","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":4,"responseBody":{"contentType":"application/json","size":352,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺���ظ�����һ���Բ��ԡ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","truncated":false}}
+2026-10-28 15:33:08.827 INFO  [main] [requestId=224d0fc6a82e47a1b648d7244e748aae] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=9
+2026-10-28 15:33:08.827 INFO  [main] [requestId=224d0fc6a82e47a1b648d7244e748aae] c.zl.d14.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
+2026-10-28 15:33:08.828 INFO  [main] [requestId=224d0fc6a82e47a1b648d7244e748aae] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"224d0fc6a82e47a1b648d7244e748aae","controllerMethod":"ChatController#chat","elapsedMs":0,"args":{"request":{"value":"{\"message\":\"�ظ�����һ���Բ���\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺���ظ�����һ���Բ��ԡ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
+2026-10-28 15:33:08.829 INFO  [main] [requestId=224d0fc6a82e47a1b648d7244e748aae] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"224d0fc6a82e47a1b648d7244e748aae","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"41"},"requestBody":{"contentType":"application/json","size":41,"body":"{\"message\":\"�ظ�����һ���Բ���\"}","truncated":false}}
+2026-10-28 15:33:08.830 INFO  [main] [requestId=224d0fc6a82e47a1b648d7244e748aae] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"224d0fc6a82e47a1b648d7244e748aae","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":3,"responseBody":{"contentType":"application/json","size":352,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺���ظ�����һ���Բ��ԡ���������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","truncated":false}}
+2026-10-28 15:33:08.842 INFO  [main] [requestId=a7182f7353204b19b9e5fea64f60f3eb] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=19
+2026-10-28 15:33:08.842 INFO  [main] [requestId=a7182f7353204b19b9e5fea64f60f3eb] c.zl.d14.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
+2026-10-28 15:33:08.843 INFO  [main] [requestId=a7182f7353204b19b9e5fea64f60f3eb] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"a7182f7353204b19b9e5fea64f60f3eb","controllerMethod":"ChatController#chat","elapsedMs":1,"args":{"request":{"value":"{\"message\":\"�豸�����г����쳣�񶯣�Ӧ������Ų飿\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺���豸�����г����쳣�񶯣�Ӧ������Ų飿����������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
+2026-10-28 15:33:08.844 INFO  [main] [requestId=a7182f7353204b19b9e5fea64f60f3eb] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"a7182f7353204b19b9e5fea64f60f3eb","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"71"},"requestBody":{"contentType":"application/json","size":71,"body":"{\"message\":\"�豸�����г����쳣�񶯣�Ӧ������Ų飿\"}","truncated":false}}
+2026-10-28 15:33:08.845 INFO  [main] [requestId=a7182f7353204b19b9e5fea64f60f3eb] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"a7182f7353204b19b9e5fea64f60f3eb","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":3,"responseBody":{"contentType":"application/json","size":382,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺���豸�����г����쳣�񶯣�Ӧ������Ų飿����������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","truncated":false}}
+2026-10-28 15:33:08.858 WARN  [main] [requestId=96df0f2510544bed8ca8a2a6b83ed280] c.z.d.common.GlobalExceptionHandler - ����У��ʧ��: message ����Ϊ�ջ򴿿հ�
+2026-10-28 15:33:08.859 INFO  [main] [requestId=96df0f2510544bed8ca8a2a6b83ed280] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"96df0f2510544bed8ca8a2a6b83ed280","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"2"},"requestBody":{"contentType":"application/json","size":2,"body":"{}","truncated":false}}
+2026-10-28 15:33:08.860 INFO  [main] [requestId=96df0f2510544bed8ca8a2a6b83ed280] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"96df0f2510544bed8ca8a2a6b83ed280","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":3,"responseBody":{"contentType":"application/json","size":66,"body":"{\"code\":4001,\"msg\":\"message ����Ϊ�ջ򴿿հ�\",\"data\":null}","truncated":false}}
+2026-10-28 15:33:08.867 WARN  [main] [requestId=8214ba897e124eaa872f2a36f8cd988f] c.z.d.common.GlobalExceptionHandler - ��������쳣: ������ȱʧ���ʽ�Ƿ�����Ҫ JSON �����Ұ��� message �ֶ�
+2026-10-28 15:33:08.868 INFO  [main] [requestId=8214ba897e124eaa872f2a36f8cd988f] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"8214ba897e124eaa872f2a36f8cd988f","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"18"},"requestBody":{"contentType":"application/json","size":18,"body":"<unparseable body, length=18>","truncated":false}}
+2026-10-28 15:33:08.869 INFO  [main] [requestId=8214ba897e124eaa872f2a36f8cd988f] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"8214ba897e124eaa872f2a36f8cd988f","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":1,"responseBody":{"contentType":"application/json","size":109,"body":"{\"code\":4001,\"msg\":\"������ȱʧ���ʽ�Ƿ�����Ҫ JSON �����Ұ��� message �ֶ�\",\"data\":null}","truncated":false}}
+2026-10-28 15:33:08.879 WARN  [main] [requestId=403c16500d554578aaa58558a6e6a06b] c.z.d.common.GlobalExceptionHandler - ����У��ʧ��: message ����Ϊ�ջ򴿿հ�
+2026-10-28 15:33:08.880 INFO  [main] [requestId=403c16500d554578aaa58558a6e6a06b] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"403c16500d554578aaa58558a6e6a06b","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"17"},"requestBody":{"contentType":"application/json","size":17,"body":"{\"message\":\"   \"}","truncated":false}}
+2026-10-28 15:33:08.880 INFO  [main] [requestId=403c16500d554578aaa58558a6e6a06b] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"403c16500d554578aaa58558a6e6a06b","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":2,"responseBody":{"contentType":"application/json","size":66,"body":"{\"code\":4001,\"msg\":\"message ����Ϊ�ջ򴿿հ�\",\"data\":null}","truncated":false}}
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.100 s -- in com.zl.d14.MockChatControllerTest
+[INFO] Running com.zl.d14.MockNoExternalApiTest
+2026-10-28 15:33:08.886 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d14.MockNoExternalApiTest]: MockNoExternalApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28 15:33:08.889 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.MockNoExternalApiTest
+2026-10-28 15:33:08.902 INFO  [main] [requestId=10f44505d88a4a9895ad2fe46fc1de5b] c.zl.d14.controller.ChatController - �յ� AI ��������messageLength=4
+2026-10-28 15:33:08.902 INFO  [main] [requestId=10f44505d88a4a9895ad2fe46fc1de5b] c.zl.d14.controller.ChatController - AI ���촦����ɣ�mode=mock��mocked=true
+2026-10-28 15:33:08.902 INFO  [main] [requestId=10f44505d88a4a9895ad2fe46fc1de5b] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"10f44505d88a4a9895ad2fe46fc1de5b","controllerMethod":"ChatController#chat","elapsedMs":0,"args":{"request":{"value":"{\"message\":\"ping\"}","truncated":false}},"result":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺��ping����������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","resultTruncated":false}
+2026-10-28 15:33:08.903 INFO  [main] [requestId=10f44505d88a4a9895ad2fe46fc1de5b] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"10f44505d88a4a9895ad2fe46fc1de5b","method":"POST","uri":"/api/v1/ai/chat","query":null,"clientIp":"127.0.0.1","headers":{"Content-Type":"application/json;charset=UTF-8","Content-Length":"18"},"requestBody":{"contentType":"application/json","size":18,"body":"{\"message\":\"ping\"}","truncated":false}}
+2026-10-28 15:33:08.904 INFO  [main] [requestId=10f44505d88a4a9895ad2fe46fc1de5b] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"10f44505d88a4a9895ad2fe46fc1de5b","method":"POST","uri":"/api/v1/ai/chat","httpStatus":200,"elapsedMs":2,"responseBody":{"contentType":"application/json","size":329,"body":"{\"code\":200,\"msg\":\"success\",\"data\":{\"mode\":\"mock\",\"model\":\"offline-mock\",\"mocked\":true,\"content\":\"[MOCK:D01] ��ǰΪ����ģ��ģʽ��AI_MODE=mock����δ�����κ� DeepSeek �����������յ����⣺��ping����������ʵ�ش������û������� AI_MODE=deepseek ��ע����Ч�� DEEPSEEK_API_KEY��\"}}","truncated":false}}
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.027 s -- in com.zl.d14.MockNoExternalApiTest
+[INFO] Running com.zl.d14.springai.service.MockAiChatServiceStreamTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.428 s -- in com.zl.d14.springai.service.MockAiChatServiceStreamTest
+[INFO] Running com.zl.d14.springai.stream.ChatStreamErrorEventTest
+2026-10-28 15:33:09.344 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d14.springai.stream.ChatStreamErrorEventTest]: ChatStreamErrorEventTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28 15:33:09.375 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.springai.stream.ChatStreamErrorEventTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28 15:33:09.404 INFO  [main] [requestId=] c.z.d.s.s.ChatStreamErrorEventTest - Starting ChatStreamErrorEventTest using Java 21.0.7 with PID 18264 (started by zl in E:\AI\project\AI-Learning-one\M2-Java\D14\D14_SSE_RMT)
+2026-10-28 15:33:09.406 INFO  [main] [requestId=] c.z.d.s.s.ChatStreamErrorEventTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28 15:33:09.792 INFO  [main] [requestId=] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 0 (http)
+2026-10-28 15:33:09.794 INFO  [main] [requestId=] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-auto-2"]
+2026-10-28 15:33:09.794 INFO  [main] [requestId=] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-10-28 15:33:09.795 INFO  [main] [requestId=] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.55]
+2026-10-28 15:33:09.860 INFO  [main] [requestId=] o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-10-28 15:33:09.861 INFO  [main] [requestId=] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 452 ms
+2026-10-28 15:33:09.934 INFO  [main] [requestId=] o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-10-28 15:33:10.083 INFO  [main] [requestId=] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-auto-2"]
+2026-10-28 15:33:10.095 INFO  [main] [requestId=] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 49414 (http) with context path '/'
+2026-10-28 15:33:10.098 INFO  [main] [requestId=] c.z.d.s.s.ChatStreamErrorEventTest - Started ChatStreamErrorEventTest in 0.719 seconds (process running for 15.326)
+2026-10-28 15:33:10.140 INFO  [http-nio-auto-2-exec-1] [requestId=] o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-28 15:33:10.140 INFO  [http-nio-auto-2-exec-1] [requestId=] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-10-28 15:33:10.141 INFO  [http-nio-auto-2-exec-1] [requestId=] o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-10-28 15:33:10.169 ERROR [http-nio-auto-2-exec-1] [requestId=81531faff53c49bdac34f71dfb2f8cf8] c.z.d.c.ChatStreamController - SSE ���쳣������requestId=81531faff53c49bdac34f71dfb2f8cf8��code=5000���쳣����=RuntimeException
+2026-10-28 15:33:10.171 INFO  [http-nio-auto-2-exec-1] [requestId=81531faff53c49bdac34f71dfb2f8cf8] c.z.d.c.ChatStreamController - SSE ��ʽ�Ի��ѽ�����requestId=81531faff53c49bdac34f71dfb2f8cf8��mode=mock��messageLength=5
+2026-10-28 15:33:10.172 INFO  [http-nio-auto-2-exec-1] [requestId=81531faff53c49bdac34f71dfb2f8cf8] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"81531faff53c49bdac34f71dfb2f8cf8","controllerMethod":"ChatStreamController#streamChat","elapsedMs":22,"args":{"request":{"value":"{\"message\":\"�������쳣\"}","truncated":false},"response":"<container:LifecycleHttpServletResponse>"},"result":"<async-emitter:SseEmitter>","resultTruncated":false}
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.859 s -- in com.zl.d14.springai.stream.ChatStreamErrorEventTest
+[INFO] Running com.zl.d14.springai.stream.ChatStreamIntegrationTest
+2026-10-28 15:33:10.206 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d14.springai.stream.ChatStreamIntegrationTest]: ChatStreamIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28 15:33:10.207 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.springai.stream.ChatStreamIntegrationTest
+2026-10-28 15:33:10.231 INFO  [http-nio-auto-1-exec-3] [requestId=c1c753b98cab4577b95c519a1bdd24d9] ACCESS_LOG - {"event":"HTTP_REQUEST","requestId":"c1c753b98cab4577b95c519a1bdd24d9","method":"GET","uri":"/","query":null,"clientIp":"127.0.0.1","headers":{"connection":"Upgrade, HTTP2-Settings","host":"localhost:49412","http2-settings":"AAEAAEAAAAIAAAAAAAMAAAAAAAQBAAAAAAUAAEAAAAYABgAA","upgrade":"h2c","user-agent":"Java-http-client/21.0.7","accept":"application/octet-stream, application/json, application/yaml, application/*+json, */*"},"requestBody":{"contentType":null,"size":0,"body":null,"skipReason":"empty body or input stream never read by framework"}}
+2026-10-28 15:33:10.232 INFO  [http-nio-auto-1-exec-3] [requestId=c1c753b98cab4577b95c519a1bdd24d9] ACCESS_LOG - {"event":"HTTP_RESPONSE","requestId":"c1c753b98cab4577b95c519a1bdd24d9","method":"GET","uri":"/","httpStatus":200,"elapsedMs":14,"responseBody":{"contentType":"text/html","size":1776,"body":"<unparseable body, length=1558>","truncated":false}}
+2026-10-28 15:33:10.244 INFO  [http-nio-auto-1-exec-4] [requestId=4acc3712f1174ee39bc9c3fc14271d8c] c.z.d.c.ChatStreamController - SSE ��ʽ�Ի��ѽ�����requestId=4acc3712f1174ee39bc9c3fc14271d8c��mode=mock��messageLength=9
+2026-10-28 15:33:10.244 INFO  [http-nio-auto-1-exec-4] [requestId=4acc3712f1174ee39bc9c3fc14271d8c] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"4acc3712f1174ee39bc9c3fc14271d8c","controllerMethod":"ChatStreamController#streamChat","elapsedMs":1,"args":{"request":{"value":"{\"message\":\"SSE��ʽ��������\"}","truncated":false},"response":"<container:LifecycleHttpServletResponse>"},"result":"<async-emitter:SseEmitter>","resultTruncated":false}
+2026-10-28 15:33:10.929 WARN  [http-nio-auto-1-exec-6] [requestId=da59fe0072ac4f63a90565038bedd8d9] c.z.d.common.GlobalExceptionHandler - ����У��ʧ��: message ����Ϊ�ջ򴿿հ�
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.729 s -- in com.zl.d14.springai.stream.ChatStreamIntegrationTest
+[INFO] Running com.zl.d14.springai.stream.ChatStreamTimeoutTest
+2026-10-28 15:33:10.935 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.zl.d14.springai.stream.ChatStreamTimeoutTest]: ChatStreamTimeoutTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28 15:33:10.936 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.zl.d14.D14SpringAiApplication for test class com.zl.d14.springai.stream.ChatStreamTimeoutTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28 15:33:10.962 INFO  [main] [requestId=] c.z.d.s.stream.ChatStreamTimeoutTest - Starting ChatStreamTimeoutTest using Java 21.0.7 with PID 18264 (started by zl in E:\AI\project\AI-Learning-one\M2-Java\D14\D14_SSE_RMT)
+2026-10-28 15:33:10.962 INFO  [main] [requestId=] c.z.d.s.stream.ChatStreamTimeoutTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28 15:33:11.249 INFO  [main] [requestId=] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 0 (http)
+2026-10-28 15:33:11.250 INFO  [main] [requestId=] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-auto-3"]
+2026-10-28 15:33:11.250 INFO  [main] [requestId=] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-10-28 15:33:11.251 INFO  [main] [requestId=] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.55]
+2026-10-28 15:33:11.316 INFO  [main] [requestId=] o.a.c.c.C.[Tomcat-2].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-10-28 15:33:11.316 INFO  [main] [requestId=] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 351 ms
+2026-10-28 15:33:11.385 INFO  [main] [requestId=] o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-10-28 15:33:11.496 INFO  [main] [requestId=] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-auto-3"]
+2026-10-28 15:33:11.507 INFO  [main] [requestId=] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 49418 (http) with context path '/'
+2026-10-28 15:33:11.509 INFO  [main] [requestId=] c.z.d.s.stream.ChatStreamTimeoutTest - Started ChatStreamTimeoutTest in 0.57 seconds (process running for 16.736)
+2026-10-28 15:33:11.527 INFO  [http-nio-auto-3-exec-1] [requestId=] o.a.c.c.C.[Tomcat-2].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-28 15:33:11.527 INFO  [http-nio-auto-3-exec-1] [requestId=] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-10-28 15:33:11.527 INFO  [http-nio-auto-3-exec-1] [requestId=] o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+2026-10-28 15:33:11.535 INFO  [http-nio-auto-3-exec-1] [requestId=c7ca78fcac714513b039def452c963df] c.z.d.c.ChatStreamController - SSE ��ʽ�Ի��ѽ�����requestId=c7ca78fcac714513b039def452c963df��mode=mock��messageLength=6
+2026-10-28 15:33:11.535 INFO  [http-nio-auto-3-exec-1] [requestId=c7ca78fcac714513b039def452c963df] ACCESS_LOG - {"event":"CONTROLLER_ACCESS","requestId":"c7ca78fcac714513b039def452c963df","controllerMethod":"ChatStreamController#streamChat","elapsedMs":1,"args":{"request":{"value":"{\"message\":\"��ʱר�����\"}","truncated":false},"response":"<container:LifecycleHttpServletResponse>"},"result":"<async-emitter:SseEmitter>","resultTruncated":false}
+2026-10-28 15:33:11.694 WARN  [parallel-4] [requestId=] c.z.d.c.ChatStreamController - SSE ��Ӧ�ò㳬ʱ������requestId=c7ca78fcac714513b039def452c963df��code=5000����ʱ��ֵ=150ms
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.769 s -- in com.zl.d14.springai.stream.ChatStreamTimeoutTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 37, Failures: 0, Errors: 0, Skipped: 1
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  28.473 s
+[INFO] Finished at: 2026-10-28T15:33:12+08:00
+[INFO] ------------------------------------------------------------------------

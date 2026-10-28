@@ -1,0 +1,17 @@
+D14_SSE_RMT surefire per-class summary  (generated 2026-10-28)
+
+TOTAL classes=13 tests=37 failures=0 errors=0 skipped=1
+
+com.zl.d14.ApplicationContextLoadTest                   tests= 4 failures=0 errors=0 skipped=0
+com.zl.d14.ChatLengthValidationTest                     tests= 2 failures=0 errors=0 skipped=0
+com.zl.d14.DeepSeekKeyProtectionTest                    tests= 2 failures=0 errors=0 skipped=0
+com.zl.d14.DeepSeekLiveSmokeTest                        tests= 1 failures=0 errors=0 skipped=1
+com.zl.d14.logging.AccessLogIntegrationTest             tests= 3 failures=0 errors=0 skipped=0
+com.zl.d14.logging.AccessLogMaskingTest                 tests= 8 failures=0 errors=0 skipped=0
+com.zl.d14.logging.AccessLogRealContainerTest           tests= 2 failures=0 errors=0 skipped=0
+com.zl.d14.MockChatControllerTest                       tests= 6 failures=0 errors=0 skipped=0
+com.zl.d14.MockNoExternalApiTest                        tests= 3 failures=0 errors=0 skipped=0
+com.zl.d14.springai.service.MockAiChatServiceStreamTest tests= 1 failures=0 errors=0 skipped=0
+com.zl.d14.springai.stream.ChatStreamErrorEventTest     tests= 1 failures=0 errors=0 skipped=0
+com.zl.d14.springai.stream.ChatStreamIntegrationTest    tests= 3 failures=0 errors=0 skipped=0
+com.zl.d14.springai.stream.ChatStreamTimeoutTest        tests= 1 failures=0 errors=0 skipped=0

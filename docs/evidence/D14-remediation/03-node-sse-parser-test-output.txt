@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: LF 行结束：一次性喂入可解析出三个有序事件
+ok 1 - LF 行结束：一次性喂入可解析出三个有序事件
+  ---
+  duration_ms: 1.868
+  type: 'test'
+  ...
+# Subtest: CRLF 行结束：\\r\\n\\r\\n 空行可正确分帧（回归此前只识别 \\n\\n 的缺陷）
+ok 2 - CRLF 行结束：\\r\\n\\r\\n 空行可正确分帧（回归此前只识别 \\n\\n 的缺陷）
+  ---
+  duration_ms: 0.6095
+  type: 'test'
+  ...
+# Subtest: CR 行结束：单独 \\r\\r 空行同样可分帧（末尾暂存的 \\r 由 flush 落地）
+ok 3 - CR 行结束：单独 \\r\\r 空行同样可分帧（末尾暂存的 \\r 由 flush 落地）
+  ---
+  duration_ms: 0.2492
+  type: 'test'
+  ...
+# Subtest: 逐字符 feed：三种行结束符下结果与一次性喂入一致
+ok 4 - 逐字符 feed：三种行结束符下结果与一次性喂入一致
+  ---
+  duration_ms: 1.7939
+  type: 'test'
+  ...
+# Subtest: CRLF 的 \\r 与 \\n 被切到两次 feed：不会被误判为空行
+ok 5 - CRLF 的 \\r 与 \\n 被切到两次 feed：不会被误判为空行
+  ---
+  duration_ms: 1.9109
+  type: 'test'
+  ...
+# Subtest: 多行 data 按 LF 拼接，且仅移除一个前导空格
+ok 6 - 多行 data 按 LF 拼接，且仅移除一个前导空格
+  ---
+  duration_ms: 0.1724
+  type: 'test'
+  ...
+# Subtest: flush：服务端未以空行结尾的最后一个事件块也能输出
+ok 7 - flush：服务端未以空行结尾的最后一个事件块也能输出
+  ---
+  duration_ms: 0.2225
+  type: 'test'
+  ...
+# Subtest: UTF-8 中文跨字节边界：逐字节喂入 TextDecoder(stream) 再进解析器，文本无损
+ok 8 - UTF-8 中文跨字节边界：逐字节喂入 TextDecoder(stream) 再进解析器，文本无损
+  ---
+  duration_ms: 0.6644
+  type: 'test'
+  ...
+# Subtest: reset 后历史缓存与事件全部清空
+ok 9 - reset 后历史缓存与事件全部清空
+  ---
+  duration_ms: 0.4012
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 148.5917

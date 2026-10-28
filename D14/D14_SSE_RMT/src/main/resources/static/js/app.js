@@ -1,7 +1,7 @@
 /*
  * D14 SSE 流式对话前端（原生 JavaScript，无第三方依赖）。
  * 选型：接口为 POST JSON，浏览器原生 EventSource 仅支持 GET 且无法自由设置请求体，
- *      因此使用 fetch + ReadableStream 手工解析 SSE 帧，与后端 POST /chat/stream 契约一致。
+ *      因此使用 fetch + ReadableStream 读取字节流，分帧交给 sse-parser.js（兼容 LF/CR/CRLF）。
  * 安全：模型输出与用户输入一律通过 textContent 渲染为纯文本，禁止 innerHTML 注入，避免 XSS。
  */
 (function () {
@@ -184,57 +184,40 @@
     }
 
     /**
-     * 读取 ReadableStream 并按 SSE 帧（空行分隔）解析，兼容 \n 与 \r\n。
+     * 读取 ReadableStream，交给独立的 SseParser 按 SSE 帧协议解析。
+     * 解析器兼容 LF/CR/CRLF 三种行结束符与任意切块边界（见 sse-parser.js 及其 Node 测试）。
      * 返回 'complete' | 'error-event' | 'interrupted'。
      */
     function consumeStream(body, assistantRef) {
         var reader = body.getReader();
         var decoder = new TextDecoder('utf-8');
-        var buffer = '';
         var gotComplete = false;
         var gotError = false;
 
-        function handleBlock(block) {
-            var eventName = 'message';
-            var dataLines = [];
-            block.split(/\r?\n/).forEach(function (line) {
-                if (line.indexOf('event:') === 0) {
-                    eventName = line.slice('event:'.length).trim();
-                } else if (line.indexOf('data:') === 0) {
-                    var data = line.slice('data:'.length);
-                    dataLines.push(data.charAt(0) === ' ' ? data.slice(1) : data);
-                }
-            });
-            if (dataLines.length === 0) {
-                return;
-            }
+        // 分帧逻辑收敛到无 DOM 依赖的 SseParser，本处只负责 JSON 解析与页面分发
+        var parser = SseParser.createSseParser(function (evt) {
             var payload;
             try {
-                payload = JSON.parse(dataLines.join('\n'));
+                payload = JSON.parse(evt.data);
             } catch (e) {
                 // 无法解析的事件直接忽略，不把原始字符串当作 HTML/文本注入
                 return;
             }
-            dispatchEvent(eventName, payload, assistantRef, function () { gotError = true; }, function () { gotComplete = true; });
-        }
+            dispatchEvent(evt.name, payload, assistantRef,
+                function () { gotError = true; },
+                function () { gotComplete = true; });
+        });
 
         function pump() {
             return reader.read().then(function (chunk) {
                 if (chunk.done) {
-                    if (buffer.trim() !== '') {
-                        handleBlock(buffer);
-                    }
+                    parser.flush();
                     if (gotComplete) { return 'complete'; }
                     if (gotError) { return 'error-event'; }
                     return 'interrupted';
                 }
-                buffer += decoder.decode(chunk.value, { stream: true });
-                var separatorIndex;
-                while ((separatorIndex = buffer.indexOf('\n\n')) !== -1) {
-                    var rawBlock = buffer.slice(0, separatorIndex);
-                    buffer = buffer.slice(separatorIndex + 2);
-                    handleBlock(rawBlock);
-                }
+                // stream:true 保证跨 chunk 的 UTF-8 多字节中文不会被截断成乱码
+                parser.feed(decoder.decode(chunk.value, { stream: true }));
                 scrollToBottom();
                 return pump();
             });

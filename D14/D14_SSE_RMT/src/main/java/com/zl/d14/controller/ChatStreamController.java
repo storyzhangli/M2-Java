@@ -24,6 +24,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.core.Disposable;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,11 +47,21 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * <p>异常分期处理：参数/长度校验在返回 emitter 之前抛出，由 {@code GlobalExceptionHandler}
  * 归一为普通 JSON 错误响应（此时 SSE 尚未开始）；流开始后的异常走 {@code error} 事件。</p>
+ *
+ * <p>超时采用两层设计：应用层 Reactor {@code timeout} 按 {@code app.ai.stream-timeout-ms} 在连接健康时
+ * 取消上游并下发超时 error 事件（主路径）；SseEmitter 容器超时在配置值之上保留 5 秒余量作为兜底，
+ * 防止应用线程被异常卡死时连接无法释放。</p>
  */
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/ai")
 public class ChatStreamController {
+
+    /**
+     * 容器级 SseEmitter 超时相对应用层超时的兜底余量（毫秒）。
+     * 正常情况下应用层 Reactor timeout 先生效并主动收尾，容器超时只在响应线程被异常卡死等极端场景兜底。
+     */
+    private static final long CONTAINER_TIMEOUT_GRACE_MS = 5000L;
 
     private final AiChatService aiChatService;
     private final AiProperties aiProperties;
@@ -76,7 +88,10 @@ public class ChatStreamController {
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("X-Accel-Buffering", "no");
 
-        SseEmitter emitter = new SseEmitter(aiProperties.getStreamTimeoutMs());
+        long streamTimeoutMs = aiProperties.getStreamTimeoutMs();
+        // 应用层超时是主路径：交由 Reactor timeout 在连接仍健康时走 onError 下发 error 事件；
+        // 容器超时只作兜底，因此在配置值之上保留一段余量，避免两者同时触发竞争。
+        SseEmitter emitter = new SseEmitter(streamTimeoutMs + CONTAINER_TIMEOUT_GRACE_MS);
         // 在请求线程抓取 requestId；reactor 回调线程不保证继承 MDC，后续日志显式带该值
         String requestId = MDC.get(TraceIdFilter.MDC_REQUEST_ID);
         String mode = aiProperties.getMode();
@@ -88,6 +103,9 @@ public class ChatStreamController {
         AtomicReference<Disposable> subscriptionRef = new AtomicReference<>();
 
         Disposable subscription = aiChatService.streamChat(message)
+                // 规定时间内没有任何结束信号即判定超时：timeout 会取消上游 Flux 并下发 TimeoutException，
+                // 从而在正常响应通道内发送 error 事件，不依赖容器超时后是否还允许写连接
+                .timeout(Duration.ofMillis(streamTimeoutMs))
                 .doOnSubscribe(s -> {
                     // 订阅时刻仍在请求线程，先发送 start；若此刻连接已失效则直接终止，不继续消费模型流
                     boolean sent = safeSend(emitter, finished, "start",
@@ -98,7 +116,15 @@ public class ChatStreamController {
                 })
                 .subscribe(
                         chunk -> onDelta(emitter, finished, subscriptionRef, seq, totalChars, chunk),
-                        error -> onStreamError(emitter, finished, requestId, error),
+                        error -> {
+                            // 终态信号后显式 dispose 幂等无害，确保上游连接/计费立即停止；
+                            // 此处订阅对象尚在赋值表达式内，只能通过前置的 subscriptionRef 获取
+                            Disposable current = subscriptionRef.get();
+                            if (current != null) {
+                                current.dispose();
+                            }
+                            onStreamError(emitter, finished, requestId, error);
+                        },
                         () -> onComplete(emitter, finished, mode, model, seq, totalChars)
                 );
         subscriptionRef.set(subscription);
@@ -108,14 +134,13 @@ public class ChatStreamController {
             finished.set(true);
             subscription.dispose();
         });
-        // 服务端超时：发安全错误事件（尽力而为）后关闭，并取消上游订阅释放资源
+        // 容器级兜底超时（正常路径已被上方 Reactor timeout 处理，此处仅在极端卡死场景触发）：
+        // 先取消上游订阅停止模型消费，再在同一把锁内“先发超时 error 事件、后置终态标记并收尾”。
+        // 注意不能先把 finished 置 true——safeSend 会拒绝终态后的一切写入，导致超时 error 事件永远发不出去。
         emitter.onTimeout(() -> {
-            log.warn("SSE 流超时关闭，requestId={}", requestId);
-            finished.set(true);
-            safeSend(emitter, finished, "error",
-                    new SsePayloads.Error(ResultCode.SYSTEM_ERROR.getCode(), "流式响应超时，连接已关闭"));
+            log.warn("SSE 容器兜底超时关闭，requestId={}", requestId);
             subscription.dispose();
-            emitter.complete();
+            handleTimeout(emitter, finished);
         });
         // 客户端断网/关闭页面等连接级错误：仅清理订阅，不向已失效连接写数据
         emitter.onError(ex -> {
@@ -153,12 +178,20 @@ public class ChatStreamController {
                                String requestId,
                                Throwable error) {
         ResultCode resultCode = resolveResultCode(error);
+        // 应用层 Reactor 超时：沿用系统错误码 5000，但对外给明确的超时文案
+        boolean timeout = error instanceof TimeoutException;
+        String clientMessage = timeout ? "流式响应超时，连接已关闭" : resultCode.getMsg();
         // 诊断细节只记类型与 requestId，不记上游报文/密钥；对外给固定安全文案
-        log.error("SSE 流异常结束，requestId={}，code={}，异常类型={}",
-                requestId, resultCode.getCode(), error.getClass().getSimpleName());
+        if (timeout) {
+            log.warn("SSE 流应用层超时结束，requestId={}，code={}，超时阈值={}ms",
+                    requestId, resultCode.getCode(), aiProperties.getStreamTimeoutMs());
+        } else {
+            log.error("SSE 流异常结束，requestId={}，code={}，异常类型={}",
+                    requestId, resultCode.getCode(), error.getClass().getSimpleName());
+        }
 
         safeSend(emitter, finished, "error",
-                new SsePayloads.Error(resultCode.getCode(), resultCode.getMsg()));
+                new SsePayloads.Error(resultCode.getCode(), clientMessage));
         finishQuietly(emitter, finished);
     }
 
@@ -207,6 +240,37 @@ public class ChatStreamController {
             } catch (IOException | IllegalStateException e) {
                 finished.set(true);
                 return false;
+            }
+        }
+    }
+
+    /**
+     * 超时终态处理：在发送锁内按“先发 error 事件、再置终态、最后 complete 收尾”的顺序执行。
+     *
+     * <p>超时回调与 reactor 线程的 delta/complete、容器的 completion/error 回调可能并发，
+     * 因此复用 emitter 监视器；{@code finished} 保证整个生命周期只有一个终态落地，
+     * 若正常完成或流异常已经抢先收尾，超时回调不再重复发送事件。</p>
+     */
+    private void handleTimeout(SseEmitter emitter, AtomicBoolean finished) {
+        synchronized (emitter) {
+            if (finished.get()) {
+                return;
+            }
+            try {
+                // 此时 finished 仍为 false，可以合法发送；绝不能在发送前置位
+                emitter.send(SseEmitter.event().name("error")
+                        .data(new SsePayloads.Error(
+                                        ResultCode.SYSTEM_ERROR.getCode(), "流式响应超时，连接已关闭"),
+                                MediaType.APPLICATION_JSON));
+            } catch (IOException | IllegalStateException e) {
+                // 底层连接可能已被容器关闭，发送失败不再抛出，保证收尾流程继续
+                log.warn("超时 error 事件发送失败，连接可能已关闭：{}", e.getClass().getSimpleName());
+            }
+            finished.set(true);
+            try {
+                emitter.complete();
+            } catch (IllegalStateException ignored) {
+                // 容器可能已经结束异步上下文，忽略幂等收尾冲突
             }
         }
     }
