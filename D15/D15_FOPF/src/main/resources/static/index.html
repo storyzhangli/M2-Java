@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D14 SSE 流式对话演示</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<main class="chat-shell">
+    <header class="chat-header">
+        <div>
+            <h1>D14 流式对话（SSE）</h1>
+            <p class="sub">同源部署 · POST + fetch ReadableStream 解析 · 纯文本安全渲染</p>
+        </div>
+        <div class="header-actions">
+            <span id="modeBadge" class="badge">模式检测中…</span>
+            <button id="newChatBtn" type="button" class="btn btn-ghost" title="清空当前页面内容并开始新对话">新对话</button>
+        </div>
+    </header>
+
+    <section id="messageList" class="message-list" aria-live="polite">
+        <div class="empty-tip" id="emptyTip">还没有对话，在下方输入问题后点击“发送”。</div>
+    </section>
+
+    <footer class="chat-input-bar">
+        <div id="statusLine" class="status-line" role="status" aria-live="polite">就绪</div>
+        <div class="input-row">
+            <textarea id="messageInput" rows="2" maxlength="2000"
+                      placeholder="输入问题，Enter 发送，Shift+Enter 换行"></textarea>
+            <div class="btn-column">
+                <button id="sendBtn" type="button" class="btn btn-primary">发送</button>
+                <button id="stopBtn" type="button" class="btn btn-danger" disabled>停止</button>
+            </div>
+        </div>
+    </footer>
+</main>
+<!-- SSE 分帧解析器（无依赖，兼容 LF/CR/CRLF），须先于业务脚本加载 -->
+<script src="/js/sse-parser.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
