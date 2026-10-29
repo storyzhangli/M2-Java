@@ -1,0 +1,367 @@
+/* D14 流式对话最小样式：原生 CSS，无第三方 UI 框架 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, Segoe UI, sans-serif;
+    background: #f4f6f8;
+    color: #1f2933;
+}
+
+.chat-shell {
+    max-width: 880px;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    box-shadow: 0 0 24px rgba(15, 23, 42, 0.08);
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e4e7eb;
+    background: #ffffff;
+}
+
+.chat-header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.chat-header .sub {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.badge {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #e6f4f1;
+    color: #0f766e;
+    border: 1px solid #bfe3dc;
+}
+
+.message-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.empty-tip {
+    margin: auto;
+    color: #9aa5b1;
+    font-size: 14px;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 82%;
+}
+
+.message.user {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.message.assistant {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.message .role {
+    font-size: 12px;
+    color: #7b8794;
+    margin-bottom: 4px;
+}
+
+.message .bubble {
+    padding: 10px 14px;
+    border-radius: 12px;
+    line-height: 1.6;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.message.user .bubble {
+    background: #0f766e;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.message.assistant .bubble {
+    background: #f1f3f5;
+    color: #1f2933;
+    border-bottom-left-radius: 4px;
+}
+
+.message.assistant.error .bubble {
+    background: #fdecec;
+    color: #b42318;
+    border: 1px solid #f5c2c0;
+}
+
+.cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    margin-left: 2px;
+    background: #0f766e;
+    vertical-align: middle;
+    animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+    to { visibility: hidden; }
+}
+
+.chat-input-bar {
+    border-top: 1px solid #e4e7eb;
+    padding: 12px 20px 16px;
+    background: #ffffff;
+}
+
+.status-line {
+    font-size: 12px;
+    color: #6b7280;
+    min-height: 18px;
+    margin-bottom: 8px;
+}
+
+.status-line.error { color: #b42318; }
+.status-line.success { color: #0f766e; }
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+#messageInput {
+    flex: 1;
+    resize: none;
+    border: 1px solid #cbd2d9;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+}
+
+#messageInput:focus {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.15);
+}
+
+.btn-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btn {
+    border: 1px solid transparent;
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #0f766e;
+    color: #fff;
+}
+
+.btn-danger {
+    background: #fff;
+    color: #b42318;
+    border-color: #f5c2c0;
+}
+
+.btn-ghost {
+    background: #fff;
+    color: #334155;
+    border-color: #cbd2d9;
+}
+
+/* ===== D15 角色栏与模板管理页 ===== */
+.role-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e4e7eb;
+    background: #f8fafc;
+    font-size: 13px;
+}
+
+.role-bar select {
+    border: 1px solid #cbd2d9;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    background: #fff;
+}
+
+.nav-link {
+    font-size: 13px;
+    color: #0f766e;
+    text-decoration: none;
+    border: 1px solid #bfe3dc;
+    border-radius: 8px;
+    padding: 5px 12px;
+    background: #fff;
+}
+
+.admin-shell {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e4e7eb;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+
+.filter-bar input,
+.filter-bar select,
+.editor-form input,
+.editor-form select,
+.editor-form textarea {
+    border: 1px solid #cbd2d9;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+}
+
+.template-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid #e4e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 13px;
+}
+
+.template-table th,
+.template-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eef1f4;
+    text-align: left;
+    vertical-align: top;
+}
+
+.template-table th {
+    background: #f8fafc;
+    color: #52606d;
+    font-weight: 600;
+}
+
+.template-table tr:last-child td {
+    border-bottom: none;
+}
+
+.status-tag {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.status-tag.ENABLED {
+    background: #e6f4f1;
+    color: #0f766e;
+}
+
+.status-tag.DISABLED {
+    background: #fef3e2;
+    color: #b54708;
+}
+
+.row-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.row-actions .btn {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 8px;
+}
+
+.editor-panel {
+    background: #fff;
+    border: 1px solid #e4e7eb;
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 18px;
+}
+
+.editor-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.editor-form label {
+    font-size: 13px;
+    color: #52606d;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.editor-form textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.editor-form .form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.tip-line {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.6;
+}
