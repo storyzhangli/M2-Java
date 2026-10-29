@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D15 角色对话与 Prompt 模板演示</title>
+    <title>D16 思考推理与引用来源演示</title>
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
 <main class="chat-shell">
     <header class="chat-header">
         <div>
-            <h1>D15 双角色流式对话（SSE）</h1>
-            <p class="sub">客服 / 编程角色由服务端 Prompt 模板驱动 · 会话按角色隔离 · 纯文本安全渲染</p>
+            <h1>D16 思考模式（Thinking）与引用来源（Citation）流式对话</h1>
+            <p class="sub">推理内容与最终答案分离 · 引用仅来自服务端真实检索 · 会话按角色隔离 · 纯文本安全渲染</p>
         </div>
         <div class="header-actions">
             <a class="nav-link" href="/templates.html">模板管理</a>
@@ -26,6 +26,21 @@
             <option value="">通用模式（不带角色，旧链路）</option>
         </select>
         <span id="sessionTip" class="tip-line">尚未建立会话</span>
+    </div>
+
+    <div class="toggle-bar">
+        <label class="toggle-item">
+            <input type="checkbox" id="thinkingToggle">
+            <span>思考模式（thinkingEnabled）</span>
+        </label>
+        <label class="toggle-item">
+            <input type="checkbox" id="showReasoningToggle" disabled>
+            <span>展示原始推理过程（showReasoning）</span>
+        </label>
+        <label class="toggle-item">
+            <input type="checkbox" id="retrieveToggle">
+            <span>知识库引用（retrieveEnabled）</span>
+        </label>
     </div>
 
     <section id="messageList" class="message-list" aria-live="polite">

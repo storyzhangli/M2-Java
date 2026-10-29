@@ -1,0 +1,3 @@
+stopTime=2026-10-29 22:25:11
+PID=20092
+processAfterStop=gone

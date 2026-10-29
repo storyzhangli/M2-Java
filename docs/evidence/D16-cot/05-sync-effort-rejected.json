@@ -1,0 +1,1 @@
+{"code":4001,"msg":"当前 Spring AI 1.1.8 DeepSeek 客户端不支持下发 reasoning_effort/thinking 参数（已核验请求体无对应字段），思考模式仅支持通过模型切换 deepseek-reasoner 开关；请仅传 thinkingEnabled，或升级客户端版本后再使用推理强度","data":null}

@@ -7,8 +7,12 @@ import com.zl.d16.config.AiProperties;
 import com.zl.d16.conversation.RoleConversationService;
 import com.zl.d16.dto.ChatRequest;
 import com.zl.d16.dto.SsePayloads;
+import com.zl.d16.knowledge.CitationRegistry;
+import com.zl.d16.knowledge.KnowledgeChatOrchestrator;
 import com.zl.d16.logging.TraceIdFilter;
-import com.zl.d16.service.AiChatService;
+import com.zl.d16.service.StreamChunk;
+import com.zl.d16.service.ThinkingSettings;
+import com.zl.d16.service.ThinkingSettingsResolver;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -33,21 +37,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * AI 流式对话控制器（SSE，Server-Sent Events）。
+ * AI 流式对话控制器（SSE，Server-Sent Events，服务器发送事件）。
  *
  * <p>运行在 Servlet/Tomcat + Spring MVC 栈上，使用 MVC 原生 {@link SseEmitter} 作为异步响应载体，
- * 把 {@link AiChatService#streamChat(String)} 返回的 Reactor {@code Flux<String>} 增量桥接为
- * 命名 SSE 事件。该 Flux 仅作流式管道，不引入 WebFlux 服务端、不切换容器。</p>
+ * 把知识编排器返回的 Reactor {@code Flux<StreamChunk>} 桥接为命名 SSE 事件。
+ * 该 Flux 仅作流式管道，不引入 WebFlux 服务端、不切换容器。</p>
  *
- * <p>事件协议（data 均为 UTF-8 JSON，由 Jackson 序列化，禁止手工拼帧）：</p>
+ * <p>D16 事件协议（data 均为 UTF-8 JSON，由 Jackson 序列化，禁止手工拼帧）：</p>
  * <ul>
- *     <li>{@code start}：流开始，携带 requestId/mode/model；</li>
- *     <li>{@code delta}：文本增量 {@code {seq,content}}，seq 从 0 递增；</li>
+ *     <li>{@code start}：流开始，携带 requestId/mode/model 与思考开关；</li>
+ *     <li>{@code thinking}：推理增量（reasoning_content），仅 showReasoning=true 时发送，独立 seq；</li>
+ *     <li>{@code delta}：最终答案增量 {@code {seq,content}}，seq 从 0 递增；</li>
+ *     <li>{@code citations}：引用来源列表，有真实引用时在 complete 之前发送一次；</li>
  *     <li>{@code complete}：正常结束汇总，发出后不再有任何内容事件；</li>
  *     <li>{@code error}：流开始后的异常，携带安全 code/message，随后关闭连接。</li>
  * </ul>
  *
- * <p>异常分期处理：参数/长度校验在返回 emitter 之前抛出，由 {@code GlobalExceptionHandler}
+ * <p>异常分期处理：参数/长度/思考参数校验在返回 emitter 之前抛出，由 {@code GlobalExceptionHandler}
  * 归一为普通 JSON 错误响应（此时 SSE 尚未开始）；流开始后的异常走 {@code error} 事件。</p>
  *
  * <p>超时采用两层设计：应用层 Reactor {@code timeout} 按 {@code app.ai.stream-timeout-ms} 在连接健康时
@@ -65,19 +71,25 @@ public class ChatStreamController {
      */
     private static final long CONTAINER_TIMEOUT_GRACE_MS = 5000L;
 
-    private final AiChatService aiChatService;
+    private final KnowledgeChatOrchestrator orchestrator;
     private final AiProperties aiProperties;
     private final RoleConversationService roleConversationService;
+    private final ThinkingSettingsResolver thinkingSettingsResolver;
 
     @Value("${spring.ai.deepseek.chat.options.model:deepseek-flash}")
     private String deepseekModel;
 
-    public ChatStreamController(AiChatService aiChatService,
+    @Value("${app.ai.thinking.reasoner-model:deepseek-reasoner}")
+    private String reasonerModel;
+
+    public ChatStreamController(KnowledgeChatOrchestrator orchestrator,
                                 AiProperties aiProperties,
-                                RoleConversationService roleConversationService) {
-        this.aiChatService = aiChatService;
+                                RoleConversationService roleConversationService,
+                                ThinkingSettingsResolver thinkingSettingsResolver) {
+        this.orchestrator = orchestrator;
         this.aiProperties = aiProperties;
         this.roleConversationService = roleConversationService;
+        this.thinkingSettingsResolver = thinkingSettingsResolver;
     }
 
     @PostMapping(value = "/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE + ";charset=UTF-8")
@@ -89,63 +101,72 @@ public class ChatStreamController {
         if (message != null && message.length() > maxLength) {
             throw new IllegalArgumentException("message 长度超过当前上限 " + maxLength + " 个字符，请缩短后重试");
         }
+        // 思考参数白名单校验同样发生在 SSE 开始前，非法请求拿到 JSON 4001 而非半截事件流
+        final ThinkingSettings settings = thinkingSettingsResolver.resolve(request);
+        final boolean retrieveEnabled = Boolean.TRUE.equals(request.getRetrieveEnabled());
 
         // 关闭代理/浏览器缓冲，保证增量即时可达；字符编码随 produces 声明固定为 UTF-8
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("X-Accel-Buffering", "no");
 
-        // D15 角色链路：scene 非空时先完成模板校验、系统提示词渲染与会话绑定（用户消息此时入会话）。
+        // 角色链路：scene 非空时先完成模板校验、系统提示词渲染与会话绑定（用户消息此时入会话）。
         // 该步骤发生在返回 emitter 之前，任何非法角色/停用模板/变量错误都走全局异常处理器返回 JSON。
         RoleConversationService.PreparedConversation roleContext = null;
         if (StringUtils.hasText(request.getScene())) {
             roleContext = roleConversationService.prepare(request);
         }
         final RoleConversationService.PreparedConversation finalRoleContext = roleContext;
-        // 角色链路累积完整助手文本，complete 时写入会话记忆；失败路径用它判断是否需要回滚
+        // 角色链路累积完整助手答案（不含推理），complete 时写入会话记忆；失败路径用它判断是否需要回滚
         final StringBuilder assistantBuffer = new StringBuilder();
 
         long streamTimeoutMs = aiProperties.getStreamTimeoutMs();
-        // 应用层超时是主路径：交由 Reactor timeout 在连接仍健康时走 onError 下发 error 事件；
-        // 容器超时只作兜底，因此在配置值之上保留一段余量，避免两者同时触发竞争。
         SseEmitter emitter = new SseEmitter(streamTimeoutMs + CONTAINER_TIMEOUT_GRACE_MS);
         // 在请求线程抓取 requestId；reactor 回调线程不保证继承 MDC，后续日志显式带该值
         String requestId = MDC.get(TraceIdFilter.MDC_REQUEST_ID);
         String mode = aiProperties.getMode();
-        String model = AiConstants.MODE_MOCK.equals(mode) ? "offline-mock" : deepseekModel;
+        String model = AiConstants.MODE_MOCK.equals(mode)
+                ? "offline-mock"
+                : (settings.enabled() ? reasonerModel : deepseekModel);
 
         AtomicBoolean finished = new AtomicBoolean(false);
-        AtomicInteger seq = new AtomicInteger();
+        AtomicInteger deltaSeq = new AtomicInteger();
+        AtomicInteger thinkingSeq = new AtomicInteger();
         AtomicInteger totalChars = new AtomicInteger();
         AtomicReference<Disposable> subscriptionRef = new AtomicReference<>();
 
-        reactor.core.publisher.Flux<String> sourceFlux = finalRoleContext == null
-                ? aiChatService.streamChat(message)
-                : aiChatService.streamChat(finalRoleContext.invocation());
+        KnowledgeChatOrchestrator.StreamOutcome outcome = orchestrator.stream(
+                finalRoleContext == null
+                        ? new com.zl.d16.service.ChatInvocation(null, message, java.util.List.of())
+                        : finalRoleContext.invocation(),
+                settings, retrieveEnabled);
+        final CitationRegistry registry = outcome.registry();
 
-        Disposable subscription = sourceFlux
-                // 规定时间内没有任何结束信号即判定超时：timeout 会取消上游 Flux 并下发 TimeoutException，
-                // 从而在正常响应通道内发送 error 事件，不依赖容器超时后是否还允许写连接
+        Disposable subscription = outcome.chunks()
+                // 规定时间内没有任何结束信号即判定超时：timeout 会取消上游 Flux 并下发 TimeoutException
                 .timeout(Duration.ofMillis(streamTimeoutMs))
                 .doOnSubscribe(s -> {
                     // 订阅时刻仍在请求线程，先发送 start；若此刻连接已失效则直接终止，不继续消费模型流
+                    // 关闭思考时传 null，配合 NON_NULL 让旧帧不出现 thinkingEnabled 字段
+                    Boolean thinkingFlag = settings.enabled() ? Boolean.TRUE : null;
                     SsePayloads.Start start = finalRoleContext == null
-                            ? new SsePayloads.Start(requestId, mode, model)
+                            ? new SsePayloads.Start(requestId, mode, model,
+                                    null, null, null, null, thinkingFlag)
                             : new SsePayloads.Start(requestId, mode, model,
                                     finalRoleContext.session().getSessionId(),
                                     finalRoleContext.session().getScene(),
                                     finalRoleContext.session().getTemplateId(),
-                                    finalRoleContext.session().getTemplateVersion());
+                                    finalRoleContext.session().getTemplateVersion(),
+                                    thinkingFlag);
                     boolean sent = safeSend(emitter, finished, "start", start);
                     if (!sent) {
                         s.cancel();
                     }
                 })
                 .subscribe(
-                        chunk -> onDelta(emitter, finished, subscriptionRef, seq, totalChars,
-                                assistantBuffer, chunk),
+                        chunk -> onChunk(emitter, finished, subscriptionRef, deltaSeq, thinkingSeq,
+                                totalChars, assistantBuffer, settings, chunk),
                         error -> {
-                            // 终态信号后显式 dispose 幂等无害，确保上游连接/计费立即停止；
-                            // 此处订阅对象尚在赋值表达式内，只能通过前置的 subscriptionRef 获取
+                            // 终态信号后显式 dispose 幂等无害，确保上游连接/计费立即停止
                             Disposable current = subscriptionRef.get();
                             if (current != null) {
                                 current.dispose();
@@ -154,11 +175,17 @@ public class ChatStreamController {
                             onStreamError(emitter, finished, requestId, error);
                         },
                         () -> {
+                            // 引用事件必须先于 complete；只有真实被答案引用的来源才下发
+                            if (!registry.citedCitations().isEmpty()) {
+                                safeSend(emitter, finished, "citations",
+                                        new SsePayloads.Citations(registry.citedCitations()));
+                            }
                             if (finalRoleContext != null) {
+                                // 仅最终答案入会话记忆，推理内容不持久化
                                 roleConversationService.completeAssistant(
                                         finalRoleContext.session().getSessionId(), assistantBuffer.toString());
                             }
-                            onComplete(emitter, finished, mode, model, seq, totalChars);
+                            onComplete(emitter, finished, mode, model, deltaSeq, totalChars, settings);
                         }
                 );
         subscriptionRef.set(subscription);
@@ -168,9 +195,7 @@ public class ChatStreamController {
             finished.set(true);
             subscription.dispose();
         });
-        // 容器级兜底超时（正常路径已被上方 Reactor timeout 处理，此处仅在极端卡死场景触发）：
-        // 先取消上游订阅停止模型消费，再在同一把锁内“先发超时 error 事件、后置终态标记并收尾”。
-        // 注意不能先把 finished 置 true——safeSend 会拒绝终态后的一切写入，导致超时 error 事件永远发不出去。
+        // 容器级兜底超时：先取消上游订阅停止模型消费，再在同一把锁内先发 error 后置终态标记并收尾。
         emitter.onTimeout(() -> {
             log.warn("SSE 容器兜底超时关闭，requestId={}", requestId);
             subscription.dispose();
@@ -185,31 +210,56 @@ public class ChatStreamController {
             rollbackRoleTurn(finalRoleContext);
         });
 
-        log.info("SSE 流式对话已建立，requestId={}，mode={}，messageLength={}",
-                requestId, mode, message == null ? 0 : message.length());
+        log.info("SSE 流式对话已建立，requestId={}，mode={}，thinkingEnabled={}，retrieveEnabled={}，messageLength={}",
+                requestId, mode, settings.enabled(), retrieveEnabled, message == null ? 0 : message.length());
         return emitter;
     }
 
-    private void onDelta(SseEmitter emitter,
+    /**
+     * 处理类型化分片：推理分片仅在受控展示开关打开时发 thinking 事件且不进答案缓冲；
+     * 答案分片走 delta 事件并累积进会话记忆文本。
+     */
+    private void onChunk(SseEmitter emitter,
                          AtomicBoolean finished,
                          AtomicReference<Disposable> subscriptionRef,
-                         AtomicInteger seq,
+                         AtomicInteger deltaSeq,
+                         AtomicInteger thinkingSeq,
                          AtomicInteger totalChars,
                          StringBuilder assistantBuffer,
-                         String chunk) {
-        int currentSeq = seq.getAndIncrement();
-        boolean sent = safeSend(emitter, finished, "delta", new SsePayloads.Delta(currentSeq, chunk));
-        if (!sent) {
-            // 连接已不可写：取消上游订阅，避免继续拉取/计费模型数据
-            Disposable disposable = subscriptionRef.get();
-            if (disposable != null) {
-                disposable.dispose();
+                         ThinkingSettings settings,
+                         StreamChunk chunk) {
+        if (chunk instanceof StreamChunk.ReasoningChunk reasoning) {
+            if (!settings.showReasoning()) {
+                // 默认不向终端用户下发原始推理，也不写入任何缓冲/日志
+                return;
+            }
+            boolean sent = safeSend(emitter, finished, "thinking",
+                    new SsePayloads.Thinking(thinkingSeq.getAndIncrement(), reasoning.text()));
+            if (!sent) {
+                cancelQuietly(subscriptionRef);
             }
             return;
         }
-        totalChars.addAndGet(chunk.length());
-        // 仅缓存文本用于角色会话落库，SSE 帧的即时推送不依赖该缓冲
-        assistantBuffer.append(chunk);
+
+        StreamChunk.ContentChunk content = (StreamChunk.ContentChunk) chunk;
+        int currentSeq = deltaSeq.getAndIncrement();
+        boolean sent = safeSend(emitter, finished, "delta",
+                new SsePayloads.Delta(currentSeq, content.text()));
+        if (!sent) {
+            // 连接已不可写：取消上游订阅，避免继续拉取/计费模型数据
+            cancelQuietly(subscriptionRef);
+            return;
+        }
+        totalChars.addAndGet(content.text().length());
+        // 仅缓存最终答案用于角色会话落库，推理文本永不进入该缓冲
+        assistantBuffer.append(content.text());
+    }
+
+    private void cancelQuietly(AtomicReference<Disposable> subscriptionRef) {
+        Disposable disposable = subscriptionRef.get();
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 
     /**
@@ -230,7 +280,7 @@ public class ChatStreamController {
         // 应用层 Reactor 超时：沿用系统错误码 5000，但对外给明确的超时文案
         boolean timeout = error instanceof TimeoutException;
         String clientMessage = timeout ? "流式响应超时，连接已关闭" : resultCode.getMsg();
-        // 诊断细节只记类型与 requestId，不记上游报文/密钥；对外给固定安全文案
+        // 诊断细节只记类型与 requestId，不记上游报文/密钥/推理全文
         if (timeout) {
             log.warn("SSE 流应用层超时结束，requestId={}，code={}，超时阈值={}ms",
                     requestId, resultCode.getCode(), aiProperties.getStreamTimeoutMs());
@@ -249,10 +299,13 @@ public class ChatStreamController {
                             String mode,
                             String model,
                             AtomicInteger seq,
-                            AtomicInteger totalChars) {
+                            AtomicInteger totalChars,
+                            ThinkingSettings settings) {
         boolean mocked = AiConstants.MODE_MOCK.equals(mode);
+        Boolean thinkingFlag = settings.enabled() ? Boolean.TRUE : null;
         boolean sent = safeSend(emitter, finished, "complete",
-                new SsePayloads.Complete(seq.get(), mode, model, mocked, totalChars.get()));
+                new SsePayloads.Complete(seq.get(), mode, model, mocked, totalChars.get(),
+                        thinkingFlag));
         if (sent) {
             finishQuietly(emitter, finished);
         }
@@ -295,10 +348,8 @@ public class ChatStreamController {
 
     /**
      * 超时终态处理：在发送锁内按“先发 error 事件、再置终态、最后 complete 收尾”的顺序执行。
-     *
-     * <p>超时回调与 reactor 线程的 delta/complete、容器的 completion/error 回调可能并发，
-     * 因此复用 emitter 监视器；{@code finished} 保证整个生命周期只有一个终态落地，
-     * 若正常完成或流异常已经抢先收尾，超时回调不再重复发送事件。</p>
+     * 超时回调与 reactor 线程的回调、容器回调可能并发，因此复用 emitter 监视器；
+     * {@code finished} 保证整个生命周期只有一个终态落地。
      */
     private void handleTimeout(SseEmitter emitter, AtomicBoolean finished) {
         synchronized (emitter) {

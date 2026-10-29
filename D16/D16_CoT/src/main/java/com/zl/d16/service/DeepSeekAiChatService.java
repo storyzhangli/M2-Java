@@ -11,6 +11,8 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.deepseek.DeepSeekAssistantMessage;
+import org.springframework.ai.deepseek.DeepSeekChatOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +47,22 @@ public class DeepSeekAiChatService implements AiChatService {
 
     private final String model;
 
+    /**
+     * D16 思考模式实际切换到的推理模型名，服务端配置白名单，客户端无法通过请求 DTO 指定任意模型。
+     * 默认 deepseek-reasoner（Spring AI 1.1.8 内置 ChatModel 枚举支持的两个模型之一），
+     * 可由环境变量 DEEPSEEK_REASONER_MODEL 覆盖。
+     */
+    private final String reasonerModel;
+
     public DeepSeekAiChatService(
             ChatModel chatModel,
             @Value("${spring.ai.deepseek.api-key}") String apiKey,
-            @Value("${spring.ai.deepseek.chat.options.model:deepseek-flash}") String model) {
+            @Value("${spring.ai.deepseek.chat.options.model:deepseek-flash}") String model,
+            @Value("${app.ai.thinking.reasoner-model:deepseek-reasoner}") String reasonerModel) {
         this.chatModel = chatModel;
         this.apiKey = apiKey;
         this.model = model;
+        this.reasonerModel = reasonerModel;
     }
 
     @Override
@@ -131,6 +142,122 @@ public class DeepSeekAiChatService implements AiChatService {
                 .filter(StringUtils::hasText)
                 .doOnComplete(() -> log.info("角色对话流式调用正常结束，model={}", this.model))
                 .doOnError(ex -> log.error("角色对话流式调用异常，异常类型: {}", ex.getClass().getSimpleName()));
+    }
+
+    // ------------------------------------------------------------------
+    // D16 思考模式（Thinking Mode）：通过按请求覆盖模型为 deepseek-reasoner 开启，
+    // 复用同一 ChatModel 调用链，不新增第二套 HTTP 客户端。
+    // ------------------------------------------------------------------
+
+    /**
+     * D16 带思考设置的同步调用。
+     *
+     * <p>Spring AI 1.1.8 不支持 thinking/reasoning_effort 请求参数（已核验 jar），思考开关只能通过
+     * 选择 deepseek-reasoner 模型实现；响应中的 reasoning_content 由
+     * {@link DeepSeekAssistantMessage#getReasoningContent()} 单独取出，绝不与 content 拼接。</p>
+     */
+    @Override
+    public AiChatResult chat(ChatInvocation invocation, ThinkingSettings settings) {
+        validateCredential();
+        String effectiveModel = effectiveModel(settings);
+        Prompt prompt = new Prompt(buildMessages(invocation), buildModelOptions(effectiveModel));
+        log.info("D16 角色对话同步调用，thinkingEnabled={}，model={}，历史消息数={}",
+                settings.enabled(), effectiveModel, invocation.history().size());
+
+        ChatResponse response = this.chatModel.call(prompt);
+        AssistantMessage output = response.getResult().getOutput();
+        String content = output.getText();
+        String reasoning = extractReasoning(output);
+        // 推理全文不入日志，仅记录长度，避免内部思维链泄漏到业务审计日志
+        log.info("D16 同步调用完成，model={}，answerLength={}，reasoningLength={}",
+                effectiveModel, content == null ? 0 : content.length(),
+                reasoning == null ? 0 : reasoning.length());
+        return new AiChatResult(AiConstants.MODE_DEEPSEEK, effectiveModel, false,
+                settings.enabled(), content, reasoning);
+    }
+
+    @Override
+    public AiChatResult chat(String message, ThinkingSettings settings) {
+        validateCredential();
+        String effectiveModel = effectiveModel(settings);
+        Prompt prompt = new Prompt(List.of(new UserMessage(message)), buildModelOptions(effectiveModel));
+        log.info("D16 同步调用，thinkingEnabled={}，model={}", settings.enabled(), effectiveModel);
+
+        ChatResponse response = this.chatModel.call(prompt);
+        AssistantMessage output = response.getResult().getOutput();
+        String reasoning = extractReasoning(output);
+        return new AiChatResult(AiConstants.MODE_DEEPSEEK, effectiveModel, false,
+                settings.enabled(), output.getText(), reasoning);
+    }
+
+    /**
+     * D16 带思考设置的流式调用。每个 ChatResponse 分片可能携带推理增量、答案增量或二者之一，
+     * 这里拆成独立的类型化分片并保持到达顺序；使用 concatMap 保证分片顺序不被并发打乱。
+     */
+    @Override
+    public reactor.core.publisher.Flux<StreamChunk> streamChat(ChatInvocation invocation,
+                                                               ThinkingSettings settings) {
+        validateCredential();
+        String effectiveModel = effectiveModel(settings);
+        Prompt prompt = new Prompt(buildMessages(invocation), buildModelOptions(effectiveModel));
+        log.info("D16 角色对话流式调用，thinkingEnabled={}，model={}，历史消息数={}",
+                settings.enabled(), effectiveModel, invocation.history().size());
+        return toTypedStream(prompt, effectiveModel);
+    }
+
+    @Override
+    public reactor.core.publisher.Flux<StreamChunk> streamChat(String message, ThinkingSettings settings) {
+        validateCredential();
+        String effectiveModel = effectiveModel(settings);
+        Prompt prompt = new Prompt(List.of(new UserMessage(message)), buildModelOptions(effectiveModel));
+        log.info("D16 流式调用，thinkingEnabled={}，model={}", settings.enabled(), effectiveModel);
+        return toTypedStream(prompt, effectiveModel);
+    }
+
+    /**
+     * 把模型原生 ChatResponse 流拆成推理/答案两类分片；空块与空白文本均过滤。
+     */
+    private reactor.core.publisher.Flux<StreamChunk> toTypedStream(Prompt prompt, String effectiveModel) {
+        return this.chatModel.stream(prompt)
+                .concatMap(chunk -> {
+                    List<StreamChunk> pieces = new ArrayList<>(2);
+                    if (chunk == null || chunk.getResult() == null
+                            || chunk.getResult().getOutput() == null) {
+                        return reactor.core.publisher.Flux.<StreamChunk>empty();
+                    }
+                    AssistantMessage output = chunk.getResult().getOutput();
+                    String reasoning = extractReasoning(output);
+                    if (StringUtils.hasText(reasoning)) {
+                        pieces.add(new StreamChunk.ReasoningChunk(reasoning));
+                    }
+                    if (StringUtils.hasText(output.getText())) {
+                        pieces.add(new StreamChunk.ContentChunk(output.getText()));
+                    }
+                    return reactor.core.publisher.Flux.fromIterable(pieces);
+                })
+                .doOnComplete(() -> log.info("D16 流式调用正常结束，model={}", effectiveModel))
+                .doOnError(ex -> log.error("D16 流式调用异常，异常类型: {}", ex.getClass().getSimpleName()));
+    }
+
+    /**
+     * 按请求构造模型覆盖选项；1.1.8 仅支持模型级开关，不存在 effort 字段，故此处只设置 model。
+     */
+    private DeepSeekChatOptions buildModelOptions(String effectiveModel) {
+        return DeepSeekChatOptions.builder().model(effectiveModel).build();
+    }
+
+    private String effectiveModel(ThinkingSettings settings) {
+        return settings.enabled() ? this.reasonerModel : this.model;
+    }
+
+    /**
+     * 仅当输出是 DeepSeek 专属消息类型时才能取到 reasoning_content；普通 AssistantMessage 返回 null。
+     */
+    private String extractReasoning(AssistantMessage output) {
+        if (output instanceof DeepSeekAssistantMessage deepSeekOutput) {
+            return deepSeekOutput.getReasoningContent();
+        }
+        return null;
     }
 
     /**

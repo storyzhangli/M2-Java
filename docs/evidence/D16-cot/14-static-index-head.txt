@@ -1,0 +1,26 @@
+HTTP 200
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D16 思考推理与引用来源演示</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<main class="chat-shell">
+    <header class="chat-header">
+        <div>
+            <h1>D16 思考模式（Thinking）与引用来源（Citation）流式对话</h1>
+            <p class="sub">推理内容与最终答案分离 · 引用仅来自服务端真实检索 · 会话按角色隔离 · 纯文本安全渲染</p>
+        </div>
+        <div class="header-actions">
+            <a class="nav-link" href="/templates.html">模板管理</a>
+            <span id="modeBadge" class="badge">模式检测中…</span>
+            <button id="newChatBtn" type="button" class="btn btn-ghost" title="清空当前页面并重置会话">新对话</button>
+        </div>
+    </header>
+
+    <div class="role-bar">
+        <label for="roleSelect">对话角色：</label>
+        <select id="roleSelect" title="角色由服务端模板校验，切换角色将重置会话">

@@ -24,6 +24,9 @@ public final class AiConstants {
     /** 模拟回复的固定标记，便于测试与调用方一眼识别当前为离线模拟结果。 */
     public static final String MOCK_REPLY_MARKER = "[MOCK:D01]";
 
+    /** D16 模拟思考过程的固定标记，与最终答案标记区分，明确它不是真实模型推理。 */
+    public static final String MOCK_REASONING_MARKER = "[MOCK-REASONING:D16]";
+
     private AiConstants() {
     }
 }

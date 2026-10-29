@@ -68,8 +68,10 @@ class DeepSeekKeyProtectionTest {
         String[] invalidKeys = {null, "", "   ", AiConstants.PLACEHOLDER_API_KEY, "some-mock-value"};
 
         for (String invalidKey : invalidKeys) {
+            // D16 构造器新增 reasonerModel 参数（思考模式模型切换），密钥校验逻辑与该参数无关
             DeepSeekAiChatService service =
-                    new DeepSeekAiChatService(isolatedModel, invalidKey, "deepseek-flash");
+                    new DeepSeekAiChatService(isolatedModel, invalidKey,
+                            "deepseek-flash", "deepseek-reasoner");
             assertThatThrownBy(() -> service.chat("hi"))
                     .isInstanceOf(AiConfigurationException.class)
                     .hasMessageContaining("密钥");

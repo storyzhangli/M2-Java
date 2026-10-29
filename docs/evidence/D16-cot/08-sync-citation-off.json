@@ -1,0 +1,1 @@
+{"code":200,"msg":"success","data":{"mode":"mock","model":"offline-mock","mocked":true,"content":"[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=0，系统提示词首行=；已收到问题：「数控机床主轴过热报警」。","citations":[]}}

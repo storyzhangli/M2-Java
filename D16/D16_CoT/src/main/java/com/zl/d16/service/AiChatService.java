@@ -3,6 +3,8 @@ package com.zl.d16.service;
 import com.zl.d16.dto.ChatReplyResponse;
 import reactor.core.publisher.Flux;
 
+import java.util.List;
+
 /**
  * AI 聊天服务抽象。
  *
@@ -61,5 +63,50 @@ public interface AiChatService {
      */
     default Flux<String> streamChat(ChatInvocation invocation) {
         return streamChat(invocation.userMessage());
+    }
+
+    /**
+     * D16：带思考模式设置的同步聊天，返回推理内容与最终答案分离的结构化结果。
+     *
+     * <p>默认实现委托旧的 {@link #chat(ChatInvocation)}，保证未改造的实现类保持旧行为；
+     * Mock/DeepSeek 两个实现分别覆写以支持思考开关与 reasoning_content 分离。</p>
+     *
+     * @param invocation 系统提示词、历史与当前用户消息
+     * @param settings   服务端裁决后的思考设置
+     * @return 结构化聊天结果
+     */
+    default AiChatResult chat(ChatInvocation invocation, ThinkingSettings settings) {
+        ChatReplyResponse legacy = chat(invocation);
+        return new AiChatResult(legacy.getMode(), legacy.getModel(),
+                Boolean.TRUE.equals(legacy.getMocked()), settings.enabled(),
+                legacy.getContent(), null);
+    }
+
+    /**
+     * D16：带思考模式设置的流式聊天，返回类型化的推理/答案分片。
+     *
+     * <p>默认实现把旧的文本流统一包装为 {@link StreamChunk.ContentChunk}，
+     * 支持思考的实现类覆写后可额外发射 {@link StreamChunk.ReasoningChunk}。</p>
+     *
+     * @param invocation 系统提示词、历史与当前用户消息
+     * @param settings   服务端裁决后的思考设置
+     * @return 类型化分片流
+     */
+    default Flux<StreamChunk> streamChat(ChatInvocation invocation, ThinkingSettings settings) {
+        return streamChat(invocation).map(StreamChunk.ContentChunk::new);
+    }
+
+    /**
+     * D16：无角色链路的带设置同步聊天便捷重载，由普通消息构造最小调用入参。
+     */
+    default AiChatResult chat(String message, ThinkingSettings settings) {
+        return chat(new ChatInvocation(null, message, List.of()), settings);
+    }
+
+    /**
+     * D16：无角色链路的带设置流式聊天便捷重载。
+     */
+    default Flux<StreamChunk> streamChat(String message, ThinkingSettings settings) {
+        return streamChat(new ChatInvocation(null, message, List.of()), settings);
     }
 }

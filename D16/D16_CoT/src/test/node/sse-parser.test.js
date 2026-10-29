@@ -122,3 +122,42 @@ test('reset 后历史缓存与事件全部清空', function () {
     assert.equal(ctx.events.length, 2);
     assert.equal(ctx.events[1].name, 'start');
 });
+
+// ==================== D16 新增事件协议用例 ====================
+
+test('D16 thinking/citations 新事件名可被原样识别且顺序保持', function () {
+    const ctx = collect();
+    ctx.parser.feed([
+        'event:start\ndata:{"thinkingEnabled":true}\n\n',
+        'event:thinking\ndata:{"seq":0,"content":"推理一"}\n\n',
+        'event:delta\ndata:{"seq":0,"content":"答案一"}\n\n',
+        'event:citations\ndata:{"citations":[{"id":"S1"}]}\n\n',
+        'event:complete\ndata:{"totalChars":3,"thinkingEnabled":true}\n\n'
+    ].join(''));
+    ctx.parser.flush();
+    assert.deepEqual(ctx.events.map(function (e) { return e.name; }),
+        ['start', 'thinking', 'delta', 'citations', 'complete']);
+    assert.equal(JSON.parse(ctx.events[3].data).citations[0].id, 'S1');
+});
+
+test('D16 thinking 事件被网络切块拆开时回调顺序与内容不丢失', function () {
+    const ctx = collect();
+    const raw = 'event:thinking\ndata:{"seq":0,"content":"推理分片"}\n\n'
+        + 'event:delta\ndata:{"seq":0,"content":"答案"}\n\n';
+    for (let i = 0; i < raw.length; i++) {
+        ctx.parser.feed(raw.charAt(i));
+    }
+    ctx.parser.flush();
+    assert.equal(ctx.events.length, 2);
+    assert.equal(ctx.events[0].name, 'thinking');
+    assert.equal(JSON.parse(ctx.events[0].data).content, '推理分片');
+    assert.equal(ctx.events[1].name, 'delta');
+});
+
+test('D16 未知事件名也按通用 message 协议透传，解析器不内置事件白名单', function () {
+    const ctx = collect();
+    ctx.parser.feed('event:future-event\ndata:{"k":"v"}\n\n');
+    ctx.parser.flush();
+    assert.equal(ctx.events.length, 1);
+    assert.equal(ctx.events[0].name, 'future-event');
+});

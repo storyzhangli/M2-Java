@@ -1,0 +1,1 @@
+{"code":200,"msg":"success","data":{"mode":"mock","model":"offline-mock","mocked":true,"content":"[MOCK:D01] 当前为离线模拟思考模式（AI_MODE=mock），未发起外部请求。历史消息条数=0，最终回答：「思考全开真机验证」。","thinkingEnabled":true,"reasoningContent":"[MOCK-REASONING:D16] 离线模拟思考过程（不访问外部模型）：已识别问题意图，历史消息条数=0，将按确定性规则组织最终回答；本段内容默认不展示给终端用户。","citations":[]}}

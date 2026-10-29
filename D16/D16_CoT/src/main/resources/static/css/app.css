@@ -365,3 +365,90 @@ body {
     color: #6b7280;
     line-height: 1.6;
 }
+
+/* ==================== D16 思考模式与引用来源增量样式 ==================== */
+.toggle-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 10px 14px;
+    margin: 10px 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #f9fafb;
+}
+
+.toggle-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+}
+
+.toggle-item input:disabled + span {
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.reasoning-panel {
+    margin: 6px 0;
+    padding: 10px 12px;
+    border-left: 3px solid #b45309;
+    background: #fffbeb;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.reasoning-title {
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 6px;
+}
+
+.reasoning-body {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: #78350f;
+}
+
+.citation-panel {
+    margin-top: 8px;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #f3f4f6;
+    font-size: 12.5px;
+}
+
+.citation-title {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.citation-list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.citation-item .citation-head {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.citation-item .citation-excerpt {
+    margin: 3px 0;
+    line-height: 1.6;
+    color: #4b5563;
+}
+
+.citation-item .citation-meta {
+    color: #6b7280;
+    font-family: Consolas, monospace;
+}

@@ -2,6 +2,9 @@ package com.zl.d15.springai.stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zl.d16.service.AiChatService;
+import com.zl.d16.service.ChatInvocation;
+import com.zl.d16.service.StreamChunk;
+import com.zl.d16.service.ThinkingSettings;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +22,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -61,6 +65,9 @@ class ChatStreamTimeoutTest {
                         .doOnCancel(upstreamCanceled::countDown)
                         .cast(String.class)
         );
+        // D16 起控制器走类型化分片新方法；补一个同语义的 never 流并保留取消信号
+        when(aiChatService.streamChat(any(ChatInvocation.class), any(ThinkingSettings.class)))
+                .thenReturn(Flux.<StreamChunk>never().doOnCancel(upstreamCanceled::countDown));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

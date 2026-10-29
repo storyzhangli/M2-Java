@@ -2,6 +2,9 @@ package com.zl.d15.springai.stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zl.d16.service.AiChatService;
+import com.zl.d16.service.ChatInvocation;
+import com.zl.d16.service.StreamChunk;
+import com.zl.d16.service.ThinkingSettings;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import reactor.core.publisher.Flux;
@@ -42,6 +46,9 @@ class ChatStreamErrorEventTest {
     @Test
     void errorAfterStreamStartedShouldEmitErrorEventWithoutComplete() throws Exception {
         when(aiChatService.streamChat(anyString()))
+                .thenReturn(Flux.error(new RuntimeException("simulated upstream failure")));
+        // D16 起控制器走类型化分片新方法；Mockito  mock 不继承接口默认方法，需显式补桩
+        when(aiChatService.streamChat(any(ChatInvocation.class), any(ThinkingSettings.class)))
                 .thenReturn(Flux.error(new RuntimeException("simulated upstream failure")));
 
         HttpHeaders headers = new HttpHeaders();

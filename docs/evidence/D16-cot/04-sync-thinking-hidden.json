@@ -1,0 +1,1 @@
+{"code":200,"msg":"success","data":{"mode":"mock","model":"offline-mock","mocked":true,"content":"[MOCK:D01] 当前为离线模拟思考模式（AI_MODE=mock），未发起外部请求。历史消息条数=0，最终回答：「思考但隐藏推理」。","thinkingEnabled":true,"citations":[]}}
