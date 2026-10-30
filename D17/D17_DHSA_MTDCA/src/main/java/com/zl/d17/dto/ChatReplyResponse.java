@@ -37,6 +37,12 @@ public class ChatReplyResponse implements Serializable {
     private Boolean thinkingEnabled;
 
     /**
+     * D17 会话标识。普通链路新建会话后回传，客户端后续请求携带即可保持多轮上下文；
+     * 旧调用方无该字段时为 null，NON_NULL 保证序列化形态向后兼容。
+     */
+    private String sessionId;
+
+    /**
      * D16 模型原始推理内容（reasoning_content）。
      * 仅当 thinkingEnabled=true 且 showReasoning=true 时才填充；其余情况为 null，
      * 且该字段禁止写入会话记忆与普通业务日志。

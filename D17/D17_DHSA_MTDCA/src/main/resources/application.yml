@@ -78,10 +78,25 @@ app:
         ttl-seconds: ${PROMPT_CACHE_TTL_SECONDS:1800}
         null-ttl-seconds: ${PROMPT_CACHE_NULL_TTL_SECONDS:60}
     # D15_PLUS 新增：多轮会话 Redis 短期存储，滑动 TTL，到期自动回收。
+    # D17 说明：主链路会话权威存储已切换为 MySQL（chat_session/chat_message），
+    # 该 Redis 配置与 ConversationMemory 组件保留但不进入主链路，仅作学习资产与兼容参考。
     conversation:
       redis:
         key-prefix: ${CONV_KEY_PREFIX:d15f:conv:}
         ttl-seconds: ${CONV_TTL_SECONDS:1800}
+    # ------------------------------------------------------------------
+    # D17 新增：对话历史（Chat History）与上下文窗口（Context Window）。
+    # 历史完整落 MySQL；窗口按消息条数选取（非 Token 预算），仅 COMPLETED 消息进入模型请求。
+    # ------------------------------------------------------------------
+    history:
+      # 单次模型请求携带的最近历史消息条数，可用环境变量 AI_CONTEXT_WINDOW_MESSAGES 覆盖。
+      context-window-messages: ${AI_CONTEXT_WINDOW_MESSAGES:10}
+      # 历史查询默认分页大小，上限 100。
+      default-page-size: ${AI_HISTORY_PAGE_SIZE:20}
+      # 开发身份请求头（无认证项目的归属标识，非生产鉴权）。
+      dev-user-header: X-Dev-User
+      default-owner: dev-user
+      title-max-length: 50
     # ------------------------------------------------------------------
     # D16 新增：思考模式（Thinking Mode）。
     # 经核验 Spring AI 1.1.8 的 DeepSeek 请求体无 thinking/reasoning_effort 字段，

@@ -1,0 +1,100 @@
+===== 1. 重启后查询重启前会话的消息（应仍为 6 条 COMPLETED） =====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "records": [
+      {
+        "sequenceNo": 1,
+        "role": "user",
+        "content": "第一轮问题：设备无法启动怎么办",
+        "status": "COMPLETED",
+        "modelName": "",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 2,
+        "role": "assistant",
+        "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=0，系统提示词首行=；已收到问题：「第一轮问题：设备无法启动怎么办」。",
+        "status": "COMPLETED",
+        "modelName": "offline-mock",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 3,
+        "role": "user",
+        "content": "第二轮问题：那指示灯不亮呢",
+        "status": "COMPLETED",
+        "modelName": "",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 4,
+        "role": "assistant",
+        "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=2，系统提示词首行=；已收到问题：「第二轮问题：那指示灯不亮呢」。",
+        "status": "COMPLETED",
+        "modelName": "offline-mock",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 5,
+        "role": "user",
+        "content": "第三轮问题：重启后还需要检查什么",
+        "status": "COMPLETED",
+        "modelName": "",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 6,
+        "role": "assistant",
+        "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=4，系统提示词首行=；已收到问题：「第三轮问题：重启后还需要检查什么」。",
+        "status": "COMPLETED",
+        "modelName": "offline-mock",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      }
+    ],
+    "total": 6,
+    "page": 1,
+    "size": 20
+  }
+}
+===== 2. 重启后在旧会话上发起第四轮（mock 应看到历史消息条数=6） =====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=6，系统提示词首行=；已收到问题：「第四轮问题：重启后还能记得之前的上下文吗」。",
+    "sessionId": "ce38e1e8999a4d31910b2b3926d50926",
+    "citations": []
+  }
+}
+===== 3. 再次查询，序号应连续到 8 =====
+seq=1 role=user status=COMPLETED
+seq=2 role=assistant status=COMPLETED
+seq=3 role=user status=COMPLETED
+seq=4 role=assistant status=COMPLETED
+seq=5 role=user status=COMPLETED
+seq=6 role=assistant status=COMPLETED
+seq=7 role=user status=COMPLETED
+seq=8 role=assistant status=COMPLETED

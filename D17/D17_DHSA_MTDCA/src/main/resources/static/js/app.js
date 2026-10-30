@@ -1,14 +1,14 @@
 /**
- * D16 思考模式与引用来源流式对话页面脚本（原生 JS，无第三方依赖）。
+ * D17 对话历史与多轮上下文关联页面脚本（原生 JS，无第三方依赖）。
  *
  * 关键约束：
  * 1. 角色清单来自服务端 GET /roles，前端只展示，最终是否允许对话由服务端模板状态决定；
  * 2. 切换角色必然重置会话：服务端禁止同一 sessionId 跨角色，前端先清空本地上下文；
- * 3. 所有服务端文本都通过 textContent/createTextNode 渲染，不拼 innerHTML，避免脚本注入，
- *    知识摘录中即使包含“忽略指令”类注入文本也只作为普通数据显示；
+ * 3. 所有服务端文本都通过 textContent/createTextNode 渲染，不拼 innerHTML，避免脚本注入；
  * 4. SSE 分帧交给独立的 SseParser.createSseParser（回调式 API），兼容 LF/CR/CRLF 与跨块边界，
- *    ReadableStream 结束时必须调用 flush() 刷新残余事件块（D15 页面曾把它误当返回数组使用，已修复）；
- * 5. thinking 事件渲染到独立“思考过程”区域，绝不追加进答案正文；citations 事件只做结构化来源列表。
+ *    ReadableStream 结束时必须调用 flush() 刷新残余事件块；
+ * 5. 会话标识由 start 事件回传，后续轮次原样带回，服务端据此从 COMPLETED 历史选取上下文窗口；
+ * 6. thinking 事件渲染到独立“思考过程”区域，绝不追加进答案正文；citations 事件只做结构化来源列表。
  */
 (function () {
     'use strict';
@@ -99,7 +99,7 @@
             .then(function (body) {
                 if (body.code === 200 && body.data) {
                     modeBadge.textContent = '运行模式：' + body.data.mode
-                        + ' ｜ 单条上限：' + body.data.maxMessageLength;
+                        + ' ｜ 上下文窗口：' + body.data.contextWindowMessages + ' 条';
                 } else {
                     modeBadge.textContent = '健康检查失败';
                 }

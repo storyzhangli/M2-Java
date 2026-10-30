@@ -1,23 +1,29 @@
 package com.zl.d17.conversation;
 
-import com.zl.d17.conversation.model.ConversationMessage;
-import com.zl.d17.conversation.model.ConversationSession;
 import com.zl.d17.dto.ChatRequest;
+import com.zl.d17.history.ChatHistoryService;
+import com.zl.d17.history.model.ChatSession;
+import com.zl.d17.history.model.HistoryMessage;
 import com.zl.d17.prompt.PromptTemplateService;
 import com.zl.d17.prompt.model.PromptTemplateEntity;
 import com.zl.d17.service.ChatInvocation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 角色对话编排服务：负责模板选用校验、系统提示词渲染、会话绑定与历史组装。
+ * 角色对话服务（D17 版）：只保留“模板校验 + 系统提示词渲染”职责，
+ * 会话绑定、消息持久化与上下文窗口全部委托 {@link ChatHistoryService}。
  *
- * <p>它不直接调用模型，而是产出 {@link ChatInvocation} 交给 {@code AiChatService}，
- * 使“提示词管理/会话规则”与“模型适配（Mock/DeepSeek）”两个变化方向解耦。</p>
+ * <p>与 D15/D16 版本的差异：</p>
+ * <ul>
+ *     <li>不再调用 Redis 版 {@code ConversationMemory}，权威存储统一为 MySQL，
+ *     历史可跨重启完整查询；Redis 组件保留为 Bean 但不进入主链路；</li>
+ *     <li>prepare 一次完成模板校验与 PENDING 用户消息落库，成功/失败/中断的终态
+ *     由控制器调用历史服务的 completeTurn/failTurn/interruptTurn 收口；</li>
+ *     <li>不同角色会话隔离规则不变：同一 sessionId 绑定唯一角色，换角色必须新建会话。</li>
+ * </ul>
  */
 @Slf4j
 @Service
@@ -25,68 +31,45 @@ public class RoleConversationService {
 
     private final PromptTemplateService promptTemplateService;
 
-    private final ConversationMemory conversationMemory;
+    private final ChatHistoryService historyService;
 
     public RoleConversationService(PromptTemplateService promptTemplateService,
-                                   ConversationMemory conversationMemory) {
+                                   ChatHistoryService historyService) {
         this.promptTemplateService = promptTemplateService;
-        this.conversationMemory = conversationMemory;
+        this.historyService = historyService;
     }
 
     /**
-     * 一次角色调用的准备结果：绑定的会话与可直接送入模型服务的调用入参。
-     */
-    public record PreparedConversation(ConversationSession session, ChatInvocation invocation) {
-    }
-
-    /**
-     * 校验角色/模板状态、渲染系统提示词、绑定会话并登记用户消息。
+     * 准备好的角色对话上下文：会话、模型调用参数与历史服务的轮次句柄。
      *
-     * @throws IllegalArgumentException 角色非法、模板停用、会话跨角色或变量校验失败时抛出（归一为 4001）
+     * @param session    会话领域模型
+     * @param invocation 已组装系统提示词与上下文窗口的模型调用参数
+     * @param turn       历史服务轮次句柄，终态收口时使用
      */
-    public PreparedConversation prepare(ChatRequest request) {
-        String scene = request.getScene();
-        if (!StringUtils.hasText(scene)) {
-            throw new IllegalArgumentException("角色对话必须显式传入 scene，不允许仅靠前端标题区分角色");
-        }
+    public record PreparedConversation(ChatSession session,
+                                       ChatInvocation invocation,
+                                       ChatHistoryService.TurnStart turn) {
+    }
 
-        // 服务端按 scene 取启用模板：停用/删除/非角色场景在此被拒绝
+    /**
+     * 校验模板并渲染系统提示词，同时完成会话绑定与 PENDING 用户消息落库。
+     *
+     * @param request 聊天请求（scene 非空）
+     * @param owner   开发归属标识
+     */
+    public PreparedConversation prepare(ChatRequest request, String owner) {
+        String scene = request.getScene();
         PromptTemplateEntity template = promptTemplateService.resolveEnabledRoleTemplate(scene);
         String systemPrompt = promptTemplateService.render(template, request.getVariables());
 
-        ConversationSession session = conversationMemory.bind(request.getSessionId(), template);
+        ChatHistoryService.TurnStart turn = historyService.startTurn(owner, request.getSessionId(),
+                scene, template.getTemplateId(), template.getVersion(), request.getMessage());
 
-        List<ChatInvocation.Turn> history = session.snapshotMessages().stream()
-                .map(m -> new ChatInvocation.Turn(m.role(), m.content()))
-                .toList();
-
-        // 用户消息先入会话；若后续模型调用失败，由 failAndRollback 撤回，避免失败轮次留在历史中
-        conversationMemory.appendMessage(session.getSessionId(),
-                new ConversationMessage(ConversationMessage.ROLE_USER, request.getMessage(), LocalDateTime.now()));
-
-        ChatInvocation invocation =
-                new ChatInvocation(systemPrompt, request.getMessage(), history);
-
-        log.info("角色对话已就绪，sessionId={}，scene={}，templateId={}，version={}，历史条数={}",
-                session.getSessionId(), scene, template.getTemplateId(), template.getVersion(), history.size());
-        return new PreparedConversation(session, invocation);
-    }
-
-    /**
-     * 模型成功返回后登记助手消息。
-     */
-    public void completeAssistant(String sessionId, String assistantContent) {
-        conversationMemory.appendMessage(sessionId,
-                new ConversationMessage(ConversationMessage.ROLE_ASSISTANT,
-                        assistantContent, LocalDateTime.now()));
-    }
-
-    /**
-     * 模型调用失败时回滚本轮用户消息，保持会话历史只包含成功轮次。
-     */
-    public void failAndRollback(String sessionId) {
-        if (StringUtils.hasText(sessionId)) {
-            conversationMemory.rollbackLastMessage(sessionId);
-        }
+        List<HistoryMessage> history = historyService.getContextWindow(turn.session().getSessionId());
+        ChatInvocation invocation = new ChatInvocation(
+                systemPrompt, request.getMessage(), HistoryMessageConverter.toTurns(history));
+        log.info("角色对话准备完成，sessionId={}，scene={}，模板版本={}，窗口消息数={}",
+                turn.session().getSessionId(), scene, template.getVersion(), history.size());
+        return new PreparedConversation(turn.session(), invocation, turn);
     }
 }

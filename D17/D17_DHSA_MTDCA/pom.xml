@@ -103,4 +103,23 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <!--
+                测试运行时激活 test profile：
+                读取 application-test.yml，将历史默认归属覆盖为 ut-default，
+                避免未带头的测试请求写入 dev-user 的手工演示数据。
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <spring.profiles.active>test</spring.profiles.active>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

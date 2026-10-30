@@ -1,0 +1,167 @@
+===== 1. 健康检查 =====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "application": "D17_DHSA_MTDCA",
+    "mode": "mock",
+    "contextWindowMessages": 10,
+    "devIdentity": "X-Dev-User 开发身份，非生产鉴权"
+  }
+}
+===== 2. 同会话三轮多轮对话（owner=ut_smoke） =====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=0，系统提示词首行=；已收到问题：「第一轮问题：设备无法启动怎么办」。",
+    "sessionId": "ce38e1e8999a4d31910b2b3926d50926",
+    "citations": []
+  }
+}
+SESSION_ID=ce38e1e8999a4d31910b2b3926d50926
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=2，系统提示词首行=；已收到问题：「第二轮问题：那指示灯不亮呢」。",
+    "sessionId": "ce38e1e8999a4d31910b2b3926d50926",
+    "citations": []
+  }
+}
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=4，系统提示词首行=；已收到问题：「第三轮问题：重启后还需要检查什么」。",
+    "sessionId": "ce38e1e8999a4d31910b2b3926d50926",
+    "citations": []
+  }
+}
+===== 3. 历史查询接口 =====
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "records": [
+      {
+        "sessionId": "ce38e1e8999a4d31910b2b3926d50926",
+        "scene": "",
+        "title": "第一轮问题：设备无法启动怎么办",
+        "templateId": "",
+        "templateVersion": 0,
+        "status": "ACTIVE",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29",
+        "lastMessageAt": "2026-10-30T17:50:29"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "size": 5
+  }
+}
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "records": [
+      {
+        "sequenceNo": 1,
+        "role": "user",
+        "content": "第一轮问题：设备无法启动怎么办",
+        "status": "COMPLETED",
+        "modelName": "",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 2,
+        "role": "assistant",
+        "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=0，系统提示词首行=；已收到问题：「第一轮问题：设备无法启动怎么办」。",
+        "status": "COMPLETED",
+        "modelName": "offline-mock",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 3,
+        "role": "user",
+        "content": "第二轮问题：那指示灯不亮呢",
+        "status": "COMPLETED",
+        "modelName": "",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 4,
+        "role": "assistant",
+        "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=2，系统提示词首行=；已收到问题：「第二轮问题：那指示灯不亮呢」。",
+        "status": "COMPLETED",
+        "modelName": "offline-mock",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 5,
+        "role": "user",
+        "content": "第三轮问题：重启后还需要检查什么",
+        "status": "COMPLETED",
+        "modelName": "",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      },
+      {
+        "sequenceNo": 6,
+        "role": "assistant",
+        "content": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=0，历史消息条数=4，系统提示词首行=；已收到问题：「第三轮问题：重启后还需要检查什么」。",
+        "status": "COMPLETED",
+        "modelName": "offline-mock",
+        "errorCode": "",
+        "errorMessage": "",
+        "createdAt": "2026-10-30T17:50:29",
+        "updatedAt": "2026-10-30T17:50:29"
+      }
+    ],
+    "total": 6,
+    "page": 1,
+    "size": 20
+  }
+}
+===== 4. 归属隔离：ut_smoke_b 读取 ut_smoke 会话应被拒绝 =====
+{
+  "code": 4001,
+  "msg": "会话不存在或无权访问",
+  "data": null
+}
+===== 5. 非法入参：空白消息应被拒绝 =====
+{
+  "code": 4001,
+  "msg": "message 不能为空或纯空白",
+  "data": null
+}
+===== 6. 非法开发身份头应被拒绝 =====
+
+code msg                                                            data
+---- ---                                                            ----
+4001 开发身份标识非法，仅允许字母数字、下划线与连字符，长度不超过64 
+
