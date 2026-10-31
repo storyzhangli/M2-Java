@@ -1,0 +1,35 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "sessionId": "5a5b65f332f34d6b93385bfab9ade247",
+    "scene": "technical_engineer",
+    "templateId": "technical_engineer",
+    "templateVersion": 1,
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "answer": "[MOCK:D01] 设备信息尚不完整，需要先澄清。请说明故障是什么时候开始的、是持续出现还是间歇发生、大约多久一次。\r\n当前未检索到可核验的知识来源，以下为基于已提供信息的澄清，不引用未确认资料。 当前把握程度为“HIGH”（内部定性判断，非概率、非百分比）。 仍待确认：故障发生时间或频率。",
+    "clarificationRequired": true,
+    "missingInformation": [
+      "故障发生时间或频率"
+    ],
+    "clarificationQuestion": "请说明故障是什么时候开始的、是持续出现还是间歇发生、大约多久一次。",
+    "uncertaintyNote": "当前未检索到可核验的知识来源，以下为基于已提供信息的澄清，不引用未确认资料。 当前把握程度为“HIGH”（内部定性判断，非概率、非百分比）。 仍待确认：故障发生时间或频率。",
+    "candidateExtraction": {
+      "symptomSummary": "设备 SV-700，故障码 F202，现象：异常振动",
+      "ticketCategory": "MECHANICAL",
+      "deviceModel": "SV-700",
+      "faultCode": "F202",
+      "observedSymptoms": [
+        "异常振动"
+      ],
+      "missingInformation": [
+        "故障发生时间或频率"
+      ],
+      "uncertaintyNote": "当前未检索到可核验的知识来源，以下为基于已提供信息的澄清，不引用未确认资料。 当前把握程度为“HIGH”（内部定性判断，非概率、非百分比）。 仍待确认：故障发生时间或频率。",
+      "candidateStatus": "NEEDS_CLARIFICATION",
+      "sourceType": "USER_STATED"
+    }
+  }
+}

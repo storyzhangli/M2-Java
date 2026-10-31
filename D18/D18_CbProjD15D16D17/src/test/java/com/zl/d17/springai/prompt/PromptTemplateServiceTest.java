@@ -32,17 +32,19 @@ class PromptTemplateServiceTest extends AbstractPersistenceCleanupTest {
     private PromptTemplateService service;
 
     @Test
-    void seedTemplatesShouldLoadSixScenesAndTwoChatRoles() {
-        // 不断言总数精确等于 6：测试类共享同一 Spring 上下文，其他用例自建模板会留在内存仓库中
+    void seedTemplatesShouldLoadEightScenesAndFourChatRoles() {
+        // 不断言总数精确等于 8：测试类共享同一 Spring 上下文，其他用例自建模板会留在内存仓库中
         List<PromptTemplateSummary> all = service.list(null, null, null);
         assertThat(all).extracting(PromptTemplateSummary::templateId)
                 .contains("customer_service", "programming", "technical_explanation",
-                        "code_review", "summarization", "information_extraction");
+                        "code_review", "summarization", "information_extraction",
+                        "device_customer_service", "technical_engineer");
 
-        // 角色清单只可能来自两个内置角色场景，自建模板均使用非角色场景，数量恒为 2
+        // D18 开放四个内置角色场景：原客服/编程 + 设备客服/技术工程师，自建模板均使用非角色场景
         List<PromptTemplateSummary> roles = service.listEnabledRoles();
         assertThat(roles).extracting(PromptTemplateSummary::scene)
-                .containsExactly("customer_service", "programming");
+                .containsExactlyInAnyOrder("customer_service", "programming",
+                        "device_customer_service", "technical_engineer");
     }
 
     @Test
@@ -70,7 +72,7 @@ class PromptTemplateServiceTest extends AbstractPersistenceCleanupTest {
                 .extracting(PromptTemplateSummary::templateId)
                 .contains("customer_service", "programming");
         assertThat(service.list(null, null, "客服")).extracting(PromptTemplateSummary::templateId)
-                .containsExactly("customer_service");
+                .containsExactlyInAnyOrder("customer_service", "device_customer_service");
         assertThatThrownBy(() -> service.list(null, "BAD_STATUS", null))
                 .isInstanceOf(IllegalArgumentException.class);
     }

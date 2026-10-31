@@ -1,0 +1,32 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "sessionId": "ff772b87def545638fd0813fe525267c",
+    "scene": "device_customer_service",
+    "templateId": "device_customer_service",
+    "templateVersion": 1,
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "answer": "[MOCK:D01] 当前为离线模拟角色对话（AI_MODE=mock），未发起任何外部请求。系统提示词字符数=286，历史消息条数=2，系统提示词首行=你是设备客服助手，负责受理设备故障并完成信息澄清。；已收到问题：「型号 CNC-8800，编号 SP-09，故障码 E101，还有点过热」。",
+    "clarificationRequired": false,
+    "missingInformation": [],
+    "uncertaintyNote": "当前未检索到可核验的知识来源，以下为基于已提供信息的澄清，不引用未确认资料。 当前把握程度为“HIGH”（内部定性判断，非概率、非百分比）。",
+    "candidateExtraction": {
+      "symptomSummary": "设备 CNC-8800，故障码 E101，现象：停机/无法启动、报警、过热/温度异常",
+      "ticketCategory": "SENSOR",
+      "deviceModel": "CNC-8800",
+      "faultCode": "E101",
+      "observedSymptoms": [
+        "停机/无法启动",
+        "报警",
+        "过热/温度异常"
+      ],
+      "missingInformation": [],
+      "uncertaintyNote": "当前未检索到可核验的知识来源，以下为基于已提供信息的澄清，不引用未确认资料。 当前把握程度为“HIGH”（内部定性判断，非概率、非百分比）。",
+      "candidateStatus": "CANDIDATE",
+      "sourceType": "USER_STATED"
+    }
+  }
+}

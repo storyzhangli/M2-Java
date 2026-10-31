@@ -35,13 +35,15 @@ class PromptTemplateControllerWebTest extends AbstractPersistenceCleanupTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void rolesEndpointShouldReturnOnlyTwoEnabledChatRoles() throws Exception {
+    void rolesEndpointShouldReturnFourEnabledChatRoles() throws Exception {
         mockMvc.perform(get(BASE + "/roles"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.length()").value(2))
-                .andExpect(jsonPath("$.data[0].scene").value("customer_service"))
-                .andExpect(jsonPath("$.data[1].scene").value("programming"));
+                .andExpect(jsonPath("$.data.length()").value(4))
+                .andExpect(jsonPath("$.data[?(@.scene=='customer_service')]").isNotEmpty())
+                .andExpect(jsonPath("$.data[?(@.scene=='programming')]").isNotEmpty())
+                .andExpect(jsonPath("$.data[?(@.scene=='device_customer_service')]").isNotEmpty())
+                .andExpect(jsonPath("$.data[?(@.scene=='technical_engineer')]").isNotEmpty());
     }
 
     @Test

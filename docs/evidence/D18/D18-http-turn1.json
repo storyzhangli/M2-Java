@@ -1,0 +1,40 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "sessionId": "ff772b87def545638fd0813fe525267c",
+    "scene": "device_customer_service",
+    "templateId": "device_customer_service",
+    "templateVersion": 1,
+    "mode": "mock",
+    "model": "offline-mock",
+    "mocked": true,
+    "answer": "[MOCK:D01] 设备信息尚不完整，需要先澄清。请先提供设备的具体型号（通常在设备铭牌或型号标签上），以便准确匹配故障资料。\r\n当前未检索到可核验的知识来源，以下为基于已提供信息的澄清，不引用未确认资料。 当前把握程度为“LOW”（内部定性判断，非概率、非百分比）。 仍待确认：设备型号、故障码、设备编号或产线位置。",
+    "clarificationRequired": true,
+    "missingInformation": [
+      "设备型号",
+      "故障码",
+      "设备编号或产线位置"
+    ],
+    "clarificationQuestion": "请先提供设备的具体型号（通常在设备铭牌或型号标签上），以便准确匹配故障资料。",
+    "uncertaintyNote": "当前未检索到可核验的知识来源，以下为基于已提供信息的澄清，不引用未确认资料。 当前把握程度为“LOW”（内部定性判断，非概率、非百分比）。 仍待确认：设备型号、故障码、设备编号或产线位置。",
+    "candidateExtraction": {
+      "symptomSummary": "设备 型号未知，现象：停机/无法启动、报警",
+      "ticketCategory": "UNKNOWN",
+      "deviceModel": null,
+      "faultCode": null,
+      "observedSymptoms": [
+        "停机/无法启动",
+        "报警"
+      ],
+      "missingInformation": [
+        "设备型号",
+        "故障码",
+        "设备编号或产线位置"
+      ],
+      "uncertaintyNote": "当前未检索到可核验的知识来源，以下为基于已提供信息的澄清，不引用未确认资料。 当前把握程度为“LOW”（内部定性判断，非概率、非百分比）。 仍待确认：设备型号、故障码、设备编号或产线位置。",
+      "candidateStatus": "NEEDS_CLARIFICATION",
+      "sourceType": "USER_STATED"
+    }
+  }
+}

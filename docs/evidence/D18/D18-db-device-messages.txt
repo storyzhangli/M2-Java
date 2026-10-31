@@ -1,0 +1,5 @@
+session_id	role	status	cnt
+5a5b65f332f34d6b93385bfab9ade247	assistant	COMPLETED	1
+5a5b65f332f34d6b93385bfab9ade247	user	COMPLETED	1
+ff772b87def545638fd0813fe525267c	assistant	COMPLETED	2
+ff772b87def545638fd0813fe525267c	user	COMPLETED	2

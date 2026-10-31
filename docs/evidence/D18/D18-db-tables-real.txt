@@ -1,0 +1,12 @@
+TABLE_NAME
+chat_message
+chat_session
+idempotency_record
+order_info
+prompt_template
+sys_permission
+sys_role
+sys_role_permission
+sys_user
+sys_user_role
+t_user
