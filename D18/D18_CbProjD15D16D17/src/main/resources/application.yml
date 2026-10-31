@@ -1,0 +1,130 @@
+# ============================================================================
+# D01 Spring AI 初始化与 DeepSeek 接入 - 主配置（可安全入库，仅含无效占位密钥）
+# 真实密钥一律通过环境变量注入，禁止把真实 API Key 写入本文件。
+# ============================================================================
+server:
+  port: 8080
+
+spring:
+  application:
+    name: D17_SpringAI
+  # MySQL：D15_PLUS 起作为 Prompt 模板的权威持久化存储。
+  # 凭据支持环境变量注入（MYSQL_USER/MYSQL_PASSWORD），冒号后仅为本机开发默认值，生产环境必须通过环境变量覆盖。
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/ai_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123456}
+
+  # Spring Boot 3.x Redis 连接配置：模板读缓存 + 多轮会话短期存储。
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: 3s
+
+  # --------------------------------------------------------------------------
+  # Spring AI 1.1.x DeepSeek 配置（属性前缀已经官方 1.1 参考文档核对，非 2.x 命名）
+  # 文档：https://docs.spring.io/spring-ai/reference/1.1/api/chat/deepseek-chat.html
+  # --------------------------------------------------------------------------
+  ai:
+    deepseek:
+      # 优先取环境变量 DEEPSEEK_API_KEY；未提供时回退到“显式无效”的本地占位串。
+      # 占位串 d01-mock-key-not-for-authentication 仅用于让自动配置完成 Bean 装配，
+      # 绝不可能通过 DeepSeek 真实鉴权；真实模式下会在调用前被主动拦截。
+      api-key: ${DEEPSEEK_API_KEY:d01-mock-key-not-for-authentication}
+      # DeepSeek 官方基址，可通过 DEEPSEEK_BASE_URL 覆盖（私有网关/代理场景）。
+      base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+      chat:
+        options:
+          # 模型名外置，默认 deepseek-flash，可通过 DEEPSEEK_MODEL 一行切换。
+          model: ${DEEPSEEK_MODEL:deepseek-flash}
+          # 采样温度，取值域 [0,2]。
+          temperature: 0.7
+
+# --------------------------------------------------------------------------
+# MyBatis-Plus 3.5.x 配置（D15_PLUS 新增）
+# --------------------------------------------------------------------------
+mybatis-plus:
+  configuration:
+    # 下划线列名自动映射驼峰字段
+    map-underscore-to-camel-case: true
+    # 开发期打印 SQL 便于排查，生产环境可通过环境覆盖为 warn
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    banner: false
+
+# --------------------------------------------------------------------------
+# D01 应用自定义开关（与 spring.ai.* 官方前缀分离）
+# --------------------------------------------------------------------------
+app:
+  ai:
+    # 运行模式，由环境变量 AI_MODE 控制：mock（默认，离线确定性返回、零外网请求）| deepseek（真实调用）。
+    mode: ${AI_MODE:mock}
+    # 入参消息可调整长度上限，可用环境变量 AI_CHAT_MAX_LENGTH 覆盖。
+    max-message-length: ${AI_CHAT_MAX_LENGTH:2000}
+    # D14 新增：SSE 流式连接服务端超时（毫秒），超时取消上游订阅并关闭连接，可用 AI_STREAM_TIMEOUT_MS 覆盖。
+    stream-timeout-ms: ${AI_STREAM_TIMEOUT_MS:60000}
+    # D15_PLUS 新增：Prompt 模板 Redis 缓存（cache-aside，MySQL 始终为权威存储）。
+    prompt:
+      cache:
+        # 关闭后读请求全部直接回源 MySQL，写请求不再执行缓存失效
+        enabled: ${PROMPT_CACHE_ENABLED:true}
+        key-prefix: ${PROMPT_CACHE_KEY_PREFIX:d15f:prompt:tpl:}
+        null-key-suffix: ":null"
+        # 正常副本 TTL 30 分钟，命中滑动续期；空值标记 60 秒，抑制缓存穿透
+        ttl-seconds: ${PROMPT_CACHE_TTL_SECONDS:1800}
+        null-ttl-seconds: ${PROMPT_CACHE_NULL_TTL_SECONDS:60}
+    # D15_PLUS 新增：多轮会话 Redis 短期存储，滑动 TTL，到期自动回收。
+    # D17 说明：主链路会话权威存储已切换为 MySQL（chat_session/chat_message），
+    # 该 Redis 配置与 ConversationMemory 组件保留但不进入主链路，仅作学习资产与兼容参考。
+    conversation:
+      redis:
+        key-prefix: ${CONV_KEY_PREFIX:d15f:conv:}
+        ttl-seconds: ${CONV_TTL_SECONDS:1800}
+    # ------------------------------------------------------------------
+    # D17 新增：对话历史（Chat History）与上下文窗口（Context Window）。
+    # 历史完整落 MySQL；窗口按消息条数选取（非 Token 预算），仅 COMPLETED 消息进入模型请求。
+    # ------------------------------------------------------------------
+    history:
+      # 单次模型请求携带的最近历史消息条数，可用环境变量 AI_CONTEXT_WINDOW_MESSAGES 覆盖。
+      context-window-messages: ${AI_CONTEXT_WINDOW_MESSAGES:10}
+      # 历史查询默认分页大小，上限 100。
+      default-page-size: ${AI_HISTORY_PAGE_SIZE:20}
+      # 开发身份请求头（无认证项目的归属标识，非生产鉴权）。
+      dev-user-header: X-Dev-User
+      default-owner: dev-user
+      title-max-length: 50
+    # ------------------------------------------------------------------
+    # D16 新增：思考模式（Thinking Mode）。
+    # 经核验 Spring AI 1.1.8 的 DeepSeek 请求体无 thinking/reasoning_effort 字段，
+    # 思考开关通过按请求切换 reasoner 模型实现；reasoning_effort 入参由服务端显式拒绝。
+    # ------------------------------------------------------------------
+    thinking:
+      # 思考模式实际使用的推理模型，客户端无法通过请求 DTO 指定任意模型名
+      reasoner-model: ${DEEPSEEK_REASONER_MODEL:deepseek-reasoner}
+    # ------------------------------------------------------------------
+    # D16 新增：最小知识检索（classpath 语料 + 确定性关键词评分，非向量库）。
+    # ------------------------------------------------------------------
+    knowledge:
+      # 单次请求最多组装的引用来源数
+      max-sources: ${AI_KNOWLEDGE_MAX_SOURCES:3}
+      # 种子语料 classpath 位置
+      corpus-location: knowledge/equipment-fault-corpus.json
+  # D13 新增：AOP 请求/响应访问日志。敏感字段/头脱敏关键字默认值在 AccessLogProperties 中维护。
+  access-log:
+    # 总开关，可用环境变量 ACCESS_LOG_ENABLED=false 一键关闭（关闭后过滤器与切面均不装配）。
+    enabled: ${ACCESS_LOG_ENABLED:true}
+    # 承载 requestId 的请求/响应头名称。
+    request-id-header: X-Request-Id
+    # 单段正文最大字符数，超限截断并在日志中标注 truncated=true。
+    max-payload-length: 2048
+    # 不打印访问日志的路径（Ant 风格），requestId 仍正常透传。
+    exclude-paths:
+      - /error
+      - /favicon.ico
+      # D14：SSE 异步流式响应不能被请求/响应缓存包装器缓冲，否则增量无法实时推送且过滤器提前收尾会截断流，
+      # 因此整条路径跳过正文缓存过滤器；TraceIdFilter 独立生效，requestId 照常生成与回写。
+      - /api/v1/ai/chat/stream

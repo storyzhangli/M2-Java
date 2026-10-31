@@ -1,0 +1,7 @@
+# test profile 覆盖配置（由 maven-surefire-plugin 激活 spring.profiles.active=test）。
+# 仅覆盖历史默认归属：测试中未显式带 X-Dev-User 的请求统一归 ut-default，
+# 清理基类按 ut_ 前缀回收，避免污染 dev-user 的手工演示数据。
+app:
+  ai:
+    history:
+      default-owner: ut-default
