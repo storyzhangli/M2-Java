@@ -17,6 +17,6 @@ public class D19SpringAiApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(D19SpringAiApplication.class, args);
-        System.out.println("====== D17 hello Spring AI (日常线) ======");
+        System.out.println("====== D19 hello Spring AI (日常线) ======");
     }
 }
