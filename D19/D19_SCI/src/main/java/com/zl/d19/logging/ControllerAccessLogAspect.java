@@ -45,7 +45,7 @@ public class ControllerAccessLogAspect {
      * （D14→D15、D15→D16、D16→D17）都曾遗留旧模块包名导致切面静默不生效，
      * 已按当前模块包名修正（后续升级模块时必须同步检查本切点与测试引导的 scanBasePackages）。
      */
-    @Around("execution(public * com.zl.d17.controller..*.*(..))")
+    @Around("execution(public * com.zl.d19.controller..*.*(..))")
     public Object aroundController(ProceedingJoinPoint pjp) throws Throwable {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         String target = signature.getDeclaringType().getSimpleName() + "#" + signature.getName();
