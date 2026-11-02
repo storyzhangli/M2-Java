@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  日志配置（Spring Boot 3.5.x / Logback）
+  - pattern 通过 %X{requestId} 输出 TraceIdFilter 写入 MDC 的请求标识，同一请求的过滤器/切面/业务日志可关联；
+  - 日志目录由系统属性或环境变量 APP_LOG_HOME 覆盖，默认指向仓库约定的 M2-Java/logs；
+  - 访问日志统一使用名为 ACCESS_LOG 的 Logger，输出为单行 JSON，便于检索与采集。
+-->
+<configuration>
+
+    <!-- 可通过 -DAPP_LOG_HOME=... 或环境变量覆盖；默认写入项目约定的 M2-Java/logs 目录 -->
+    <property name="LOG_HOME" value="${APP_LOG_HOME:-E:/AI/project/AI-Learning-one/M2-Java/logs}"/>
+
+    <property name="CONSOLE_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [%thread] [requestId=%X{requestId}] %cyan(%logger{36}) - %msg%n"/>
+    <property name="FILE_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [requestId=%X{requestId}] %logger{36} - %msg%n"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 按天 + 10MB 切分，保留 15 天，总量上限 1GB -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/d14-access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/d14-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>15</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
