@@ -1,5 +1,6 @@
 package com.zl.d20.common;
 
+import com.zl.d20.resilience.ModelInvocationException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.retry.NonTransientAiException;
@@ -93,6 +94,17 @@ public class GlobalExceptionHandler {
     public Result<Void> handleTransient(TransientAiException ex) {
         log.error("AI 服务端临时异常且重试耗尽，异常类型: {}", ex.getClass().getSimpleName());
         return Result.fail(ResultCode.AI_UNAVAILABLE);
+    }
+
+    /**
+     * 应用层韧性支持抛出的统一异常：按其携带的内部分类映射业务码。
+     * 仅记录分类与异常类型，不回显上游报文、堆栈或请求头。
+     */
+    @ExceptionHandler(ModelInvocationException.class)
+    public Result<Void> handleModelInvocation(ModelInvocationException ex) {
+        log.error("模型调用失败，分类: {}，异常类型: {}",
+                ex.getCategory(), ex.getClass().getSimpleName());
+        return Result.fail(ex.getCategory().getResultCode());
     }
 
     /**

@@ -43,6 +43,11 @@ spring:
           model: ${DEEPSEEK_MODEL:deepseek-flash}
           # 采样温度，取值域 [0,2]。
           temperature: 0.7
+    # D20：关闭 Spring AI 内置阻塞重试（总尝试 1 次即不重试）。
+    # 重试统一由应用层 app.ai.resilience 单一责任层治理，避免多层重试叠加；
+    # 同时规避内置策略对 ResourceAccessException 不区分建连/读取超时一律重试的问题。
+    retry:
+      max-attempts: ${SPRING_AI_RETRY_MAX_ATTEMPTS:1}
 
 # --------------------------------------------------------------------------
 # MyBatis-Plus 3.5.x 配置（D15_PLUS 新增）
@@ -113,6 +118,32 @@ app:
       max-sources: ${AI_KNOWLEDGE_MAX_SOURCES:3}
       # 种子语料 classpath 位置
       corpus-location: knowledge/equipment-fault-corpus.json
+    # ------------------------------------------------------------------
+    # D20 新增：模型调用韧性（异常分类 + 超时 + 有限重试的单一责任层）。
+    # 同步/流式共用此配置；仅对确认可重试的失败重试，首片段后流式不重放。
+    # ------------------------------------------------------------------
+    resilience:
+      # 建连（含 TLS 握手）超时
+      connect-timeout: ${MODEL_CONNECT_TIMEOUT:3s}
+      # 读取超时（两次数据之间的等待上限）
+      read-timeout: ${MODEL_READ_TIMEOUT:30s}
+      # 一次逻辑调用（含全部重试）总墙钟上限
+      total-deadline: ${MODEL_TOTAL_DEADLINE:60s}
+      # 流式两个分片之间的空闲超时
+      stream-idle-timeout: ${MODEL_STREAM_IDLE_TIMEOUT:30s}
+      # 总尝试次数（含首次），默认 2 = 最多重试 1 次，取值 1~5
+      max-attempts: ${MODEL_MAX_ATTEMPTS:2}
+      # 读取超时是否允许重试：默认关闭（请求已发送、结果不确定）
+      retry-on-read-timeout: ${MODEL_RETRY_ON_READ_TIMEOUT:false}
+      backoff:
+        # 首次退避基数
+        initial: ${MODEL_BACKOFF_INITIAL:200ms}
+        # 退避增长倍率
+        multiplier: ${MODEL_BACKOFF_MULTIPLIER:2.0}
+        # 单次退避上限
+        max-interval: ${MODEL_BACKOFF_MAX_INTERVAL:5s}
+        # 抖动因子（0~1）
+        jitter-factor: ${MODEL_BACKOFF_JITTER:0.2}
   # D13 新增：AOP 请求/响应访问日志。敏感字段/头脱敏关键字默认值在 AccessLogProperties 中维护。
   access-log:
     # 总开关，可用环境变量 ACCESS_LOG_ENABLED=false 一键关闭（关闭后过滤器与切面均不装配）。

@@ -3,6 +3,7 @@ package com.zl.d20.service;
 import com.zl.d20.common.AiConfigurationException;
 import com.zl.d20.config.AiConstants;
 import com.zl.d20.dto.ChatReplyResponse;
+import com.zl.d20.resilience.ModelResilienceSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
@@ -48,6 +49,11 @@ public class DeepSeekAiChatService implements AiChatService {
     private final String model;
 
     /**
+     * 模型调用韧性支持：本服务唯一的超时/有限重试责任层。
+     */
+    private final ModelResilienceSupport resilienceSupport;
+
+    /**
      * D16 思考模式实际切换到的推理模型名，服务端配置白名单，客户端无法通过请求 DTO 指定任意模型。
      * 默认 deepseek-reasoner（Spring AI 1.1.8 内置 ChatModel 枚举支持的两个模型之一），
      * 可由环境变量 DEEPSEEK_REASONER_MODEL 覆盖。
@@ -58,10 +64,12 @@ public class DeepSeekAiChatService implements AiChatService {
             ChatModel chatModel,
             @Value("${spring.ai.deepseek.api-key}") String apiKey,
             @Value("${spring.ai.deepseek.chat.options.model:deepseek-flash}") String model,
+            ModelResilienceSupport resilienceSupport,
             @Value("${app.ai.thinking.reasoner-model:deepseek-reasoner}") String reasonerModel) {
         this.chatModel = chatModel;
         this.apiKey = apiKey;
         this.model = model;
+        this.resilienceSupport = resilienceSupport;
         this.reasonerModel = reasonerModel;
     }
 
@@ -72,7 +80,7 @@ public class DeepSeekAiChatService implements AiChatService {
 
         Prompt prompt = new Prompt(new UserMessage(message));
         log.info("接收的prompt消息: {}", prompt);
-        ChatResponse response = this.chatModel.call(prompt);
+        ChatResponse response = resilienceSupport.executeBlocking(() -> this.chatModel.call(prompt));
         log.info("响应消息: {}",response.toString());
         String content = response.getResult().getOutput().getText();
 
@@ -93,8 +101,8 @@ public class DeepSeekAiChatService implements AiChatService {
         log.info("开始流式调用 DeepSeek，model={}", this.model);
 
         // ChatModel.stream 返回逐块 ChatResponse；这里只抽取文本增量并过滤空块，
-        // 不假设每块对应一个 token/单词/整句，异常原样向上传播交由 Controller 转 SSE error 事件。
-        return this.chatModel.stream(prompt)
+        // 不假设每块对应一个 token/单词/整句；超时与有限重试由韧性支持统一治理。
+        return resilienceSupport.guardFlux(this.chatModel.stream(prompt))
                 .map(chunk -> {
                     if (chunk == null || chunk.getResult() == null || chunk.getResult().getOutput() == null) {
                         return null;
@@ -116,7 +124,7 @@ public class DeepSeekAiChatService implements AiChatService {
 
         Prompt prompt = new Prompt(buildMessages(invocation));
         log.info("角色对话同步调用，model={}，历史消息数={}", this.model, invocation.history().size());
-        ChatResponse response = this.chatModel.call(prompt);
+        ChatResponse response = resilienceSupport.executeBlocking(() -> this.chatModel.call(prompt));
         String content = response.getResult().getOutput().getText();
 
         return new ChatReplyResponse(AiConstants.MODE_DEEPSEEK, this.model, Boolean.FALSE, content);
@@ -132,7 +140,7 @@ public class DeepSeekAiChatService implements AiChatService {
         Prompt prompt = new Prompt(buildMessages(invocation));
         log.info("角色对话流式调用，model={}，历史消息数={}", this.model, invocation.history().size());
 
-        return this.chatModel.stream(prompt)
+        return resilienceSupport.guardFlux(this.chatModel.stream(prompt))
                 .map(chunk -> {
                     if (chunk == null || chunk.getResult() == null || chunk.getResult().getOutput() == null) {
                         return null;
@@ -164,7 +172,7 @@ public class DeepSeekAiChatService implements AiChatService {
         log.info("D16 角色对话同步调用，thinkingEnabled={}，model={}，历史消息数={}",
                 settings.enabled(), effectiveModel, invocation.history().size());
 
-        ChatResponse response = this.chatModel.call(prompt);
+        ChatResponse response = resilienceSupport.executeBlocking(() -> this.chatModel.call(prompt));
         AssistantMessage output = response.getResult().getOutput();
         String content = output.getText();
         String reasoning = extractReasoning(output);
@@ -183,7 +191,7 @@ public class DeepSeekAiChatService implements AiChatService {
         Prompt prompt = new Prompt(List.of(new UserMessage(message)), buildModelOptions(effectiveModel));
         log.info("D16 同步调用，thinkingEnabled={}，model={}", settings.enabled(), effectiveModel);
 
-        ChatResponse response = this.chatModel.call(prompt);
+        ChatResponse response = resilienceSupport.executeBlocking(() -> this.chatModel.call(prompt));
         AssistantMessage output = response.getResult().getOutput();
         String reasoning = extractReasoning(output);
         return new AiChatResult(AiConstants.MODE_DEEPSEEK, effectiveModel, false,
@@ -218,7 +226,7 @@ public class DeepSeekAiChatService implements AiChatService {
      * 把模型原生 ChatResponse 流拆成推理/答案两类分片；空块与空白文本均过滤。
      */
     private Flux<StreamChunk> toTypedStream(Prompt prompt, String effectiveModel) {
-        return this.chatModel.stream(prompt)
+        return resilienceSupport.guardFlux(this.chatModel.stream(prompt))
                 .concatMap(chunk -> {
                     List<StreamChunk> pieces = new ArrayList<>(2);
                     if (chunk == null || chunk.getResult() == null
