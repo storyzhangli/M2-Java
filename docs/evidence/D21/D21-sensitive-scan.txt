@@ -1,0 +1,8 @@
+<src>\main\java\com\zl\d21\config\AiConstants.java | PlaceholderKey=true
+<src>\main\java\com\zl\d21\logging\AccessLogProperties.java | AuthorizationHeader=true
+<src>\main\java\com\zl\d21\logging\AccessLogProperties.java | ApiKeyRef=true
+<src>\main\java\com\zl\d21\logging\LogMaskingUtils.java | ApiKeyRef=true
+<src>\main\java\com\zl\d21\observability\ModelCallRecord.java | AuthorizationHeader=true
+<src>\main\java\com\zl\d21\service\DeepSeekAiChatService.java | ApiKeyRef=true
+<src>\main\resources\application.yml | ApiKeyRef=true
+<src>\main\resources\application.yml | PlaceholderKey=true

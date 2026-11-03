@@ -1,0 +1,18 @@
+D21 全量测试逐类汇总（来源：mvn test 实际输出，11 个测试类）
+
+测试类 | Tests | Failures | Errors | Skipped
+ApplicationTypeTest | 2 | 0 | 0 | 0
+observability.ModelCallRecorderTest | 8 | 0 | 0 | 0
+observability.TokenUsageSnapshotTest | 11 | 0 | 0 | 0
+resilience.ModelExceptionClassifierTest | 16 | 0 | 0 | 0
+resilience.ModelResiliencePropertiesTest | 6 | 0 | 0 | 0
+resilience.ModelResilienceSupportTest | 9 | 0 | 0 | 0
+SessionIsolationTest | 1 | 0 | 0 | 0
+StreamOrchestratorTest | 3 | 0 | 0 | 0
+StreamSseHttpTest | 2 | 0 | 0 | 0
+SyncChatContractTest | 5 | 0 | 0 | 0
+TraceIdHttpTest | 5 | 0 | 0 | 0
+
+合计 | 68 | 0 | 0 | 0
+
+最终结果：Tests run: 68, Failures: 0, Errors: 0, Skipped: 0，BUILD SUCCESS
