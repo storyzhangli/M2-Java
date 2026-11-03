@@ -42,10 +42,10 @@ public class ControllerAccessLogAspect {
     /**
      * 仅切当前应用 Controller 包内 public 方法，范围显式，不记录框架自身 Bean。
      * 注意：D21 Controller 包为 {@code com.zl.d21.controller}；本切点在历次骨架复制时
-     * todo（D14→D15、D15→D16、D16→D17）都曾遗留旧模块包名导致切面静默不生效，
+     * （D14→D15、D15→D16、D16→D17）都曾遗留旧模块包名导致切面静默不生效，
      * 已按当前模块包名修正（后续升级模块时必须同步检查本切点与测试引导的 scanBasePackages）。
      */
-    @Around("execution(public * com.zl.d21.controller..*.*(..))")
+    @Around("execution(public * com.zl..controller..*.*(..))")
     public Object aroundController(ProceedingJoinPoint pjp) throws Throwable {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         String target = signature.getDeclaringType().getSimpleName() + "#" + signature.getName();
