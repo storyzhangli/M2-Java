@@ -1,8 +1,6 @@
 # D21 项目迭代任务书 Prompt
 ## TraceId、脱敏调用记录、延迟与 Token Usage
 
-
-
 ## 1. 本轮参数
 
 | 项目 | 参数 |
@@ -23,12 +21,10 @@
 临时脚本、索引、摘要和中间文件只允许存入 `docs\temp_docs\D21`。**不得自动删除或清理任何临时文件、历史文件或用户已有文件。**
 
 本轮功能：
-1. 为聊天请求增加可贯穿请求处理和模型调用的 TraceId。
+1. 为聊天请求增加可贯穿请求处理和模型调用的 TraceId（Trace Identifier，链路追踪标识）。
 2. 记录脱敏后的模型调用信息。
-3. 记录可测量的请求延迟。
-4. 记录模型实际返回且可获得的 Token usage；无 usage 时不得估算、补造或填入虚假数值。
-
-
+3. 用单调时钟记录可测量的请求延迟。
+4. 记录模型实际返回且可获得的 Token usage（令牌用量）；无 usage 时不得估算、补造或填入虚假数值。
 
 ## 2. 技术约束
 
@@ -39,14 +35,14 @@
 关键技术事实和核查要求：
 - Spring AI 1.1.8 的 `ChatClient` 支持同步与流式调用；可通过 `call().chatResponse()` 获取 `ChatResponse`，其 metadata 可提供 usage；流式分支应检查是否能从 `chatResponse()` 响应流的最终数据中获得 usage。不得仅因使用了 Spring AI 就假定 Provider 一定返回 usage。
 - Spring AI 1.1.8 定义了 `Usage` 的 prompt、completion、total token 获取方法。各字段可能缺失，必须逐项判空并记录来源和可用状态。
-- Spring AI 1.1.8 的 Observability 需要结合实际依赖和模型实现核验。不得假定 DeepSeek 适配器一定产生全部自动 metrics/traces；自动观测能力与响应 metadata 中实际返回的 usage 是两个不同问题。
-- Spring Boot 3.5 的 Micrometer Tracing 可提供 trace/span 上下文及日志关联；是否已经启用必须检查实际 POM 和配置。优先复用，不得重复引入 Tracer、MDC 或自制链路追踪体系。
+- Spring AI 1.1.8 的 Observability（可观测性）需要结合实际依赖和模型实现核验。不得假定 DeepSeek 适配器一定产生全部自动 metrics/traces；自动观测能力与响应 metadata 中实际返回的 usage 是两个不同问题。
+- Spring Boot 3.5 的 Micrometer Tracing（Micrometer 链路追踪）可提供 trace/span 上下文及日志关联；是否已经启用必须检查实际 POM 和配置。优先复用，不得重复引入 Tracer、MDC 或自制链路追踪体系。
 
 官方资料（按 Spring AI 1.1.8 / Boot 3.5 对应版本核对）：
-- Chat Client API | 聊天客户端 API：[https://docs.spring.io/spring-ai/reference/1.1/api/chatclient.html](https://docs.spring.io/spring-ai/reference/1.1/api/chatclient.html)
-- Usage (Spring AI Parent 1.1.8 API) | Usage 用量接口（Spring AI 1.1.8 API）：[https://docs.spring.io/spring-ai/docs/1.1.x/api/org/springframework/ai/chat/metadata/Usage.html](https://docs.spring.io/spring-ai/docs/1.1.x/api/org/springframework/ai/chat/metadata/Usage.html)
-- Observability | 可观测性：[https://docs.spring.io/spring-ai/reference/1.1/observability/index.html](https://docs.spring.io/spring-ai/reference/1.1/observability/index.html)
-- Tracing | 链路追踪：[https://docs.spring.io/spring-boot/3.5/reference/actuator/tracing.html](https://docs.spring.io/spring-boot/3.5/reference/actuator/tracing.html)
+- Chat Client API | 聊天客户端 API：https://docs.spring.io/spring-ai/reference/1.1/api/chatclient.html
+- Usage (Spring AI Parent 1.1.8 API) | Usage 用量接口：https://docs.spring.io/spring-ai/docs/1.1.x/api/org/springframework/ai/chat/metadata/Usage.html
+- Observability | 可观测性：https://docs.spring.io/spring-ai/reference/1.1/observability/index.html
+- Tracing | 链路追踪：https://docs.spring.io/spring-boot/3.5/reference/actuator/tracing.html
 
 ## 3. 执行协议：轻量扫描与按需读取
 
@@ -156,7 +152,7 @@
 - 复用索引、哈希、Git diff 和已读取且未变化的文件结论；禁止重复全仓扫描、重复读取和多 Agent 重复分析同一模块。
 - 每阶段输出短交接记录，不重复贴完整源码、完整日志和完整架构说明。
 - 同一根因连续两次修复仍失败，立即停止修复循环，输出诊断记录：现象、复现步骤、根因假设、已尝试修改、失败证据、下一步验证方案；由用户/负责人决定是否继续。
-- 单模块初始目标 130万–180万 Token；跨模块 180万–300万 Token。300万触发统计检查，400万触发人工复核，500万暂停无效 Agent 循环并重新规划。不得为了预算阈值跳过必要工程工作。
+- 单模块初始目标 130 万–180 万 Token；跨模块 180 万–300 万 Token。300 万触发统计检查，400 万触发人工复核，500 万暂停无效 Agent 循环并重新规划。不得为了预算阈值跳过必要工程工作。
 - 尽可能记录请求数、输入 Token、缓存命中/未命中 Token、输出 Token、模型/会话、执行阶段、累计 Token 和费用。统计不记录 API Key、完整 Prompt 或敏感数据。
 
 ## 8. 结构化迭代状态记录
