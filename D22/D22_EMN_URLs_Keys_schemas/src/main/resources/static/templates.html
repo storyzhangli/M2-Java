@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D17 Prompt 模板管理</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<main class="admin-shell">
+    <header class="chat-header" style="border:1px solid #e4e7eb;border-radius:12px;margin-bottom:16px;">
+        <div>
+            <h1>Prompt 模板管理</h1>
+            <p class="sub">内置 6 个场景模板 · 启停/逻辑删除/变量渲染校验由服务端执行 · 内存存储，重启恢复种子数据</p>
+        </div>
+        <div class="header-actions">
+            <a class="nav-link" href="/index.html">返回对话页</a>
+        </div>
+    </header>
+
+    <section class="filter-bar">
+        <label>场景
+            <select id="filterScene">
+                <option value="">全部</option>
+                <option value="customer_service">customer_service</option>
+                <option value="programming">programming</option>
+                <option value="technical_explanation">technical_explanation</option>
+                <option value="code_review">code_review</option>
+                <option value="summarization">summarization</option>
+                <option value="information_extraction">information_extraction</option>
+            </select>
+        </label>
+        <label>状态
+            <select id="filterStatus">
+                <option value="">全部</option>
+                <option value="ENABLED">ENABLED</option>
+                <option value="DISABLED">DISABLED</option>
+            </select>
+        </label>
+        <input id="filterKeyword" type="text" placeholder="按名称/templateId 关键字" style="min-width:200px;">
+        <button id="queryBtn" type="button" class="btn btn-primary">查询</button>
+        <button id="createBtn" type="button" class="btn btn-ghost">新建模板</button>
+    </section>
+
+    <table class="template-table">
+        <thead>
+        <tr>
+            <th>templateId</th>
+            <th>名称</th>
+            <th>场景</th>
+            <th>版本</th>
+            <th>状态</th>
+            <th>变量数</th>
+            <th>更新时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="templateTbody"></tbody>
+    </table>
+
+    <section id="editorPanel" class="editor-panel" style="display:none;">
+        <h2 id="editorTitle" style="margin:0 0 14px;font-size:16px;">新建模板</h2>
+        <form id="editorForm" class="editor-form">
+            <label>templateId（创建后不可修改）
+                <input id="editTemplateId" type="text" maxlength="64" placeholder="例如 faq_reply_v2">
+            </label>
+            <label>名称
+                <input id="editName" type="text" maxlength="100" placeholder="模板展示名称">
+            </label>
+            <label>场景
+                <select id="editScene">
+                    <option value="customer_service">customer_service</option>
+                    <option value="programming">programming</option>
+                    <option value="technical_explanation">technical_explanation</option>
+                    <option value="code_review">code_review</option>
+                    <option value="summarization">summarization</option>
+                    <option value="information_extraction">information_extraction</option>
+                </select>
+            </label>
+            <label>描述
+                <input id="editDescription" type="text" maxlength="300">
+            </label>
+            <label>模板正文（占位符语法 {变量名}；字面大括号必须写作 \ { 与 \ }）
+                <textarea id="editContent" maxlength="8000" placeholder="你是……请按以下规则回答：……"></textarea>
+            </label>
+            <label>变量声明（JSON 数组，字段：name/required/description/defaultValue）
+                <textarea id="editVariables" style="min-height:160px;"
+                          placeholder='[{"name":"business_context","required":false,"description":"业务背景","defaultValue":"无额外业务背景"}]'></textarea>
+            </label>
+            <p id="editError" class="tip-line" style="color:#b42318;"></p>
+            <div class="form-actions">
+                <button id="saveBtn" type="button" class="btn btn-primary">保存</button>
+                <button id="cancelBtn" type="button" class="btn btn-ghost">取消</button>
+            </div>
+        </form>
+    </section>
+</main>
+<script src="/js/templates.js"></script>
+</body>
+</html>
