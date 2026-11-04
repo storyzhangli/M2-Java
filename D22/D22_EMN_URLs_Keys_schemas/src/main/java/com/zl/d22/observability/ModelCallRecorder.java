@@ -2,10 +2,13 @@ package com.zl.d22.observability;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.zl.d22.adapter.NativeUsageReader;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 模型调用记录器（Model Call Recorder）。
@@ -38,8 +41,16 @@ public class ModelCallRecorder {
 
     private final ModelObservabilityProperties properties;
 
-    public ModelCallRecorder(ModelObservabilityProperties properties) {
+    /**
+     * 原生用量读取器集合；mock 模式没有任何 reader 时 Spring 自动注入空列表，
+     * 观测自动回退到可移植 getter 路径。
+     */
+    private final List<NativeUsageReader> usageReaders;
+
+    public ModelCallRecorder(ModelObservabilityProperties properties,
+                             List<NativeUsageReader> usageReaders) {
         this.properties = properties;
+        this.usageReaders = usageReaders;
     }
 
     /**
@@ -51,7 +62,8 @@ public class ModelCallRecorder {
      * @return 请求级观测上下文
      */
     public ModelCallObservation begin(String provider, String model, String callMode) {
-        return new ModelCallObservation(this, properties, provider, model, callMode);
+        return new ModelCallObservation(this, properties, usageReaders,
+                provider, model, callMode);
     }
 
     /**

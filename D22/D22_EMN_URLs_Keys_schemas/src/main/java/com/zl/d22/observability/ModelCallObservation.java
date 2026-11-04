@@ -1,5 +1,6 @@
 package com.zl.d22.observability;
 
+import com.zl.d22.adapter.NativeUsageReader;
 import com.zl.d22.logging.TraceIdFilter;
 import org.slf4j.MDC;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,6 +34,9 @@ public class ModelCallObservation {
 
     private final ModelObservabilityProperties properties;
 
+    /** 原生用量读取器，透传给 {@link TokenUsageSnapshot}；空列表时走可移植回退。 */
+    private final List<NativeUsageReader> usageReaders;
+
     private final String provider;
 
     private final String model;
@@ -52,11 +57,13 @@ public class ModelCallObservation {
 
     public ModelCallObservation(ModelCallRecorder recorder,
                                 ModelObservabilityProperties properties,
+                                List<NativeUsageReader> usageReaders,
                                 String provider,
                                 String model,
                                 String callMode) {
         this.recorder = recorder;
         this.properties = properties;
+        this.usageReaders = usageReaders;
         this.provider = provider;
         this.model = model;
         this.callMode = callMode;
@@ -72,7 +79,7 @@ public class ModelCallObservation {
         if (!recorder.isEnabled() || response == null) {
             return response;
         }
-        TokenUsageSnapshot snapshot = TokenUsageSnapshot.from(extractUsage(response));
+        TokenUsageSnapshot snapshot = TokenUsageSnapshot.from(extractUsage(response), usageReaders);
         String responseId = extractResponseId(response);
         emit(CallOutcome.SUCCESS, null, snapshot, responseId, null);
         return response;
@@ -125,18 +132,18 @@ public class ModelCallObservation {
                     }
                 })
                 .doOnComplete(() -> {
-                    TokenUsageSnapshot snapshot = TokenUsageSnapshot.from(lastUsage.get());
+                    TokenUsageSnapshot snapshot = TokenUsageSnapshot.from(lastUsage.get(), usageReaders);
                     emit(CallOutcome.SUCCESS, null, snapshot, responseId.get(),
                             timeToFirstChunkMs(firstChunkNanos.get()));
                 })
                 .doOnError(error -> {
                     String errorCode = error.getClass().getSimpleName();
                     emit(CallOutcome.ERROR, errorCode,
-                            TokenUsageSnapshot.from(lastUsage.get()), responseId.get(),
+                            TokenUsageSnapshot.from(lastUsage.get(), usageReaders), responseId.get(),
                             timeToFirstChunkMs(firstChunkNanos.get()));
                 })
                 .doOnCancel(() -> emit(CallOutcome.CANCELLED, null,
-                        TokenUsageSnapshot.from(lastUsage.get()), responseId.get(),
+                        TokenUsageSnapshot.from(lastUsage.get(), usageReaders), responseId.get(),
                         timeToFirstChunkMs(firstChunkNanos.get())));
     }
 

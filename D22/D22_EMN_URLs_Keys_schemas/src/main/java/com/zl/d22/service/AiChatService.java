@@ -11,8 +11,8 @@ import java.util.List;
  * <p>同一接口存在两个按 {@code app.ai.mode} 条件装配的实现：</p>
  * <ul>
  *     <li>{@link MockAiChatService}：mock 模式（默认），离线确定性返回，不访问外网；</li>
- *     <li>{@link DeepSeekAiChatService}：deepseek 模式，基于 Spring AI {@code ChatModel}
- *     调用 DeepSeek。</li>
+ *     <li>{@link RemoteAiChatService}：deepseek 模式，基于 Spring AI 可移植 {@code ChatModel}
+ *     经适配层调用远程模型，服务层不依赖供应商专有类型。</li>
  * </ul>
  *
  * <p>说明：本应用运行在 Servlet/Tomcat + Spring MVC 技术栈上，{@link Flux} 仅作为 Spring AI

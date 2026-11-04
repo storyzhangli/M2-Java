@@ -53,7 +53,8 @@ class ModelCallRecorderTest {
     }
 
     private ModelCallRecorder recorder() {
-        return new ModelCallRecorder(new ModelObservabilityProperties());
+        // 无 reader：usage 走可移植回退路径，与 mock 模式装配一致
+        return new ModelCallRecorder(new ModelObservabilityProperties(), List.of());
     }
 
     @Test
@@ -182,7 +183,7 @@ class ModelCallRecorderTest {
     void disabled() {
         ModelObservabilityProperties properties = new ModelObservabilityProperties();
         properties.setEnabled(false);
-        ModelCallRecorder recorder = new ModelCallRecorder(properties);
+        ModelCallRecorder recorder = new ModelCallRecorder(properties, List.of());
         ModelCallObservation observation =
                 recorder.begin("deepseek", "deepseek-flash", ModelCallRecorder.MODE_STREAM);
         List<ChatResponse> chunks = observation

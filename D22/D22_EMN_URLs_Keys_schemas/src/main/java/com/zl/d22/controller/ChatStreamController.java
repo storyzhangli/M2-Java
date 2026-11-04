@@ -66,9 +66,6 @@ public class ChatStreamController {
     private final ChatHistoryService historyService;
     private final HistoryProperties historyProperties;
 
-    @Value("${spring.ai.deepseek.chat.options.model:deepseek-flash}")
-    private String deepseekModel;
-
     @Value("${app.ai.thinking.reasoner-model:deepseek-reasoner}")
     private String reasonerModel;
 
@@ -130,7 +127,7 @@ public class ChatStreamController {
         String mode = aiProperties.getMode();
         final String model = AiConstants.MODE_MOCK.equals(mode)
                 ? "offline-mock"
-                : (settings.enabled() ? reasonerModel : deepseekModel);
+                : (settings.enabled() ? reasonerModel : aiProperties.getModel());
 
         AtomicBoolean finished = new AtomicBoolean(false);
         AtomicInteger deltaSeq = new AtomicInteger();

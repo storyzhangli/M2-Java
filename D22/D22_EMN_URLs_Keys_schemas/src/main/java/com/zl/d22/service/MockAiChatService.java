@@ -86,7 +86,7 @@ public class MockAiChatService implements AiChatService {
         return AiConstants.MOCK_REPLY_MARKER
                 + " 当前为离线模拟模式（AI_MODE=mock），未发起任何 DeepSeek 网络请求。"
                 + "已收到问题：「" + message + "」。"
-                + "如需真实回答，请设置环境变量 AI_MODE=deepseek 并注入有效的 DEEPSEEK_API_KEY。";
+                + "如需真实回答，请设置环境变量 AI_MODE=deepseek 并注入有效的 AI_API_KEY。";
     }
 
     /**

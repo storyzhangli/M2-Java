@@ -1,5 +1,6 @@
 # ============================================================================
-# D01 Spring AI 初始化与 DeepSeek 接入 - 主配置（可安全入库，仅含无效占位密钥）
+# D22 主配置（可安全入库，不含任何真实密钥）
+# 模型连接统一收敛到 app.ai.*（model/base-url/api-key/mode），环境变量统一 AI_*；
 # 真实密钥一律通过环境变量注入，禁止把真实 API Key 写入本文件。
 # ============================================================================
 server:
@@ -25,30 +26,6 @@ spring:
       database: ${REDIS_DATABASE:0}
       timeout: 3s
 
-  # --------------------------------------------------------------------------
-  # Spring AI 1.1.x DeepSeek 配置（属性前缀已经官方 1.1 参考文档核对，非 2.x 命名）
-  # 文档：https://docs.spring.io/spring-ai/reference/1.1/api/chat/deepseek-chat.html
-  # --------------------------------------------------------------------------
-  ai:
-    deepseek:
-      # 优先取环境变量 DEEPSEEK_API_KEY；未提供时回退到“显式无效”的本地占位串。
-      # 占位串 d01-mock-key-not-for-authentication 仅用于让自动配置完成 Bean 装配，
-      # 绝不可能通过 DeepSeek 真实鉴权；真实模式下会在调用前被主动拦截。
-      api-key: ${DEEPSEEK_API_KEY:d01-mock-key-not-for-authentication}
-      # DeepSeek 官方基址，可通过 DEEPSEEK_BASE_URL 覆盖（私有网关/代理场景）。
-      base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
-      chat:
-        options:
-          # 模型名外置，默认 deepseek-flash，可通过 DEEPSEEK_MODEL 一行切换。
-          model: ${DEEPSEEK_MODEL:deepseek-flash}
-          # 采样温度，取值域 [0,2]。
-          temperature: 0.7
-    # D22：关闭 Spring AI 内置阻塞重试（总尝试 1 次即不重试）。
-    # 重试统一由应用层 app.ai.resilience 单一责任层治理，避免多层重试叠加；
-    # 同时规避内置策略对 ResourceAccessException 不区分建连/读取超时一律重试的问题。
-    retry:
-      max-attempts: ${SPRING_AI_RETRY_MAX_ATTEMPTS:1}
-
 # --------------------------------------------------------------------------
 # MyBatis-Plus 3.5.x 配置（D15_PLUS 新增）
 # --------------------------------------------------------------------------
@@ -68,6 +45,13 @@ app:
   ai:
     # 运行模式，由环境变量 AI_MODE 控制：mock（默认，离线确定性返回、零外网请求）| deepseek（真实调用）。
     mode: ${AI_MODE:mock}
+    # D22：模型名外置，统一用 AI_MODEL 注入，默认 deepseek-flash。
+    model: ${AI_MODEL:deepseek-flash}
+    # D22：模型服务基址外置，统一用 AI_BASE_URL 注入，可指向官方网关或私有代理。
+    base-url: ${AI_BASE_URL:https://api.deepseek.com}
+    # D22：API 密钥外置，统一用 AI_API_KEY 注入；默认空，禁止硬编码真实密钥。
+    # mock 模式不读取该字段；deepseek 模式缺失/空白会在启动阶段明确失败，不静默回退。
+    api-key: ${AI_API_KEY:}
     # 入参消息可调整长度上限，可用环境变量 AI_CHAT_MAX_LENGTH 覆盖。
     max-message-length: ${AI_CHAT_MAX_LENGTH:2000}
     # D14 新增：SSE 流式连接服务端超时（毫秒），超时取消上游订阅并关闭连接，可用 AI_STREAM_TIMEOUT_MS 覆盖。
