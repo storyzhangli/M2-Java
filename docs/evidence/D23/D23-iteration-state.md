@@ -187,3 +187,88 @@ D23-R05（关键问题修复）
 - 完整日志目录：`logs/D23/`（baseline-test、unit-1/2/3、new-all/new-all-2、full-regression、git-status）
 - 临时设计：`docs/temp_docs/D23/D23-test-design.md`
 - 本状态文件：`docs/evidence/D23/D23-iteration-state.md`
+
+---
+---
+
+# D23 子迭代（二）：Mockito 显式 Java Agent 与 Maven 测试构建规范化
+
+> 本部分为同一 D23 工程下的第二个子迭代（构建规范化），与上方“回归测试子迭代”并存，不覆盖其记录。
+> 依据：实际 POM、`mvn help:effective-pom`、`mvn dependency:tree`、Maven Debug fork 参数与真实测试结果。
+> 状态取值仅使用：通过 / 失败 / 未验证 / 不适用（附理由）。
+
+## 0. 子迭代总览
+
+| 项 | 值 |
+|---|---|
+| 子迭代目标 | 保留 Inline Mock Maker，将实际解析的 mockito-core 显式作为测试 JVM 的 -javaagent，统一由 Surefire 管理 |
+| 实际 Mockito | mockito-core 5.17.0、mockito-junit-jupiter 5.17.0（test，经 spring-boot-starter-test 3.5.16 传递） |
+| Inline 启用方式 | 无 MockMaker 扩展文件、无 mockito-inline；Mockito 5 默认 Mock Maker 即 inline |
+| Surefire | maven-surefire-plugin 3.5.6（forkCount 默认 1，forked JVM） |
+| Failsafe | maven-failsafe-plugin 3.5.6 仅在 pluginManagement，未在 build/plugins 声明，且无 *IT 测试 → 不执行 |
+| 生产代码改动 | 无；仅模块 POM 构建配置变更（26 增 3 删） |
+| 全量测试 | 123 通过、0 失败/0 错误/0 跳过，BUILD SUCCESS，退出码 0；动态 Agent 警告 0 命中 |
+
+## 需求编号
+D23-R01（保留 Inline Mock Maker）、R02（显式 Java Agent）、R03（Surefire 统一配置）、R04（Failsafe 条件配置）、R05（最小改动）。
+> 注：本部分 R01–R05 为构建规范化任务书的编号，与上方回归测试子迭代的 R01–R05 含义不同，已分区避免混淆。
+
+## 修改文件
+- 修改（唯一已跟踪文件）：`D23/D23_CRTFC_SSE_MASO/pom.xml`
+  - 新增 `maven-dependency-plugin`，execution `resolve-dependency-paths` 绑定 `properties` goal（默认 initialize 阶段）。
+  - 现有 `maven-surefire-plugin` 配置内追加 `<argLine>-javaagent:${org.mockito:mockito-core:jar}</argLine>`，保留 systemPropertyVariables。
+- 业务 Java、现有测试类：零修改。未新增/升级任何依赖与插件版本（插件版本沿用父 POM pluginManagement）。
+
+## 设计决定
+- Mockito 解析版本及来源：mockito-core 5.17.0（test），由 spring-boot-starter-test:3.5.16 传递，BOM 治理，未手动指定版本。
+- Agent JAR 路径解析方式：`maven-dependency-plugin:properties` 建立 `org.mockito:mockito-core:jar` 属性，
+  实际解析为 `D:\SoftwareInstall\Apache\repository\org\mockito\mockito-core\5.17.0\mockito-core-5.17.0.jar`，
+  与测试依赖同版本，不另指定版本。
+- Surefire argLine 合并方式：变更前无任何 argLine、无 JaCoCo、无其他占用 JVM 参数的插件，
+  故直接在现有 surefire 配置追加，不覆盖既有参数；systemPropertyVariables(spring.profiles.active=test) 原样保留。
+- 不使用 `@{argLine}` 延迟替换：无其他插件设置 argLine，直接用 `${org.mockito:mockito-core:jar}` 即可，
+  规避字面量 `@{argLine}` 与空初始值问题。
+- Fork 核查：`forkCount` 默认值 1（非 0），argLine 对 forked JVM 生效，未改变并发/隔离行为。
+- Failsafe 是否存在及处理方式：仅 pluginManagement 有版本/默认目标，build/plugins 未声明、无 *IT/*ITCase 源文件，
+  确认不执行，故 R04 不新增 Failsafe、标不适用。
+- Inline Mock Maker 保留方式：不新增、不删除、不替换任何 MockMaker 配置；保持 Mockito 5 默认 inline，仅显式挂载 Agent。
+- 明确不使用 `-XX:+EnableDynamicAgentLoading`、`-Djdk.instrument.traceUsage` 等仅隐藏警告的参数。
+
+## 测试
+- 命令：`mvn -f D23/D23_CRTFC_SSE_MASO/pom.xml clean test -X`（Debug 以捕获 fork 参数），退出码 0。
+- 结果：通过。Tests run: 123, Failures: 0, Errors: 0, Skipped: 0，BUILD SUCCESS。
+- 警告核查：对 self-attaching / loaded dynamically / EnableDynamicAgentLoading / traceUsage / Dynamic loading of agents 计数 = 0。
+- 测试数量（真实报告）：123（21 个测试类，surefire 报告与汇总一致）。
+
+## 证据
+- 有效 POM 摘要：`logs/D23/effective-pom-before.xml`（基线）、`logs/D23/effective-pom-after.xml`（变更后，argLine 见 11398/11406 行）。
+- 依赖树摘要：`logs/D23/mockito-tree.log`（mockito-core 5.17.0）。
+- dependency:properties 解析：`logs/D23/full-test-agent-debug.log` 第 1374、2462 行（属性→实际 JAR 路径）。
+- fork JVM Agent 参数摘要：同日志第 2927 行 `(s) argLine = -javaagent:D:\...\mockito-core-5.17.0.jar`；forkCount=1（第 2943 行）。
+- 测试报告路径：`D23/D23_CRTFC_SSE_MASO/target/surefire-reports/`（21 份）；汇总见 full-test-agent-debug.log 第 3667 行。
+- Git Diff 摘要：`logs/D23/git-diff-after.log`（仅模块 POM，26 增 3 删）；静态检查摘要 `docs/temp_docs/D23/D23-agent-static-check.md`。
+
+## 遗留问题
+- 无构建阻塞问题。
+- 真实模型 remote 模式仍未验证（本机无 AI_API_KEY），与本构建规范化无直接关系。
+- 若未来新增 Failsafe 集成测试，需按 R04 为其独立追加同版本 -javaagent，不得假设 Surefire 配置自动生效。
+
+## 验收标准（AC）状态矩阵（构建规范化）
+
+| 验收编号 | 状态 | 依据/证据 |
+|---|---|---|
+| D23-AC01 Mockito 版本未被无故改变 | 通过 | mockito-tree.log 前后均 5.17.0，POM 未改版本 |
+| D23-AC02 Inline Mock Maker 保留 | 通过 | 无 MockMaker 改动，保持 Mockito 5 默认 inline，相关测试全通过 |
+| D23-AC03 Surefire JVM 显式加载 Agent | 通过 | effective-pom-after + debug 第 2927 行 argLine 指向实际 JAR |
+| D23-AC04 原有 argLine 参数未丢失 | 通过 | 变更前本无 argLine；systemPropertyVariables 等配置保留（前后对比） |
+| D23-AC05 Failsafe 独立配置 | 不适用（Failsafe 未在 build/plugins 声明、无 *IT 测试，不执行；按要求不新增） |
+| D23-AC06 单元/集成测试实际执行 | 通过 | 123 通过、退出码 0 |
+| D23-AC07 未改业务源码与现有测试逻辑 | 通过 | git-diff-after 仅模块 POM 一个已跟踪文件 |
+| D23-AC08 无无关升级、无警告屏蔽参数 | 通过 | 无版本升级；POM 仅含 -javaagent，无 EnableDynamicAgentLoading/traceUsage |
+
+## 本子迭代证据索引
+- 正式文档：`docs/proj_docs/D23-项目迭代全量信息与操作-Mockito显式JavaAgent.md`、
+  `docs/proj_docs/D23-技术说明与实践指南-Mockito Inline Mock Maker与Surefire配置.md`
+- 静态检查：`docs/temp_docs/D23/D23-agent-static-check.md`（temp_docs 被 .gitignore 忽略，仅本地留存）
+- 日志目录：`logs/D23/`（*.log 被 .gitignore 忽略；effective-pom *.xml 为未跟踪文件）
+- 本状态文件：`docs/evidence/D23/D23-iteration-state.md`（已跟踪，追加方式维护）

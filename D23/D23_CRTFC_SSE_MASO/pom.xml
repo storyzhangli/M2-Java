@@ -105,14 +105,37 @@
     <build>
         <plugins>
             <!--
-                测试运行时激活 test profile：
-                读取 application-test.yml，将历史默认归属覆盖为 ut-default，
-                避免未带头的测试请求写入 dev-user 的手工演示数据。
+                解析依赖 JAR 路径：
+                properties goal 默认绑定 initialize 阶段，为解析到的依赖建立
+                "groupId:artifactId:type" 形式的属性（如 org.mockito:mockito-core:jar）。
+                版本由父 POM（spring-boot-starter-parent）pluginManagement 统一管理，此处不写版本。
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>resolve-dependency-paths</id>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+                测试运行时激活 test profile，并显式挂载与测试依赖同版本的 mockito-core 作为 Java Agent：
+                - 解决 Java 21+ 下 Mockito Inline Mock Maker 自附加（self-attach）产生的动态 Agent 警告；
+                - ${org.mockito:mockito-core:jar} 由 maven-dependency-plugin 的 properties goal 暴露，
+                  指向本次实际解析的 mockito-core 5.17.0 JAR，不另行指定版本；
+                - 不使用 -XX:+EnableDynamicAgentLoading 等仅隐藏警告的参数；
+                - 保留 systemPropertyVariables；当前无其他 argLine 参数，故直接追加，不覆盖。
             -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <argLine>-javaagent:${org.mockito:mockito-core:jar}</argLine>
                     <systemPropertyVariables>
                         <spring.profiles.active>test</spring.profiles.active>
                     </systemPropertyVariables>
