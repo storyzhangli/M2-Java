@@ -1,0 +1,24 @@
+# ============================================================================
+# 本地真实模式配置模板（.example 可入库；复制为 application-local.yml 后填写，该文件已被 .gitignore 忽略）
+#
+# 重要说明：
+# 1. Spring Boot 不会因为根目录存在 .env 就自动加载它；本项目也未引入 dotenv 依赖。
+#    推荐直接在 IntelliJ IDEA 的 Run Configuration -> Environment variables 中注入：
+#        AI_MODE=deepseek
+#        AI_API_KEY=sk-你的真实密钥
+#        AI_BASE_URL=https://api.deepseek.com   (可选，默认即此值)
+#        AI_MODEL=deepseek-flash               (可选，默认即此值)
+# 2. 若改用本文件，请通过 spring.profiles.active=local 激活，且切勿提交真实密钥。
+# 3. PowerShell 临时注入（不写入任何入库文件）：
+#        $env:AI_MODE="deepseek"
+#        $env:AI_API_KEY="sk-你的真实密钥"
+# 4. D22 起模型连接统一收敛到 app.ai.*，不再存在 spring.ai.deepseek.* 配置。
+# ============================================================================
+app:
+  ai:
+    mode: ${AI_MODE:deepseek}
+    # 这里仅作字段说明，请勿把真实密钥提交到版本库；优先使用环境变量注入。
+    api-key: ${AI_API_KEY:请通过环境变量注入真实密钥，不要在此硬编码}
+    base-url: ${AI_BASE_URL:https://api.deepseek.com}
+    model: ${AI_MODEL:deepseek-flash}
+    max-message-length: ${AI_CHAT_MAX_LENGTH:2000}
